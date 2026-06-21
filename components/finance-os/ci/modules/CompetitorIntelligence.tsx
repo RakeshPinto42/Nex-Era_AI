@@ -59,7 +59,7 @@ export function CompetitorIntelligence() {
     setErr(null);
     try {
       const res = await researchCompetitor({ competitor: target, region: scopeRegion !== "All Regions" ? scopeRegion : discRegion });
-      saveSnapshot(target, { researchedAt: res.researchedAt, model: res.model, products: res.products, sources: res.sources });
+      saveSnapshot(target, { researchedAt: res.researchedAt, model: res.model, products: res.products, sources: res.sources, estimated: res.estimated });
       reload();
       setSelected(target);
     } catch (e) {
@@ -282,6 +282,13 @@ export function CompetitorIntelligence() {
             </div>
           }
         >
+          {latest.estimated && latest.products.length > 0 && (
+            <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2">
+              <p className="text-[11px] text-amber-100/90">
+                <span className="font-semibold text-amber-200">Estimates — not live-sourced.</span> Live web search is unavailable (no OpenRouter credits / Tavily key), so these figures come from the model&apos;s knowledge and may be inaccurate or out of date. Add a Tavily key (settings above) for cited data.
+              </p>
+            </div>
+          )}
           {latest.products.length === 0 ? (
             <p className="text-sm text-fos-muted">No products extracted from the sources. Try a more specific competitor name or focus.</p>
           ) : (

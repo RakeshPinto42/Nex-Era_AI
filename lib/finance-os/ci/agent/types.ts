@@ -22,6 +22,7 @@ export type ResearchResult = {
   sources: SearchSource[];
   model: string;
   researchedAt: string; // ISO timestamp
+  estimated?: boolean; // true = model-knowledge fallback (no live search), figures approximate
 };
 
 export type Snapshot = {
@@ -29,6 +30,7 @@ export type Snapshot = {
   model: string;
   products: CompetitorProduct[];
   sources: SearchSource[];
+  estimated?: boolean; // true = model-knowledge fallback (no live search)
 };
 
 export type CompetitorRecord = { competitor: string; snapshots: Snapshot[] };

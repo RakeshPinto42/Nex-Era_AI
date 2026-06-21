@@ -17,6 +17,20 @@ RULES:
 - "sourceUrl" must be the URL the fact came from.
 - Keep "features" to short phrases. Max 20 products. Skip non-product results.`;
 
+// Used only when live web search is unavailable (no OpenRouter credits / no
+// Tavily key). Permits best-known pricing from the model's own knowledge so the
+// downstream engines (Positioning, SKU Comparison, Pricing Strategy, …) have data
+// to compute on — every figure flagged as an estimate, never presented as live.
+const ESTIMATE_SYSTEM = `You are a competitive-pricing analyst. Live web search is unavailable, so use your own knowledge of this competitor's product line to produce a best-effort catalog.
+Output STRICT JSON ONLY (no prose, no markdown fences):
+{"products":[{"product":string,"sku":string|null,"category":string|null,"price":number|null,"currency":string|null,"features":string[],"sourceUrl":null,"note":string|null}]}
+RULES:
+- List the competitor's real, well-known products. Do NOT invent product names.
+- Give an APPROXIMATE typical price where you have a reasonable basis; otherwise set "price": null. Prefer null over a wild guess.
+- "price" must be a plain number (no symbols/commas); put the currency in "currency".
+- Set "note" to "≈ estimate (no live source)" on every product. "sourceUrl" is always null.
+- Keep "features" to short phrases. Max 20 products.`;
+
 export async function POST(req: NextRequest) {
   let body: { competitor?: string; keywords?: string; region?: string };
   try {
@@ -32,15 +46,23 @@ export async function POST(req: NextRequest) {
     .join(" ");
   const user = `Competitor: ${competitor}\n${body.keywords ? `Focus: ${body.keywords}\n` : ""}${body.region ? `Region: ${body.region}\n` : ""}List this competitor's products with pricing.`;
 
-  const res = await runWebAgent({ system: EXTRACT_SYSTEM, user, searchQuery, maxTokens: 1800 });
+  const res = await runWebAgent({ system: EXTRACT_SYSTEM, user, searchQuery, maxTokens: 1800, fallbackSystem: ESTIMATE_SYSTEM });
   if (!res.ok) return NextResponse.json({ error: res.error, detail: res.detail }, { status: res.status });
+
+  const products = parseProducts(res.text);
+  // Belt-and-braces: guarantee the estimate flag is visible on every product in
+  // knowledge mode, even if the model omitted the note.
+  if (res.estimated) {
+    for (const p of products) p.note = p.note || "≈ estimate (no live source)";
+  }
 
   return NextResponse.json({
     competitor,
-    products: parseProducts(res.text),
+    products,
     sources: res.sources,
     model: res.model,
     backend: res.backend,
+    estimated: res.estimated,
     researchedAt: new Date().toISOString(),
   });
 }
