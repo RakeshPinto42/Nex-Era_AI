@@ -10,3 +10,4 @@ npm-debug.log*
 /.rak
 next-env.d.ts
 .vercel
+*.tsbuildinfo
