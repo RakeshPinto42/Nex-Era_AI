@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-geist-sans: "Geist", system-ui, sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+  --font-display: var(--font-geist-sans);
+}
+
+/* ---- Finance OS theme tokens (scoped to the workspace; dark default) ----
+   Applied via [data-fos-theme] on the Finance OS shell root. Components use the
+   `fos-*` Tailwind colors which read these vars, so the workspace flips theme
+   without touching the rest of the app. */
+[data-fos-theme="dark"] {
+  --fos-bg: #0a0c10;
+  --fos-surface: #12151c;
+  --fos-surface-2: #1a1f29;
+  --fos-border: #232a36;
+  --fos-text: #f1f5f9;
+  --fos-muted: #97a3b6;
+  --fos-faint: #64748b;
+  --fos-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
+}
+[data-fos-theme="light"] {
+  --fos-bg: #f8fafc;
+  --fos-surface: #ffffff;
+  --fos-surface-2: #f1f5f9;
+  --fos-border: #e5e7eb;
+  --fos-text: #0f172a;
+  --fos-muted: #64748b;
+  --fos-faint: #94a3b8;
+  --fos-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+  color-scheme: light;
+}
+[data-fos-theme] ::-webkit-scrollbar-thumb {
+  background: var(--fos-border);
+  border-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f8fafc; /* canvas */
+  color: #0f172a; /* ink */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  letter-spacing: -0.011em;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.18);
+  color: #0f172a;
+}
+
+/* Keyboard focus ring — visible for keyboard users, not on mouse click. */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Thin custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+  border: 2px solid #f8fafc;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@layer components {
+  /* Card / panel surfaces — white cards on canvas, hairline border, soft shadow. */
+  .glass {
+    @apply border border-line bg-white;
+  }
+  .glass-strong {
+    @apply border border-line bg-white shadow-sm;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)];
+  }
+  .text-gradient {
+    @apply bg-gradient-to-br from-ink via-ink to-ink/70 bg-clip-text text-transparent;
+  }
+  .text-gradient-emerald {
+    background: linear-gradient(120deg, #3b82f6 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Animated conic glow behind the hero mark */
+.conic-glow {
+  background: conic-gradient(
+    from 0deg,
+    rgba(59, 130, 246, 0),
+    rgba(59, 130, 246, 0.35),
+    rgba(139, 92, 246, 0.35),
+    rgba(59, 130, 246, 0)
+  );
+  filter: blur(40px);
+}
+
+/* Radial spotlight */
+.spotlight {
+  background: radial-gradient(
+    600px circle at 50% 0%,
+    rgba(59, 130, 246, 0.1),
+    transparent 60%
+  );
+}
+
+/* Animated network pulse for live indicators */
+@keyframes nexera-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+.pulse-dot {
+  animation: nexera-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes fos-toast {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fos-overlay { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fos-dialog {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

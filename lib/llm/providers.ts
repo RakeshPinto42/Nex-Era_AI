@@ -1,0 +1,119 @@
+// Catalog of supported model platforms. Most free clouds expose an
+// OpenAI-compatible /chat/completions endpoint, so a single adapter covers
+// them; Anthropic uses its native SDK.
+
+export type ProviderKind = "openai" | "anthropic";
+
+export type SuggestedModel = {
+  id: string;
+  label: string;
+  /** Maps to the AI Router intents. */
+  intent: "coding" | "reasoning" | "general" | "research" | "vision";
+};
+
+export type ProviderPreset = {
+  id: string;
+  name: string;
+  kind: ProviderKind;
+  baseUrl: string;
+  free: boolean;
+  docsUrl: string;
+  keyHint: string;
+  /** Extra headers some gateways want (e.g. OpenRouter attribution). */
+  extraHeaders?: Record<string, string>;
+  models: SuggestedModel[];
+};
+
+// Free / free-tier platforms. Model ids reflect each platform's catalog.
+export const PRESETS: ProviderPreset[] = [
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    kind: "openai",
+    baseUrl: "https://openrouter.ai/api/v1",
+    free: true,
+    docsUrl: "https://openrouter.ai/keys",
+    keyHint: "sk-or-v1-…",
+    extraHeaders: {
+      "HTTP-Referer": "https://rak.os",
+      "X-Title": "Mesh",
+    },
+    models: [
+      { id: "deepseek/deepseek-r1:free", label: "DeepSeek R1 (free)", intent: "reasoning" },
+      { id: "deepseek/deepseek-chat-v3.1:free", label: "DeepSeek V3.1 (free)", intent: "general" },
+      { id: "qwen/qwen-2.5-coder-32b-instruct:free", label: "Qwen 2.5 Coder (free)", intent: "coding" },
+      { id: "moonshotai/kimi-k2:free", label: "Kimi K2 (free)", intent: "general" },
+      { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B (free)", intent: "general" },
+    ],
+  },
+  {
+    id: "groq",
+    name: "Groq",
+    kind: "openai",
+    baseUrl: "https://api.groq.com/openai/v1",
+    free: true,
+    docsUrl: "https://console.groq.com/keys",
+    keyHint: "gsk_…",
+    models: [
+      { id: "deepseek-r1-distill-llama-70b", label: "DeepSeek R1 Distill 70B", intent: "reasoning" },
+      { id: "llama-3.3-70b-versatile", label: "Llama 3.3 70B Versatile", intent: "general" },
+      { id: "qwen-2.5-coder-32b", label: "Qwen 2.5 Coder 32B", intent: "coding" },
+    ],
+  },
+  {
+    id: "cerebras",
+    name: "Cerebras",
+    kind: "openai",
+    baseUrl: "https://api.cerebras.ai/v1",
+    free: true,
+    docsUrl: "https://cloud.cerebras.ai/",
+    keyHint: "csk-…",
+    models: [
+      { id: "llama-3.3-70b", label: "Llama 3.3 70B (fast)", intent: "general" },
+      { id: "qwen-3-coder-480b", label: "Qwen 3 Coder", intent: "coding" },
+    ],
+  },
+  {
+    id: "google",
+    name: "Google AI Studio",
+    kind: "openai",
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai",
+    free: true,
+    docsUrl: "https://aistudio.google.com/apikey",
+    keyHint: "AIza…",
+    models: [
+      { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash (free)", intent: "general" },
+      { id: "gemini-2.0-flash-thinking-exp", label: "Gemini 2.0 Flash Thinking", intent: "reasoning" },
+    ],
+  },
+  {
+    id: "deepinfra",
+    name: "DeepInfra",
+    kind: "openai",
+    baseUrl: "https://api.deepinfra.com/v1/openai",
+    free: false,
+    docsUrl: "https://deepinfra.com/dash/api_keys",
+    keyHint: "…",
+    models: [
+      { id: "deepseek-ai/DeepSeek-R1", label: "DeepSeek R1", intent: "reasoning" },
+      { id: "Qwen/Qwen2.5-Coder-32B-Instruct", label: "Qwen 2.5 Coder", intent: "coding" },
+    ],
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic (native)",
+    kind: "anthropic",
+    baseUrl: "https://api.anthropic.com",
+    free: false,
+    docsUrl: "https://console.anthropic.com/settings/keys",
+    keyHint: "sk-ant-…",
+    models: [
+      { id: "claude-opus-4-7", label: "Claude Opus 4.7", intent: "reasoning" },
+      { id: "claude-haiku-4-5", label: "Claude Haiku 4.5", intent: "general" },
+    ],
+  },
+];
+
+export const PRESET_BY_ID = Object.fromEntries(
+  PRESETS.map((p) => [p.id, p]),
+) as Record<string, ProviderPreset>;
