@@ -38,6 +38,34 @@ async function writeHealth(h: HealthMap): Promise<void> {
   await fs.writeFile(HEALTH_FILE, JSON.stringify(h, null, 2), "utf8");
 }
 
+// A free model that just 429'd is treated as "busy" for this window — live
+// routers deprioritize it until it cools down (shorter than HEALTH_TTL_MS so a
+// transient rate-limit doesn't sideline a model for 12h).
+export const BUSY_COOLDOWN_MS = 5 * 60 * 1000; // 5m
+
+/** Public read of the cached health map — lets live routers bias model choice. */
+export async function readHealthMap(): Promise<HealthMap> {
+  return readHealth();
+}
+
+/**
+ * Merge one live health observation and persist. Best-effort: health is a cache,
+ * never block inference on a write failure. Called by routers after each real
+ * request so "busy" state reflects live load, not just the 12h ping.
+ */
+export async function recordHealth(
+  model: string,
+  entry: Omit<HealthEntry, "ts">,
+): Promise<void> {
+  try {
+    const h = await readHealth();
+    h[model] = { ...entry, ts: Date.now() };
+    await writeHealth(h);
+  } catch {
+    /* health cache is best-effort */
+  }
+}
+
 // Lists every ":free" model on an OpenAI-compatible gateway, minus classifiers.
 export async function fetchFreeIds(providerId = "openrouter"): Promise<string[]> {
   const preset = PRESET_BY_ID[providerId];

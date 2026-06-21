@@ -40,8 +40,28 @@ export async function runWebAgent(input: {
     maxResults: input.maxResults ?? 6,
     maxTokens: input.maxTokens ?? 1800,
   });
-  if (!or.ok) {
-    return { ok: false, status: or.status, error: or.error === "no_openrouter" ? "no_search_backend" : or.error, detail: or.detail };
+  if (or.ok) {
+    return { ok: true, text: or.content, sources: or.citations, model: or.model, backend: "openrouter" };
   }
-  return { ok: true, text: or.content, sources: or.citations, model: or.model, backend: "openrouter" };
+
+  // Every OpenRouter web model failed (free tier busy / rate-limited). Rather
+  // than dead-end, fall back to a plain completion across ALL providers
+  // (Groq / Gemini / OpenRouter) — no live search, so no citations, but the user
+  // still gets an answer. Flag the degraded mode so the UI can warn it may be stale.
+  const fb = await completeWithFallback(
+    input.system,
+    [
+      {
+        role: "user",
+        content: `${input.user}\n\n(Live web search is unavailable right now — answer from your own knowledge and clearly state that figures may be out of date.)`,
+      },
+    ],
+    undefined,
+    { maxTokens: input.maxTokens ?? 1800 },
+  );
+  if (fb && fb.provider !== "none" && fb.text.trim()) {
+    return { ok: true, text: fb.text, sources: [], model: `${fb.model} (no live search)`, backend: "openrouter" };
+  }
+
+  return { ok: false, status: or.status, error: or.error === "no_openrouter" ? "no_search_backend" : or.error, detail: or.detail };
 }
