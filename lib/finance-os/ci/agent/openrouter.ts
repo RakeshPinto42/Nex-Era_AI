@@ -79,6 +79,7 @@ export async function openrouterWebChat(
     .slice(0, MAX_ATTEMPTS);
 
   let lastDetail = "";
+  let lastStatus = 502;
   for (const c of ranked) {
     const r = await callOnce(c.apiKey, c.model, system, user, opts);
     if (r.ok && r.content.trim()) {
@@ -92,10 +93,17 @@ export async function openrouterWebChat(
     } else {
       await recordHealth(c.model, { ok: false, status: r.status, dead: false, detail: r.detail.slice(0, 160) });
       lastDetail = `${c.model}: ${r.detail}`;
+      lastStatus = r.status;
+      // Account-level failures (no credits / bad key / forbidden) are identical
+      // for EVERY model — rotating wastes a request per model. Stop immediately
+      // so the caller can fall back fast instead of grinding through all 8.
+      if (r.status === 401 || r.status === 402 || r.status === 403) {
+        return { ok: false, status: r.status, error: "or_failed", detail: lastDetail };
+      }
     }
     // rotate to the next model
   }
-  return { ok: false, status: 502, error: "or_failed", detail: lastDetail || "all models failed" };
+  return { ok: false, status: lastStatus, error: "or_failed", detail: lastDetail || "all models failed" };
 }
 
 async function callOnce(
