@@ -52,8 +52,6 @@ const ENV_KEYS: Record<string, string> = {
   groq: "GROQ_API_KEY",
   cerebras: "CEREBRAS_API_KEY",
   google: "GOOGLE_API_KEY",
-  deepinfra: "DEEPINFRA_API_KEY",
-  anthropic: "ANTHROPIC_API_KEY",
 };
 
 function envProviders(): ProviderConfig[] {
@@ -101,7 +99,7 @@ async function write(data: StoreData): Promise<void> {
     const code = (e as NodeJS.ErrnoException).code;
     if (code === "EROFS" || code === "EACCES" || code === "EPERM") {
       throw new Error(
-        "Key storage is read-only here (e.g. Vercel). Configure provider keys via environment variables (OPENROUTER_API_KEY, GROQ_API_KEY, ANTHROPIC_API_KEY, …) instead.",
+        "Key storage is read-only here (e.g. Vercel). Configure provider keys via environment variables (OPENROUTER_API_KEY, GROQ_API_KEY, CEREBRAS_API_KEY, GOOGLE_API_KEY) instead.",
       );
     }
     throw e;

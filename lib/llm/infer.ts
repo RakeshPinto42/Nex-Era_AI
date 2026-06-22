@@ -55,20 +55,6 @@ export async function streamChat(
       };
     }
   }
-
-  if (process.env.ANTHROPIC_API_KEY) {
-    return {
-      provider: "Anthropic (env)",
-      model: "claude-opus-4-7",
-      stream: build(
-        PRESET_BY_ID["anthropic"],
-        process.env.ANTHROPIC_API_KEY,
-        "claude-opus-4-7",
-        system,
-        messages,
-      ),
-    };
-  }
   return null;
 }
 
@@ -95,10 +81,7 @@ export async function streamChatWithFallback(
   // An explicitly-picked model (router / agent selector) goes first, then the
   // rest act as automatic fallbacks if it 429s.
   if (preferred?.providerId && preferred.model) {
-    const key =
-      preferred.providerId === "anthropic"
-        ? (await getKey("anthropic")) || process.env.ANTHROPIC_API_KEY || ""
-        : (await getKey(preferred.providerId)) || "";
+    const key = (await getKey(preferred.providerId)) || "";
     if (key) {
       const pid = preferred.providerId;
       const pmodel = preferred.model;
@@ -133,27 +116,6 @@ export async function streamChatWithFallback(
     }
     lastDetail = res.detail;
     if (res.dead) deadProviders.add(c.providerId);
-  }
-
-  // Env Anthropic key as a last resort — skipped in free-only mode (it's paid).
-  if (!opts?.freeOnly && process.env.ANTHROPIC_API_KEY) {
-    const res = await tryConnect(
-      PRESET_BY_ID["anthropic"],
-      process.env.ANTHROPIC_API_KEY,
-      "claude-opus-4-7",
-      system,
-      messages,
-      maxTokens,
-    );
-    if (res.ok) {
-      return {
-        provider: "Anthropic (env)",
-        model: "claude-opus-4-7",
-        stream: res.stream,
-        fellBack: attempts > 0,
-      };
-    }
-    lastDetail = res.detail;
   }
 
   // Everything failed → surface the last error as a one-line stream so the
@@ -204,10 +166,7 @@ export async function streamByProvider(
   const preset = PRESET_BY_ID[providerId];
   if (!preset) return null;
 
-  const key =
-    providerId === "anthropic"
-      ? (await getKey("anthropic")) || process.env.ANTHROPIC_API_KEY || ""
-      : (await getKey(providerId)) || "";
+  const key = (await getKey(providerId)) || "";
   if (!key) return null;
 
   return {

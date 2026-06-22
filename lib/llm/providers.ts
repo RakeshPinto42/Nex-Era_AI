@@ -86,32 +86,6 @@ export const PRESETS: ProviderPreset[] = [
       { id: "gemini-2.0-flash-thinking-exp", label: "Gemini 2.0 Flash Thinking", intent: "reasoning" },
     ],
   },
-  {
-    id: "deepinfra",
-    name: "DeepInfra",
-    kind: "openai",
-    baseUrl: "https://api.deepinfra.com/v1/openai",
-    free: false,
-    docsUrl: "https://deepinfra.com/dash/api_keys",
-    keyHint: "…",
-    models: [
-      { id: "deepseek-ai/DeepSeek-R1", label: "DeepSeek R1", intent: "reasoning" },
-      { id: "Qwen/Qwen2.5-Coder-32B-Instruct", label: "Qwen 2.5 Coder", intent: "coding" },
-    ],
-  },
-  {
-    id: "anthropic",
-    name: "Anthropic (native)",
-    kind: "anthropic",
-    baseUrl: "https://api.anthropic.com",
-    free: false,
-    docsUrl: "https://console.anthropic.com/settings/keys",
-    keyHint: "sk-ant-…",
-    models: [
-      { id: "claude-opus-4-7", label: "Claude Opus 4.7", intent: "reasoning" },
-      { id: "claude-haiku-4-5", label: "Claude Haiku 4.5", intent: "general" },
-    ],
-  },
 ];
 
 export const PRESET_BY_ID = Object.fromEntries(
