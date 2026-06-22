@@ -6,7 +6,7 @@
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import type { Recommendation } from "@/lib/finance-os/ci/types";
-import { CI_REGIONS, rankRecommendations } from "@/lib/finance-os/ci/types";
+import { CI_REGION_ALL, rankRecommendations } from "@/lib/finance-os/ci/types";
 
 type CiCtx = {
   region: string;
@@ -20,7 +20,7 @@ type CiCtx = {
 const Ctx = createContext<CiCtx | null>(null);
 
 export function CiProvider({ children }: { children: ReactNode }) {
-  const [region, setRegion] = useState<string>(CI_REGIONS[0]);
+  const [region, setRegion] = useState<string>(CI_REGION_ALL);
   const [recsByModule, setRecsByModule] = useState<Record<string, Recommendation[]>>({});
 
   const setModuleRecs = useCallback((module: string, recs: Recommendation[]) => {
