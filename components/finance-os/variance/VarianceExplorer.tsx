@@ -55,10 +55,10 @@ export function VarianceExplorer() {
 
       {result && (
         <div className="mt-5 space-y-5">
-          <div className="flex items-center gap-3 rounded-xl border border-line bg-white p-3 text-sm">
-            <span className="text-ink/70">Metric type:</span>
+          <div className="flex items-center gap-3 rounded-xl border border-fos-border bg-fos-surface p-3 text-sm">
+            <span className="text-fos-text">Metric type:</span>
             {(["revenue", "cost"] as const).map((k) => (
-              <button key={k} onClick={() => setKind(k)} className={`rounded-lg border px-3 py-1 text-xs capitalize ${kind === k ? "border-brand-600 bg-brand-50 text-brand-600" : "border-line text-ink/70"}`}>
+              <button key={k} onClick={() => setKind(k)} className={`rounded-lg border px-3 py-1 text-xs capitalize ${kind === k ? "border-brand-600 bg-brand-50 text-brand-600" : "border-fos-border text-fos-text"}`}>
                 {k} {k === "revenue" ? "(higher=good)" : "(lower=good)"}
               </button>
             ))}

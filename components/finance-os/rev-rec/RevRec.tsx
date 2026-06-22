@@ -42,10 +42,10 @@ export function RevRec() {
 
       {result && (
         <div className="mt-5 space-y-5">
-          <div className="flex items-end gap-4 rounded-xl border border-line bg-white p-4">
-            <label className="text-xs text-ink/70">
+          <div className="flex items-end gap-4 rounded-xl border border-fos-border bg-fos-surface p-4">
+            <label className="text-xs text-fos-text">
               Expected period (YYYY or YYYY-MM)
-              <input className="mt-1 block w-40 rounded-lg border border-line px-2 py-1.5 text-sm" value={period} onChange={(e) => setPeriod(e.target.value)} />
+              <input className="mt-1 block w-40 rounded-lg border border-fos-border px-2 py-1.5 text-sm" value={period} onChange={(e) => setPeriod(e.target.value)} />
             </label>
           </div>
 
@@ -56,20 +56,20 @@ export function RevRec() {
             <KpiCard label="Total revenue" value={fmtMoney(result.totalRevenue)} tone="brand" />
           </KpiGrid>
 
-          <div className="rounded-xl border border-line bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold text-ink">Checks</h3>
+          <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+            <h3 className="mb-3 text-sm font-semibold text-fos-text">Checks</h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {Object.entries(result.byCheck).map(([check, count]) => (
-                <span key={check} className="rounded-full border border-line px-2.5 py-0.5 text-ink/70">
+                <span key={check} className="rounded-full border border-fos-border px-2.5 py-0.5 text-fos-text">
                   {check}: <b>{count}</b>
                 </span>
               ))}
-              {!Object.keys(result.byCheck).length && <span className="text-muted">All checks passed.</span>}
+              {!Object.keys(result.byCheck).length && <span className="text-fos-muted">All checks passed.</span>}
             </div>
           </div>
 
-          <div className="rounded-xl border border-line bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold text-ink">Exceptions</h3>
+          <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+            <h3 className="mb-3 text-sm font-semibold text-fos-text">Exceptions</h3>
             <ExceptionPanel exceptions={result.exceptions} />
           </div>
         </div>

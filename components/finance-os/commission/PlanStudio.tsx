@@ -16,9 +16,9 @@ import {
 import { uid } from "@/lib/utils";
 
 const input =
-  "w-full rounded-lg border border-line bg-white px-2.5 py-1.5 text-sm text-ink outline-none focus:border-brand-600/40";
-const label = "mb-1 block text-xs font-medium text-ink/70";
-const card = "rounded-2xl border border-line bg-white p-5";
+  "w-full rounded-lg border border-fos-border bg-fos-surface px-2.5 py-1.5 text-sm text-fos-text outline-none focus:border-brand-600/40";
+const label = "mb-1 block text-xs font-medium text-fos-text";
+const card = "rounded-2xl border border-fos-border bg-fos-surface p-5";
 
 export function PlanStudio({
   plans,
@@ -83,14 +83,14 @@ export function PlanStudio({
             key={p.id}
             onClick={() => onSelect(p.id)}
             className={`rounded-lg border px-3 py-1.5 text-sm ${
-              p.id === plan.id ? "border-brand-600 bg-brand-50 text-brand-600" : "border-line text-ink/70 hover:bg-canvas"
+              p.id === plan.id ? "border-brand-600 bg-brand-50 text-brand-600" : "border-fos-border text-fos-text hover:bg-fos-surface2"
             }`}
           >
             {p.name}
-            <span className="ml-1.5 font-mono text-[10px] text-muted">v{p.version}</span>
+            <span className="ml-1.5 font-mono text-[10px] text-fos-muted">v{p.version}</span>
           </button>
         ))}
-        <button onClick={addPlan} className="rounded-lg border border-dashed border-line px-3 py-1.5 text-sm text-muted hover:text-ink">
+        <button onClick={addPlan} className="rounded-lg border border-dashed border-fos-border px-3 py-1.5 text-sm text-fos-muted hover:text-fos-text">
           + New plan
         </button>
       </div>
@@ -123,13 +123,13 @@ export function PlanStudio({
           </div>
         </div>
         <div className="mt-3 flex gap-2">
-          <button onClick={duplicateVersion} className="rounded-lg border border-line px-3 py-1.5 text-xs text-ink hover:bg-canvas">
+          <button onClick={duplicateVersion} className="rounded-lg border border-fos-border px-3 py-1.5 text-xs text-fos-text hover:bg-fos-surface2">
             Save as new version
           </button>
           <button
             onClick={removePlan}
             disabled={plans.length === 1}
-            className="rounded-lg border border-line px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 disabled:opacity-40"
+            className="rounded-lg border border-fos-border px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 disabled:opacity-40"
           >
             Delete plan
           </button>
@@ -139,13 +139,13 @@ export function PlanStudio({
       {/* components */}
       <div className={card}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-ink">
+          <h3 className="text-sm font-semibold text-fos-text">
             {plan.basis === "hybrid" ? "Components (weighted)" : "Slab schedule"}
           </h3>
           {plan.basis === "hybrid" && (
             <button
               onClick={() => setComponents([...plan.components, makeComponent("revenue")])}
-              className="rounded-lg border border-dashed border-line px-2.5 py-1 text-xs text-muted hover:text-ink"
+              className="rounded-lg border border-dashed border-fos-border px-2.5 py-1 text-xs text-fos-muted hover:text-fos-text"
             >
               + Component
             </button>
@@ -167,9 +167,9 @@ export function PlanStudio({
       {/* modifiers */}
       <div className={card}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-ink">Modifiers</h3>
+          <h3 className="text-sm font-semibold text-fos-text">Modifiers</h3>
           <select
-            className="rounded-lg border border-line bg-white px-2.5 py-1 text-xs text-ink"
+            className="rounded-lg border border-fos-border bg-fos-surface px-2.5 py-1 text-xs text-fos-text"
             value=""
             onChange={(e) => {
               if (e.target.value) setModifiers([...plan.modifiers, makeModifier(e.target.value as ModifierKind)]);
@@ -183,7 +183,7 @@ export function PlanStudio({
             ))}
           </select>
         </div>
-        {plan.modifiers.length === 0 && <p className="text-xs text-muted">No modifiers. Plan pays the base schedule only.</p>}
+        {plan.modifiers.length === 0 && <p className="text-xs text-fos-muted">No modifiers. Plan pays the base schedule only.</p>}
         <div className="space-y-3">
           {plan.modifiers.map((m) => (
             <ModifierEditor
@@ -237,7 +237,7 @@ function ComponentEditor({
   };
 
   return (
-    <div className="rounded-xl border border-line bg-canvas p-4">
+    <div className="rounded-xl border border-fos-border bg-fos-surface2 p-4">
       <div className="mb-3 flex flex-wrap items-end gap-3">
         {hybrid && (
           <>
@@ -279,7 +279,7 @@ function ComponentEditor({
           </select>
         </div>
         {onRemove && (
-          <button onClick={onRemove} className="ml-auto rounded-lg border border-line px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50">
+          <button onClick={onRemove} className="ml-auto rounded-lg border border-fos-border px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50">
             Remove component
           </button>
         )}
@@ -287,7 +287,7 @@ function ComponentEditor({
 
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-muted">
+          <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-fos-muted">
             <th className="pb-1">Up to (blank = ∞)</th>
             <th className="pb-1">Rate %</th>
             <th className="pb-1" />
@@ -308,16 +308,16 @@ function ComponentEditor({
               <td className="py-1 pr-2">
                 <input type="number" step="0.1" className={input} value={s.rate} onChange={(e) => setSlab(i, { ...s, rate: Number(e.target.value) })} />
               </td>
-              <td className="py-1 text-right text-muted">
-                <button onClick={() => move(i, -1)} className="px-1 hover:text-ink">↑</button>
-                <button onClick={() => move(i, 1)} className="px-1 hover:text-ink">↓</button>
+              <td className="py-1 text-right text-fos-muted">
+                <button onClick={() => move(i, -1)} className="px-1 hover:text-fos-text">↑</button>
+                <button onClick={() => move(i, 1)} className="px-1 hover:text-fos-text">↓</button>
                 <button onClick={() => removeSlab(i)} className="px-1 hover:text-rose-600">✕</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={addSlab} className="mt-2 rounded-lg border border-dashed border-line px-2.5 py-1 text-xs text-muted hover:text-ink">
+      <button onClick={addSlab} className="mt-2 rounded-lg border border-dashed border-fos-border px-2.5 py-1 text-xs text-fos-muted hover:text-fos-text">
         + Slab
       </button>
     </div>
@@ -364,7 +364,7 @@ function ModifierEditor({
 }) {
   const m = modifier;
   return (
-    <div className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-canvas p-3">
+    <div className="flex flex-wrap items-end gap-3 rounded-xl border border-fos-border bg-fos-surface2 p-3">
       <div className="flex-1">
         <label className={label}>Label</label>
         <input className={input} value={m.label} onChange={(e) => onChange({ ...m, label: e.target.value })} />
@@ -408,8 +408,8 @@ function ModifierEditor({
           {num("Amount", m.amount, (v) => onChange({ ...m, amount: v }))}
         </>
       )}
-      <span className="rounded-full bg-white px-2 py-0.5 font-mono text-[10px] uppercase text-muted">{m.kind}</span>
-      <button onClick={onRemove} className="rounded-lg border border-line px-2 py-1.5 text-xs text-rose-600 hover:bg-rose-50">
+      <span className="rounded-full bg-fos-surface px-2 py-0.5 font-mono text-[10px] uppercase text-fos-muted">{m.kind}</span>
+      <button onClick={onRemove} className="rounded-lg border border-fos-border px-2 py-1.5 text-xs text-rose-600 hover:bg-rose-50">
         ✕
       </button>
     </div>

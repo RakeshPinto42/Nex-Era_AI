@@ -446,7 +446,7 @@ export default function ChatInterface() {
                     : "Open a folder above, then describe the change…"
                   : "Ask, build, analyze, automate…"
               }
-              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[15px] text-ink placeholder:text-black/35 outline-none"
+              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[16px] text-ink placeholder:text-black/35 outline-none"
             />
             <div className="flex items-center justify-between px-1 pt-1">
               <div className="flex items-center gap-1">
@@ -529,7 +529,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.18, duration: 0.5 }}
-        className="mt-3 max-w-md text-[15px] leading-relaxed text-muted"
+        className="mt-3 max-w-md text-[16px] leading-relaxed text-muted"
       >
         Chat, code, research, generate media and automate workflows through
         decentralized intelligence.
@@ -539,7 +539,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
           <button
             key={s}
             onClick={() => onPick(s)}
-            className="group rounded-xl border border-line bg-white px-4 py-3 text-left text-[15px] text-ink/80 shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lift"
+            className="group rounded-xl border border-line bg-white px-4 py-3 text-left text-[16px] text-ink/80 shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lift"
           >
             {s}
           </button>
@@ -570,7 +570,7 @@ function MessageRow({ message }: { message: Message }) {
         transition={{ duration: 0.3 }}
         className="flex justify-end"
       >
-        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-black/[0.08] px-4 py-2.5 text-[15px] leading-relaxed text-ink">
+        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-black/[0.08] px-4 py-2.5 text-[16px] leading-relaxed text-ink">
           {attachments}
           <Content text={message.content} streaming={message.streaming} />
         </div>
@@ -589,7 +589,7 @@ function MessageRow({ message }: { message: Message }) {
     >
       {/* identity tile — tinted by the routed intent, not a flat box */}
       <div
-        className="mt-0.5 grid h-8 w-8 flex-none place-items-center rounded-xl text-[15px]"
+        className="mt-0.5 grid h-8 w-8 flex-none place-items-center rounded-xl text-[16px]"
         style={{
           background: `linear-gradient(135deg, ${hex}22, ${hex}0a)`,
           boxShadow: `inset 0 0 0 1px ${hex}33`,
@@ -602,7 +602,7 @@ function MessageRow({ message }: { message: Message }) {
       <div className="min-w-0 max-w-[85%]">
         {message.model && (
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="text-[13px] font-medium text-ink">{message.model}</span>
+            <span className="text-sm font-medium text-ink">{message.model}</span>
             {it && (
               <span
                 className="rounded-full px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
@@ -613,7 +613,7 @@ function MessageRow({ message }: { message: Message }) {
             )}
           </div>
         )}
-        <div className="rounded-2xl rounded-tl-md border border-black/[0.07] bg-white px-4 py-3 text-[15px] leading-relaxed text-ink/90 shadow-soft">
+        <div className="rounded-2xl rounded-tl-md border border-black/[0.07] bg-white px-4 py-3 text-[16px] leading-relaxed text-ink/90 shadow-soft">
           {attachments}
           {message.streaming && !message.content ? (
             <ThinkingDots />
@@ -811,7 +811,7 @@ function parseBlocks(text: string): Block[] {
 const HEAD_CLS: Record<number, string> = {
   1: "mt-3 mb-1.5 text-lg font-semibold text-ink first:mt-0",
   2: "mt-3 mb-1.5 text-base font-semibold text-ink first:mt-0",
-  3: "mt-2.5 mb-1 text-[15px] font-semibold text-ink first:mt-0",
+  3: "mt-2.5 mb-1 text-[16px] font-semibold text-ink first:mt-0",
 };
 
 function MarkdownBlocks({ text }: { text: string }) {

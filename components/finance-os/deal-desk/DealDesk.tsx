@@ -24,8 +24,8 @@ const SEED: Deal[] = [
 
 const ACCENT = "#d97706";
 const APPROVALS = ["Auto Approve", "Manager Approval", "Finance Approval", "Executive Approval"];
-const lbl = "mb-1 block text-[11px] font-medium text-ink/60";
-const inp = "w-full rounded-lg border border-line bg-white px-2 py-1.5 text-sm text-ink outline-none focus:border-amber-500";
+const lbl = "mb-1 block text-[11px] font-medium text-fos-text";
+const inp = "w-full rounded-lg border border-fos-border bg-fos-surface px-2 py-1.5 text-sm text-fos-text outline-none focus:border-amber-500";
 
 export function DealDesk() {
   const [deals, setDeals] = useState<Deal[]>(SEED);
@@ -46,7 +46,7 @@ export function DealDesk() {
       title="Deal Desk"
       actions={<span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium ring-1 ring-white/25">{pending} pending</span>}
     >
-      <div className="mb-5 flex flex-wrap items-center gap-1 rounded-xl border border-line bg-white p-1.5">
+      <div className="mb-5 flex flex-wrap items-center gap-1 rounded-xl border border-fos-border bg-fos-surface p-1.5">
         {TABS.map((t) => (
           <button
             key={t}
@@ -67,7 +67,7 @@ export function DealDesk() {
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         {/* ---- approval queue ---- */}
         <div className="lg:col-span-5">
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">Approval queue</p>
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-fos-muted">Approval queue</p>
           <div className="space-y-2">
             {deals.map((d) => {
               const dr = computeDeal(d);
@@ -76,19 +76,19 @@ export function DealDesk() {
                 <button
                   key={d.id}
                   onClick={() => setSelId(d.id)}
-                  className={cn("w-full rounded-xl border bg-white p-3 text-left transition-colors", active ? "ring-2" : "hover:bg-canvas")}
+                  className={cn("w-full rounded-xl border bg-fos-surface p-3 text-left transition-colors", active ? "ring-2" : "hover:bg-fos-surface2")}
                   style={active ? { borderColor: ACCENT, boxShadow: `0 0 0 2px ${ACCENT}33` } : { borderColor: "#e5e7eb" }}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-sm font-semibold text-slate-900">{d.name}</span>
+                    <span className="truncate text-sm font-semibold text-fos-text">{d.name}</span>
                     <StatusPill status={d.status} />
                   </div>
-                  <p className="text-xs text-muted">{d.customer}</p>
+                  <p className="text-xs text-fos-muted">{d.customer}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
                     <Chip>{dr.discountPct.toFixed(0)}% disc</Chip>
                     <Chip>{dr.marginPct.toFixed(0)}% margin</Chip>
                     <RiskChip risk={dr.risk} />
-                    <span className="ml-auto font-mono text-muted">{fmtMoney(dr.revenue)}</span>
+                    <span className="ml-auto font-mono text-fos-muted">{fmtMoney(dr.revenue)}</span>
                   </div>
                 </button>
               );
@@ -99,11 +99,11 @@ export function DealDesk() {
         {/* ---- detail + workflow ---- */}
         <div className="lg:col-span-7">
           {sel && r && (
-            <div className="space-y-4 rounded-2xl border border-line bg-white p-5">
+            <div className="space-y-4 rounded-2xl border border-fos-border bg-fos-surface p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900">{sel.name}</h3>
-                  <p className="text-sm text-muted">{sel.customer}</p>
+                  <h3 className="text-lg font-semibold text-fos-text">{sel.name}</h3>
+                  <p className="text-sm text-fos-muted">{sel.customer}</p>
                 </div>
                 <StatusPill status={sel.status} />
               </div>
@@ -127,10 +127,10 @@ export function DealDesk() {
 
               {/* recommendation */}
               <div className="rounded-xl p-3" style={{ background: `${ACCENT}10` }}>
-                <p className="text-sm font-semibold text-slate-900">
+                <p className="text-sm font-semibold text-fos-text">
                   Recommendation: <span style={{ color: ACCENT }}>{r.recommendation}</span>
                 </p>
-                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[13px] text-ink/75">
+                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[13px] text-fos-text">
                   {r.reasons.map((re, i) => <li key={i}>{re}</li>)}
                 </ul>
               </div>
@@ -150,7 +150,7 @@ export function DealDesk() {
                         >
                           {i + 1}
                         </span>
-                        <span className={cn("text-sm", i === need ? "font-semibold text-slate-900" : reached ? "text-ink/70" : "text-muted")}>
+                        <span className={cn("text-sm", i === need ? "font-semibold text-fos-text" : reached ? "text-fos-text" : "text-fos-muted")}>
                           {a}{i === need && " ← required"}
                         </span>
                       </div>
@@ -160,10 +160,10 @@ export function DealDesk() {
               </div>
 
               {/* actions */}
-              <div className="flex gap-2 border-t border-line pt-3">
+              <div className="flex gap-2 border-t border-fos-border pt-3">
                 <button onClick={() => setStatus("Approved")} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:brightness-95">Approve</button>
                 <button onClick={() => setStatus("Rejected")} className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:brightness-95">Reject</button>
-                <button onClick={() => setStatus("Pending")} className="rounded-lg border border-line px-4 py-2 text-sm text-ink hover:bg-canvas">Reset</button>
+                <button onClick={() => setStatus("Pending")} className="rounded-lg border border-fos-border px-4 py-2 text-sm text-fos-text hover:bg-fos-surface2">Reset</button>
               </div>
             </div>
           )}
@@ -179,7 +179,7 @@ function StatusPill({ status }: { status: Status }) {
   return <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", map[status])}>{status}</span>;
 }
 function Chip({ children }: { children: React.ReactNode }) {
-  return <span className="rounded-full bg-canvas px-2 py-0.5 text-ink/70">{children}</span>;
+  return <span className="rounded-full bg-fos-surface2 px-2 py-0.5 text-fos-text">{children}</span>;
 }
 function RiskChip({ risk }: { risk: "Low" | "Medium" | "High" }) {
   const map = { Low: "bg-emerald-100 text-emerald-700", Medium: "bg-amber-100 text-amber-700", High: "bg-rose-100 text-rose-700" };
@@ -187,9 +187,9 @@ function RiskChip({ risk }: { risk: "Low" | "Medium" | "High" }) {
 }
 function Metric({ label, v, bad }: { label: string; v: string; bad?: boolean }) {
   return (
-    <div className="rounded-xl border border-line bg-canvas p-3">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
-      <p className={cn("mt-0.5 text-lg font-semibold tabular-nums", bad ? "text-rose-600" : "text-slate-900")}>{v}</p>
+    <div className="rounded-xl border border-fos-border bg-fos-surface2 p-3">
+      <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">{label}</p>
+      <p className={cn("mt-0.5 text-lg font-semibold tabular-nums", bad ? "text-rose-600" : "text-fos-text")}>{v}</p>
     </div>
   );
 }

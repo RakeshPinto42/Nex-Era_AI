@@ -34,15 +34,15 @@ export function ColumnMapper({
         const missing = f.required && (map[f.key] == null || map[f.key] < 0);
         return (
           <label key={f.key} className="block">
-            <span className="mb-1 block text-xs font-medium text-ink/70">
+            <span className="mb-1 block text-xs font-medium text-fos-text">
               {f.label}
               {f.required && <span className="text-rose-500"> *</span>}
             </span>
             <select
               value={map[f.key] ?? -1}
               onChange={(e) => set(f.key, Number(e.target.value))}
-              className={`w-full cursor-pointer rounded-lg border bg-canvas px-2.5 py-2 text-sm text-ink outline-none focus:border-brand-600/40 ${
-                missing ? "border-rose-400" : "border-line"
+              className={`w-full cursor-pointer rounded-lg border bg-fos-surface2 px-2.5 py-2 text-sm text-fos-text outline-none focus:border-brand-600/40 ${
+                missing ? "border-rose-400" : "border-fos-border"
               }`}
             >
               <option value={-1}>— none —</option>

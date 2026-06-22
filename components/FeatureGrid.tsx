@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { INTENTS, type Intent } from "@/lib/brand/intent";
+import { TiltCard } from "./ui/TiltCard";
 
 type Feature = {
   title: string;
@@ -86,35 +87,38 @@ export default function FeatureGrid() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
-                className={`group relative overflow-hidden rounded-2xl glass p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/15 hover:shadow-lift ${
-                  f.span ?? ""
-                }`}
+                className={f.span ?? ""}
               >
-                {/* hover glow — tinted by routed intent */}
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ background: `rgba(${it.rgb},0.2)` }}
-                />
-                <div className="flex items-start justify-between">
+                <TiltCard
+                  max={7}
+                  className="shine group relative flex h-full flex-col overflow-hidden rounded-2xl glass p-6 transition-shadow duration-300 hover:border-black/15 hover:shadow-lift"
+                >
+                  {/* hover glow — tinted by routed intent */}
                   <div
-                    className="grid h-11 w-11 place-items-center rounded-xl"
-                    style={{ background: `rgba(${it.rgb},0.12)`, color: it.hex }}
-                  >
-                    {f.icon}
+                    className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                    style={{ background: `rgba(${it.rgb},0.2)` }}
+                  />
+                  <div className="flex items-start justify-between" style={{ transform: "translateZ(40px)" }}>
+                    <div
+                      className="grid h-11 w-11 place-items-center rounded-xl"
+                      style={{ background: `rgba(${it.rgb},0.12)`, color: it.hex }}
+                    >
+                      {f.icon}
+                    </div>
+                    <span
+                      className="font-mono text-[10px] uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      style={{ color: it.hex }}
+                    >
+                      {it.label}
+                    </span>
                   </div>
-                  <span
-                    className="font-mono text-[10px] uppercase tracking-wider opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    style={{ color: it.hex }}
-                  >
-                    {it.label}
-                  </span>
-                </div>
-                <h3 className="mt-5 text-lg font-semibold text-ink">
-                  {f.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-black/55">
-                  {f.desc}
-                </p>
+                  <h3 className="mt-5 text-lg font-semibold text-ink" style={{ transform: "translateZ(30px)" }}>
+                    {f.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-black/55" style={{ transform: "translateZ(20px)" }}>
+                    {f.desc}
+                  </p>
+                </TiltCard>
               </motion.div>
             );
           })}

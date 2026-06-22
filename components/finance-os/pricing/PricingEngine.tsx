@@ -59,14 +59,14 @@ export function PricingEngine() {
 
         {/* ---- result readout ---- */}
         <div className="space-y-5 lg:col-span-8">
-          <div className="flex flex-wrap items-center gap-6 rounded-2xl border border-line bg-white p-6">
+          <div className="flex flex-wrap items-center gap-6 rounded-2xl border border-fos-border bg-fos-surface p-6">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">Net price / unit</p>
-              <p className="text-5xl font-semibold tabular-nums text-slate-900">{fmtMoney(r.netPrice)}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">Net price / unit</p>
+              <p className="text-5xl font-semibold tabular-nums text-fos-text">{fmtMoney(r.netPrice)}</p>
             </div>
             <div className="h-12 w-px bg-line" />
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">Gross margin</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">Gross margin</p>
               <p className="text-3xl font-semibold tabular-nums" style={{ color: r.meetsTarget ? "#0d9488" : "#e11d48" }}>
                 {r.grossMarginPct.toFixed(1)}%
               </p>
@@ -75,8 +75,8 @@ export function PricingEngine() {
               </p>
             </div>
             <div className="ml-auto rounded-xl px-4 py-3 text-center" style={{ background: r.approval === "Auto Approve" ? "#0d948814" : "#d9770614" }}>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">Approval</p>
-              <p className="text-sm font-semibold text-slate-900">{r.approval}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">Approval</p>
+              <p className="text-sm font-semibold text-fos-text">{r.approval}</p>
             </div>
           </div>
 
@@ -94,7 +94,7 @@ export function PricingEngine() {
               const s = sc[k];
               const tone = k === "best" ? "#0d9488" : k === "worst" ? "#e11d48" : "#475569";
               return (
-                <div key={k} className="rounded-2xl border bg-white p-4" style={{ borderColor: `${tone}33` }}>
+                <div key={k} className="rounded-2xl border bg-fos-surface p-4" style={{ borderColor: `${tone}33` }}>
                   <p className="mb-2 font-mono text-[10px] uppercase tracking-widest" style={{ color: tone }}>{k} case</p>
                   <Line label="Revenue" v={fmtMoney(s.revenue)} />
                   <Line label="Margin" v={`${s.grossMarginPct.toFixed(1)}%`} />
@@ -113,10 +113,10 @@ export function PricingEngine() {
 
 function Readout({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-line bg-white p-3">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
-      <p className="mt-0.5 text-lg font-semibold tabular-nums text-slate-900">{value}</p>
-      {sub && <p className="text-[11px] text-muted">{sub}</p>}
+    <div className="rounded-xl border border-fos-border bg-fos-surface p-3">
+      <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">{label}</p>
+      <p className="mt-0.5 text-lg font-semibold tabular-nums text-fos-text">{value}</p>
+      {sub && <p className="text-[11px] text-fos-muted">{sub}</p>}
     </div>
   );
 }
@@ -124,8 +124,8 @@ function Readout({ label, value, sub }: { label: string; value: string; sub?: st
 function Line({ label, v, bold }: { label: string; v: string; bold?: boolean }) {
   return (
     <div className="flex justify-between py-0.5 text-sm">
-      <span className="text-muted">{label}</span>
-      <span className={`tabular-nums ${bold ? "font-semibold text-slate-900" : "text-ink"}`}>{v}</span>
+      <span className="text-fos-muted">{label}</span>
+      <span className={`tabular-nums ${bold ? "font-semibold text-fos-text" : "text-fos-text"}`}>{v}</span>
     </div>
   );
 }

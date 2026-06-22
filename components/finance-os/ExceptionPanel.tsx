@@ -31,7 +31,7 @@ export function ExceptionPanel({ exceptions }: { exceptions: Exception[] }) {
           ) : null,
         )}
       </div>
-      <div className="max-h-56 overflow-auto rounded-xl border border-line bg-white">
+      <div className="max-h-56 overflow-auto rounded-xl border border-fos-border bg-fos-surface">
         <table className="w-full text-sm">
           <tbody>
             {exceptions.slice(0, 500).map((e) => (
@@ -41,8 +41,8 @@ export function ExceptionPanel({ exceptions }: { exceptions: Exception[] }) {
                     {e.severity}
                   </span>
                 </td>
-                <td className="px-3 py-1.5 text-ink/80">{e.message}</td>
-                <td className="w-24 px-3 py-1.5 text-right font-mono text-[11px] text-muted">
+                <td className="px-3 py-1.5 text-fos-text">{e.message}</td>
+                <td className="w-24 px-3 py-1.5 text-right font-mono text-[11px] text-fos-muted">
                   {e.row != null ? `row ${e.row + 1}` : ""}
                 </td>
               </tr>

@@ -41,7 +41,7 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
 
       {/* brand mark — always in the bar */}
       <div className="flex items-center">
-        <Logo size={24} variant="terminal" />
+        <Logo size={28} variant="terminal" />
       </div>
 
       {/* model picker — ChatGPT-style, top-left */}

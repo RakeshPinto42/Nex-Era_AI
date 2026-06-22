@@ -84,30 +84,30 @@ export function ForecastStudio() {
         <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-12">
           {/* ---- planning rail ---- */}
           <aside className="space-y-4 lg:col-span-4">
-            <div className="rounded-2xl border border-line bg-white p-4">
+            <div className="rounded-2xl border border-fos-border bg-fos-surface p-4">
               <p className="mb-3 font-mono text-[10px] uppercase tracking-widest" style={{ color: ACCENT }}>Assumptions</p>
-              <label className="mb-3 block text-xs text-ink/70">Periods ahead
-                <input type="number" className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm" value={periods} onChange={(e) => setPeriods(Number(e.target.value))} />
+              <label className="mb-3 block text-xs text-fos-text">Periods ahead
+                <input type="number" className="mt-1 w-full rounded-lg border border-fos-border px-2 py-1.5 text-sm" value={periods} onChange={(e) => setPeriods(Number(e.target.value))} />
               </label>
-              <label className="mb-3 block text-xs text-ink/70">Method
-                <select className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm" value={method} onChange={(e) => setMethod(e.target.value as Method)}>
+              <label className="mb-3 block text-xs text-fos-text">Method
+                <select className="mt-1 w-full rounded-lg border border-fos-border px-2 py-1.5 text-sm" value={method} onChange={(e) => setMethod(e.target.value as Method)}>
                   <option value="trend">Linear trend</option>
                   <option value="growth">Compound growth</option>
                 </select>
               </label>
-              <label className="block text-xs text-ink/70">Target (window)
-                <input type="number" className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm" value={target} onChange={(e) => setTarget(Number(e.target.value))} />
+              <label className="block text-xs text-fos-text">Target (window)
+                <input type="number" className="mt-1 w-full rounded-lg border border-fos-border px-2 py-1.5 text-sm" value={target} onChange={(e) => setTarget(Number(e.target.value))} />
               </label>
             </div>
 
-            <div className="rounded-2xl border border-line bg-white p-4">
+            <div className="rounded-2xl border border-fos-border bg-fos-surface p-4">
               <p className="mb-2 font-mono text-[10px] uppercase tracking-widest" style={{ color: ACCENT }}>Saved versions</p>
-              {versions.length === 0 && <p className="text-xs text-muted">No versions yet. Tune assumptions, then “Save version” to compare.</p>}
+              {versions.length === 0 && <p className="text-xs text-fos-muted">No versions yet. Tune assumptions, then “Save version” to compare.</p>}
               <div className="space-y-1.5">
                 {versions.map((v) => (
-                  <button key={v.id} onClick={() => restore(v)} className="flex w-full items-center justify-between gap-2 rounded-lg border border-line px-2.5 py-1.5 text-left hover:bg-canvas">
-                    <span className="truncate text-xs font-medium text-ink">{v.name}</span>
-                    <span className="font-mono text-[11px] text-muted">{fmtMoney(v.projRev)}</span>
+                  <button key={v.id} onClick={() => restore(v)} className="flex w-full items-center justify-between gap-2 rounded-lg border border-fos-border px-2.5 py-1.5 text-left hover:bg-fos-surface2">
+                    <span className="truncate text-xs font-medium text-fos-text">{v.name}</span>
+                    <span className="font-mono text-[11px] text-fos-muted">{fmtMoney(v.projRev)}</span>
                   </button>
                 ))}
               </div>
@@ -134,10 +134,10 @@ export function ForecastStudio() {
             {model.marginData && <TrendChart title="Margin % forecast" data={model.marginData} xKey="label" yKey="value" />}
 
             {versions.length > 1 && (
-              <div className="rounded-xl border border-line bg-white p-4">
-                <p className="mb-2 text-sm font-semibold text-slate-900">Version comparison</p>
+              <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+                <p className="mb-2 text-sm font-semibold text-fos-text">Version comparison</p>
                 <table className="w-full text-sm">
-                  <thead><tr className="text-left font-mono text-[10px] uppercase text-muted"><th className="pb-1">Version</th><th className="pb-1">Proj. revenue</th><th className="pb-1">Proj. margin</th></tr></thead>
+                  <thead><tr className="text-left font-mono text-[10px] uppercase text-fos-muted"><th className="pb-1">Version</th><th className="pb-1">Proj. revenue</th><th className="pb-1">Proj. margin</th></tr></thead>
                   <tbody>
                     {versions.map((v) => (
                       <tr key={v.id} className="border-t border-line/60"><td className="py-1.5">{v.name}</td><td className="py-1.5 font-mono">{fmtMoney(v.projRev)}</td><td className="py-1.5 font-mono">{v.projMargin != null ? `${v.projMargin.toFixed(1)}%` : "—"}</td></tr>
@@ -161,8 +161,8 @@ export function ForecastStudio() {
 
 function Stat({ label, v, accent, bad }: { label: string; v: string; accent?: boolean; bad?: boolean }) {
   return (
-    <div className="rounded-xl border border-line bg-white p-3">
-      <p className="font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
+    <div className="rounded-xl border border-fos-border bg-fos-surface p-3">
+      <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">{label}</p>
       <p className="mt-0.5 text-lg font-semibold tabular-nums" style={{ color: bad ? "#e11d48" : accent ? ACCENT : "#0f172a" }}>{v}</p>
     </div>
   );

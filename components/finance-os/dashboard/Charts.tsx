@@ -152,16 +152,15 @@ export function BarChartWidget({
             <XAxis dataKey={xKey} {...axisX} />
             <YAxis {...axisY} />
             <Tooltip cursor={{ fill: "rgba(37,99,235,0.06)" }} />
-            <Bar
-              dataKey={yKey}
-              radius={[4, 4, 0, 0]}
-              onClick={(d: { payload?: Record<string, unknown> }) =>
-                filterDim && d?.payload && toggle(filterDim, String(d.payload[xKey]))
-              }
-              cursor={filterDim ? "pointer" : "default"}
-            >
+            <Bar dataKey={yKey} radius={[4, 4, 0, 0]} cursor={filterDim ? "pointer" : "default"}>
               {data.map((d, i) => (
-                <Cell key={i} fill={filterDim && isActive(filterDim, String(d[xKey])) ? VIOLET : BRAND} />
+                <Cell
+                  key={i}
+                  fill={filterDim && isActive(filterDim, String(d[xKey])) ? VIOLET : BRAND}
+                  // Per-bar click: recharts v3 doesn't bubble per-datum clicks from
+                  // <Bar onClick>, so the handler lives on each <Cell> with its datum.
+                  onClick={() => filterDim && toggle(filterDim, String(d[xKey]))}
+                />
               ))}
             </Bar>
           </BarChart>

@@ -35,16 +35,16 @@ export function UploadMapper({
   return (
     <div className="space-y-5">
       <PrivacyNote />
-      <div className="rounded-2xl border border-line bg-white p-5">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface p-5">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-ink">Data</h3>
+          <h3 className="text-sm font-semibold text-fos-text">Data</h3>
           {sample && (
             <button
               onClick={() => {
                 setDatasets(sample());
                 setMapping(null);
               }}
-              className="rounded-lg border border-line px-3 py-1.5 text-xs text-ink hover:bg-canvas"
+              className="rounded-lg border border-fos-border px-3 py-1.5 text-xs text-fos-text hover:bg-fos-surface2"
             >
               Load sample data
             </button>
@@ -61,8 +61,8 @@ export function UploadMapper({
       </div>
 
       {table && (
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <h3 className="mb-3 text-sm font-semibold text-ink">{mapTitle}</h3>
+        <div className="rounded-2xl border border-fos-border bg-fos-surface p-5">
+          <h3 className="mb-3 text-sm font-semibold text-fos-text">{mapTitle}</h3>
           <ColumnMapper table={table} fields={fields} value={mapping} onChange={setMapping} />
         </div>
       )}

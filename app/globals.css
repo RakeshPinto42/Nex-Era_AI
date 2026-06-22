@@ -154,6 +154,42 @@ select:focus-visible {
   }
 }
 
+/* ---- Motion FX (CSS, no deps) ----
+   Aurora: a slow drifting gradient wash for the hero. Reduced-motion freezes it
+   via the global override below. */
+@keyframes aurora {
+  0%   { transform: translate3d(-8%, -4%, 0) rotate(0deg) scale(1.15); }
+  50%  { transform: translate3d(8%, 6%, 0) rotate(8deg) scale(1.3); }
+  100% { transform: translate3d(-8%, -4%, 0) rotate(0deg) scale(1.15); }
+}
+.aurora {
+  animation: aurora 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Shine: a light sweep across a surface on hover. */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.shine:hover::after {
+  transform: translateX(130%);
+}
+
 /* Animated conic glow behind the hero mark */
 .conic-glow {
   background: conic-gradient(
