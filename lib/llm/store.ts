@@ -1,12 +1,16 @@
-// Server-side key store. Persists to a gitignored JSON file under the project.
-// SECURITY: keys are stored plaintext at rest — acceptable for local/single
-// user, NOT for shared production. Use a secrets manager (Vault, SSM, Doppler)
-// there. Keys are never returned to the client unmasked.
+// Server-side key store. Persists to Vercel KV / Upstash Redis when configured
+// (the prod path — Vercel's disk is read-only), else to a gitignored JSON file
+// under .rak (local dev). SECURITY: API keys are encrypted at rest with
+// AES-256-GCM (key derived from AUTH_SECRET, see ./secret-crypto) and are never
+// returned to the client unmasked. Without AUTH_SECRET they fall back to
+// plaintext — set it in production.
 
 import "server-only";
 import { promises as fs } from "fs";
 import path from "path";
 import { PRESET_BY_ID, PRESETS } from "./providers";
+import { kvEnabled, kvGetJSON, kvSetJSON } from "./kv";
+import { encryptSecret, decryptSecret } from "./secret-crypto";
 
 export type ProviderConfig = {
   providerId: string;
@@ -29,6 +33,8 @@ export type MaskedConfig = Omit<ProviderConfig, "apiKey"> & {
 
 const DIR = path.join(process.cwd(), ".rak");
 const FILE = path.join(DIR, "providers.json");
+// KV key for the prod (Vercel) path when a KV backend is attached.
+const KV_KEY = "rak:providers";
 
 const EMPTY: StoreData = {
   providers: [],
@@ -36,10 +42,29 @@ const EMPTY: StoreData = {
   defaultModel: null,
 };
 
+// API keys are encrypted at rest; decrypt on the way out, encrypt on the way in.
+function decryptStore(data: StoreData): StoreData {
+  return {
+    ...data,
+    providers: data.providers.map((p) => ({ ...p, apiKey: decryptSecret(p.apiKey) })),
+  };
+}
+function encryptStore(data: StoreData): StoreData {
+  return {
+    ...data,
+    providers: data.providers.map((p) => ({ ...p, apiKey: encryptSecret(p.apiKey) })),
+  };
+}
+
 async function read(): Promise<StoreData> {
+  // KV backend wins when configured (Vercel — disk is read-only there).
+  if (kvEnabled()) {
+    const data = await kvGetJSON<StoreData>(KV_KEY);
+    return data ? decryptStore({ ...EMPTY, ...data }) : { ...EMPTY };
+  }
   try {
     const raw = await fs.readFile(FILE, "utf8");
-    return { ...EMPTY, ...(JSON.parse(raw) as StoreData) };
+    return decryptStore({ ...EMPTY, ...(JSON.parse(raw) as StoreData) });
   } catch {
     return { ...EMPTY };
   }
@@ -89,17 +114,22 @@ async function readMerged(): Promise<StoreData> {
 }
 
 async function write(data: StoreData): Promise<void> {
+  const enc = encryptStore(data);
+  if (kvEnabled()) {
+    await kvSetJSON(KV_KEY, enc);
+    return;
+  }
   try {
     await fs.mkdir(DIR, { recursive: true });
     // Atomic write: tmp file + rename so a crash mid-write can't truncate config.
     const tmp = `${FILE}.${process.pid}.tmp`;
-    await fs.writeFile(tmp, JSON.stringify(data, null, 2), "utf8");
+    await fs.writeFile(tmp, JSON.stringify(enc, null, 2), "utf8");
     await fs.rename(tmp, FILE);
   } catch (e) {
     const code = (e as NodeJS.ErrnoException).code;
     if (code === "EROFS" || code === "EACCES" || code === "EPERM") {
       throw new Error(
-        "Key storage is read-only here (e.g. Vercel). Configure provider keys via environment variables (OPENROUTER_API_KEY, GROQ_API_KEY, CEREBRAS_API_KEY, GOOGLE_API_KEY) instead.",
+        "Key storage is read-only here (e.g. Vercel). Attach a Vercel KV / Upstash store, or set provider keys via environment variables (OPENROUTER_API_KEY, GROQ_API_KEY, CEREBRAS_API_KEY, GOOGLE_API_KEY).",
       );
     }
     throw e;

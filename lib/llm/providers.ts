@@ -38,12 +38,23 @@ export const PRESETS: ProviderPreset[] = [
       "HTTP-Referer": "https://rak.os",
       "X-Title": "Mesh",
     },
+    // OpenRouter free-tier pool (all carry the `:free` suffix). The fallback
+    // walker rotates across these and skips any that 404/429 upstream, so a
+    // retired id is harmless. Refresh ids from https://openrouter.ai/models?max_price=0
     models: [
       { id: "deepseek/deepseek-r1:free", label: "DeepSeek R1 (free)", intent: "reasoning" },
+      { id: "deepseek/deepseek-r1-0528:free", label: "DeepSeek R1 0528 (free)", intent: "reasoning" },
       { id: "deepseek/deepseek-chat-v3.1:free", label: "DeepSeek V3.1 (free)", intent: "general" },
+      { id: "deepseek/deepseek-chat-v3-0324:free", label: "DeepSeek V3 0324 (free)", intent: "general" },
       { id: "qwen/qwen-2.5-coder-32b-instruct:free", label: "Qwen 2.5 Coder (free)", intent: "coding" },
+      { id: "qwen/qwen3-coder:free", label: "Qwen3 Coder (free)", intent: "coding" },
+      { id: "qwen/qwq-32b:free", label: "Qwen QwQ 32B (free)", intent: "reasoning" },
+      { id: "qwen/qwen3-235b-a22b:free", label: "Qwen3 235B (free)", intent: "reasoning" },
       { id: "moonshotai/kimi-k2:free", label: "Kimi K2 (free)", intent: "general" },
       { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B (free)", intent: "general" },
+      { id: "meta-llama/llama-4-maverick:free", label: "Llama 4 Maverick (free)", intent: "general" },
+      { id: "mistralai/mistral-small-3.2-24b-instruct:free", label: "Mistral Small 3.2 (free)", intent: "general" },
+      { id: "google/gemini-2.0-flash-exp:free", label: "Gemini 2.0 Flash Exp (free)", intent: "vision" },
     ],
   },
   {
