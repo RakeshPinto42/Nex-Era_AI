@@ -14,16 +14,17 @@ import { researchCompetitor, discoverCompetitors, getSearchKeyStatus, setTavilyK
 import { listRecords, saveSnapshot, getRecord, deleteRecord, diffLatest } from "@/lib/finance-os/ci/agent/store";
 import type { CompetitorRecord, ProductChange } from "@/lib/finance-os/ci/agent/types";
 import type { Recommendation } from "@/lib/finance-os/ci/types";
-import { HOME, COMPETITORS } from "@/lib/finance-os/ci/sonnys";
+import { CI_REGIONS, CI_REGION_ALL } from "@/lib/finance-os/ci/types";
+import { HOME, HOME_RESEARCH_QUERY, COMPETITORS, INDUSTRY } from "@/lib/finance-os/ci/sonnys";
 import { Card } from "./ui";
-
-const REGIONS = ["United States", "Europe", "United States & Europe"];
 const TARGETS = [HOME, ...COMPETITORS];
 const fmtPrice = (p: number | null, ccy: string | null) =>
   p == null ? "—" : `${ccy && ccy !== "USD" ? ccy + " " : "$"}${p.toLocaleString()}`;
 
 export function CompetitorIntelligence() {
-  const { region: scopeRegion, setModuleRecs } = useCi();
+  const { region: scopeRegion, setRegion, setModuleRecs } = useCi();
+  // The agent needs a concrete market; "All Regions" defaults to United States.
+  const effectiveRegion = scopeRegion === CI_REGION_ALL ? CI_REGIONS[0] : scopeRegion;
   const [records, setRecords] = useState<CompetitorRecord[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [loading, setLoading] = useState<string | null>(null); // competitor being researched
@@ -31,7 +32,6 @@ export function CompetitorIntelligence() {
 
   // discovery
   const [company, setCompany] = useState("");
-  const [discRegion, setDiscRegion] = useState(REGIONS[0]);
   const [discovered, setDiscovered] = useState<DiscoveredCompetitor[]>([]);
   const [discovering, setDiscovering] = useState(false);
 
@@ -58,7 +58,9 @@ export function CompetitorIntelligence() {
     setLoading(target);
     setErr(null);
     try {
-      const res = await researchCompetitor({ competitor: target, region: scopeRegion !== "All Regions" ? scopeRegion : discRegion });
+      // Home company resolves better with its full public name; competitors use their own name.
+      const query = target === HOME ? HOME_RESEARCH_QUERY : target;
+      const res = await researchCompetitor({ competitor: query, keywords: INDUSTRY, region: effectiveRegion });
       saveSnapshot(target, { researchedAt: res.researchedAt, model: res.model, products: res.products, sources: res.sources, estimated: res.estimated });
       reload();
       setSelected(target);
@@ -95,7 +97,7 @@ export function CompetitorIntelligence() {
     setErr(null);
     setDiscovered([]);
     try {
-      const res = await discoverCompetitors({ company: c, region: discRegion });
+      const res = await discoverCompetitors({ company: c, region: effectiveRegion, keywords: INDUSTRY });
       setDiscovered(res.competitors);
     } catch (e) {
       const re = e as ResearchError;
@@ -112,8 +114,11 @@ export function CompetitorIntelligence() {
       const st = await setTavilyKey(keyInput.trim());
       setStatus(st);
       setKeyInput("");
-    } catch {
-      /* admin only — ignore */
+      setErr(null);
+    } catch (e) {
+      const re = e as ResearchError;
+      // Most common cause: not logged in as admin (endpoint is admin-gated → 401 "Unauthorized").
+      setErr({ code: /unauthor|forbidden/i.test(re.code) ? "key_admin_only" : "key_save_failed", detail: re.detail });
     } finally {
       setSavingKey(false);
     }
@@ -134,7 +139,7 @@ export function CompetitorIntelligence() {
   return (
     <div className="space-y-5">
       {/* targets: Sonny's + the fixed competitor set */}
-      <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
         <div className="flex items-center gap-2">
           <Building2 size={15} className="text-blue-300" />
           <p className="text-sm font-semibold text-fos-text">Sonny&apos;s vs Competitors</p>
@@ -164,7 +169,7 @@ export function CompetitorIntelligence() {
       </div>
 
       {/* discovery (find more competitors) */}
-      <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
         <div className="flex items-center gap-2">
           <Building2 size={15} className="text-blue-300" />
           <p className="text-sm font-semibold text-fos-text">Discover competitors</p>
@@ -182,8 +187,8 @@ export function CompetitorIntelligence() {
             placeholder="Find more competitors — company or market"
             className="flex-1 rounded-lg border border-fos-border bg-fos-bg px-3 py-2 text-sm text-fos-text outline-none placeholder:text-fos-faint"
           />
-          <select value={discRegion} onChange={(e) => setDiscRegion(e.target.value)} className="rounded-lg border border-fos-border bg-fos-bg px-3 py-2 text-sm text-fos-text outline-none">
-            {REGIONS.map((r) => <option key={r}>{r}</option>)}
+          <select value={scopeRegion} onChange={(e) => setRegion(e.target.value)} className="rounded-lg border border-fos-border bg-fos-bg px-3 py-2 text-sm text-fos-text outline-none">
+            {[CI_REGION_ALL, ...CI_REGIONS].map((r) => <option key={r}>{r}</option>)}
           </select>
           <button onClick={discover} disabled={discovering || !company.trim()} className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
             {discovering ? <RefreshCw size={15} className="animate-spin" /> : <Search size={15} />}
@@ -396,6 +401,8 @@ function ErrorPanel({ code, detail }: { code: string; detail?: string }) {
     },
     company_required: { title: "Enter your company", body: "Type your company name to discover competitors." },
     competitor_required: { title: "Enter a competitor", body: "Pick or type a competitor to research." },
+    key_admin_only: { title: "Admin login required", body: "Saving the search key is admin-only. Log in as the admin account, then save the key again." },
+    key_save_failed: { title: "Couldn't save key", body: detail || "The key could not be saved. Try again." },
   };
   const m = map[code] ?? { title: "Request failed", body: detail || code };
   return (

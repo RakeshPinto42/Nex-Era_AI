@@ -33,7 +33,7 @@ export default function Footer() {
         {/* CTA */}
         <div className="relative overflow-hidden rounded-3xl glass-strong p-10 text-center sm:p-14">
           <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-[600px] -translate-x-1/2 rounded-full bg-navy/[0.08] blur-[120px]" />
-          <h3 className="relative text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h3 className="heading-lift-gradient relative text-3xl font-semibold tracking-tight sm:text-4xl">
             <span className="text-gradient">Run your work on</span>{" "}
             <span className="text-gradient-emerald">autonomous intelligence.</span>
           </h3>
@@ -78,7 +78,7 @@ export default function Footer() {
                     <li key={l}>
                       <a
                         href="#"
-                        className="group inline-flex items-center gap-2 text-sm text-black/55 transition-colors hover:text-neutral-900"
+                        className="group inline-flex items-center gap-2 text-sm text-black/55 transition-colors hover:text-ink"
                       >
                         {intent && (
                           <span
@@ -102,10 +102,10 @@ export default function Footer() {
             © {new Date().getFullYear()} NEXERA · Decentralized AI
           </p>
           <div className="flex items-center gap-5 text-xs text-black/40">
-            <a href="#" className="transition-colors hover:text-neutral-900">
+            <a href="#" className="transition-colors hover:text-ink">
               Privacy
             </a>
-            <a href="#" className="transition-colors hover:text-neutral-900">
+            <a href="#" className="transition-colors hover:text-ink">
               Terms
             </a>
             <span className="flex items-center gap-1.5">

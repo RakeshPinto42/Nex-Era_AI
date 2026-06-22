@@ -64,7 +64,7 @@ export function ExecutivePack() {
             >
               Generate PDF pack
             </button>
-            <button onClick={() => exportExcel("executive_pack", exportColumns, exportRows)} className="rounded-lg border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-canvas">
+            <button onClick={() => exportExcel("executive_pack", exportColumns, exportRows)} className="rounded-lg border border-fos-border px-4 py-2 text-sm font-medium text-fos-text hover:bg-fos-surface2">
               Export Excel
             </button>
           </div>

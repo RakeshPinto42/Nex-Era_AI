@@ -60,7 +60,7 @@ function LoginForm() {
           </div>
 
           <div className="max-w-md">
-            <h2 className="text-4xl font-bold leading-[1.05] tracking-tight text-white">
+            <h2 className="heading-lift-light text-4xl font-bold leading-[1.05] tracking-tight text-white">
               One Interface.
               <br />
               Infinite Models.
@@ -102,12 +102,12 @@ function LoginForm() {
           {/* mobile brand */}
           <div className="mb-8 flex items-center gap-2.5 lg:hidden">
             <NexeraMark size={32} />
-            <span className="font-display text-lg font-semibold tracking-tight text-neutral-900">
+            <span className="font-display text-lg font-semibold tracking-tight text-ink">
               NEXERA
             </span>
           </div>
 
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-neutral-900">
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
             Welcome back
           </h1>
           <p className="mt-1.5 text-sm text-black/50">
@@ -132,7 +132,7 @@ function LoginForm() {
                 autoComplete="username"
                 autoFocus
                 placeholder="admin"
-                className="w-full rounded-xl border border-black/10 bg-black/[0.015] px-3.5 py-2.5 text-[15px] text-neutral-900 outline-none transition-colors placeholder:text-black/25 focus:border-navy/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
+                className="w-full rounded-xl border border-black/10 bg-black/[0.015] px-3.5 py-2.5 text-[15px] text-ink outline-none transition-colors placeholder:text-black/25 focus:border-navy/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
               />
             </div>
 
@@ -147,7 +147,7 @@ function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-black/10 bg-black/[0.015] px-3.5 py-2.5 pr-11 text-[15px] text-neutral-900 outline-none transition-colors placeholder:text-black/25 focus:border-navy/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
+                  className="w-full rounded-xl border border-black/10 bg-black/[0.015] px-3.5 py-2.5 pr-11 text-[15px] text-ink outline-none transition-colors placeholder:text-black/25 focus:border-navy/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
                 />
                 <button
                   type="button"

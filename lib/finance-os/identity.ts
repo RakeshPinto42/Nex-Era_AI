@@ -29,11 +29,11 @@ export type Identity = {
 export const IDENTITY: Record<string, Identity> = {
   commission: { accent: "#4f46e5", accentDark: "#3730a3", icon: Coins, kicker: "Plan management · runs · statements" },
   "commercial-intelligence": { accent: "#1e40af", accentDark: "#172554", icon: Radar, kicker: "Commercial strategy command center" },
-  pricing: { accent: "#0d9488", accentDark: "#0f766e", icon: Calculator, kicker: "Calculator & scenario workspace" },
+  pricing: { accent: "#db2777", accentDark: "#be185d", icon: Calculator, kicker: "Calculator & scenario workspace" },
   "deal-desk": { accent: "#d97706", accentDark: "#b45309", icon: ClipboardCheck, kicker: "Approval queue & workflow" },
   forecast: { accent: "#7c3aed", accentDark: "#6d28d9", icon: TrendingUp, kicker: "Planning & versioning" },
   margin: { accent: "#e11d48", accentDark: "#be123c", icon: Layers, kicker: "P&L analysis workspace" },
-  profitability: { accent: "#059669", accentDark: "#047857", icon: Users, kicker: "Customer profit ranking" },
+  profitability: { accent: "#9333ea", accentDark: "#7e22ce", icon: Users, kicker: "Customer profit ranking" },
   "revenue-bridge": { accent: "#0891b2", accentDark: "#0e7490", icon: Waypoints, kicker: "Driver decomposition" },
   variance: { accent: "#ea580c", accentDark: "#c2410c", icon: Scale, kicker: "Budget vs actual" },
   "rev-rec": { accent: "#0284c7", accentDark: "#0369a1", icon: ShieldCheck, kicker: "Revenue controls" },

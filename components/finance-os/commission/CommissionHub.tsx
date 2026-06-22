@@ -80,7 +80,7 @@ export function CommissionHub() {
       actions={<WorkspaceBar getWorkspace={getWorkspace} onLoad={onLoad} />}
     >
       {/* stepper: the commission workflow Plan → Run → Statements → Dashboards */}
-      <div className="mb-5 flex flex-wrap items-center gap-1 rounded-xl border border-line bg-white p-1.5">
+      <div className="mb-5 flex flex-wrap items-center gap-1 rounded-xl border border-fos-border bg-fos-surface p-1.5">
         {TABS.map((t, i) => (
           <button
             key={t}
@@ -88,8 +88,8 @@ export function CommissionHub() {
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
             style={
               tab === t
-                ? { backgroundColor: `${accent}14`, color: accent }
-                : { color: "#64748b" }
+                ? { backgroundColor: `${accent}1f`, color: accent }
+                : { color: "var(--fos-muted)" }
             }
           >
             <span
@@ -97,13 +97,13 @@ export function CommissionHub() {
               style={
                 tab === t
                   ? { backgroundColor: accent, color: "#fff" }
-                  : { backgroundColor: "#e5e7eb", color: "#64748b" }
+                  : { backgroundColor: "var(--fos-surface-2)", color: "var(--fos-muted)" }
               }
             >
               {i + 1}
             </span>
             {t}
-            {i < TABS.length - 1 && <span className="ml-1 text-muted/50">›</span>}
+            {i < TABS.length - 1 && <span className="ml-1 text-fos-faint">›</span>}
           </button>
         ))}
       </div>

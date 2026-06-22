@@ -7,7 +7,7 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { PRESET_BY_ID, type ProviderPreset } from "./providers";
-import { resolveActive, resolveCandidates, getKey } from "./store";
+import { resolveActive, resolveCandidates, getKey, isFreeModel } from "./store";
 
 export type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -55,20 +55,6 @@ export async function streamChat(
       };
     }
   }
-
-  if (process.env.ANTHROPIC_API_KEY) {
-    return {
-      provider: "Anthropic (env)",
-      model: "claude-opus-4-7",
-      stream: build(
-        PRESET_BY_ID["anthropic"],
-        process.env.ANTHROPIC_API_KEY,
-        "claude-opus-4-7",
-        system,
-        messages,
-      ),
-    };
-  }
   return null;
 }
 
@@ -81,18 +67,21 @@ export async function streamChatWithFallback(
   system: string,
   messages: ChatMsg[],
   preferred?: { providerId?: string; model?: string },
-  opts?: { maxTokens?: number },
+  opts?: { maxTokens?: number; freeOnly?: boolean },
 ): Promise<(InferResult & { fellBack: boolean }) | null> {
   const maxTokens = opts?.maxTokens ?? 1500;
   let candidates = await resolveCandidates();
 
+  // Agentic CI work restricts to OpenRouter free-tier models — rotate across the
+  // :free pool only, never a paid/non-free provider.
+  if (opts?.freeOnly) {
+    candidates = candidates.filter((c) => c.providerId === "openrouter" && isFreeModel(c.model));
+  }
+
   // An explicitly-picked model (router / agent selector) goes first, then the
   // rest act as automatic fallbacks if it 429s.
   if (preferred?.providerId && preferred.model) {
-    const key =
-      preferred.providerId === "anthropic"
-        ? (await getKey("anthropic")) || process.env.ANTHROPIC_API_KEY || ""
-        : (await getKey(preferred.providerId)) || "";
+    const key = (await getKey(preferred.providerId)) || "";
     if (key) {
       const pid = preferred.providerId;
       const pmodel = preferred.model;
@@ -129,27 +118,6 @@ export async function streamChatWithFallback(
     if (res.dead) deadProviders.add(c.providerId);
   }
 
-  // Env Anthropic key as a last resort.
-  if (process.env.ANTHROPIC_API_KEY) {
-    const res = await tryConnect(
-      PRESET_BY_ID["anthropic"],
-      process.env.ANTHROPIC_API_KEY,
-      "claude-opus-4-7",
-      system,
-      messages,
-      maxTokens,
-    );
-    if (res.ok) {
-      return {
-        provider: "Anthropic (env)",
-        model: "claude-opus-4-7",
-        stream: res.stream,
-        fellBack: attempts > 0,
-      };
-    }
-    lastDetail = res.detail;
-  }
-
   // Everything failed → surface the last error as a one-line stream so the
   // client still renders something instead of an empty bubble.
   if (attempts > 0) {
@@ -174,7 +142,7 @@ export async function completeWithFallback(
   system: string,
   messages: ChatMsg[],
   preferred?: { providerId?: string; model?: string },
-  opts?: { maxTokens?: number },
+  opts?: { maxTokens?: number; freeOnly?: boolean },
 ): Promise<{ text: string; provider: string; model: string } | null> {
   const result = await streamChatWithFallback(system, messages, preferred, opts);
   if (!result) return null;
@@ -198,10 +166,7 @@ export async function streamByProvider(
   const preset = PRESET_BY_ID[providerId];
   if (!preset) return null;
 
-  const key =
-    providerId === "anthropic"
-      ? (await getKey("anthropic")) || process.env.ANTHROPIC_API_KEY || ""
-      : (await getKey(providerId)) || "";
+  const key = (await getKey(providerId)) || "";
   if (!key) return null;
 
   return {

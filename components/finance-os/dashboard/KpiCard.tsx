@@ -24,7 +24,7 @@ export function KpiCard({
           ? "text-brand-600"
           : "text-fos-text";
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface p-4 shadow-[var(--fos-shadow)] transition-shadow">
       <p className="font-mono text-[10px] uppercase tracking-wider text-fos-muted">{label}</p>
       <p className={cn("mt-1 text-2xl font-semibold tabular-nums", valueTone)}>{value}</p>
       {delta && <p className="mt-0.5 text-xs text-fos-muted">{delta}</p>}

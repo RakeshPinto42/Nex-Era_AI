@@ -20,7 +20,7 @@ export default function AIRouter() {
         <p className="text-center font-mono text-xs uppercase tracking-[0.25em] text-navy/80">
           AI Router
         </p>
-        <h2 className="mx-auto mt-4 max-w-2xl text-center text-3xl font-semibold tracking-tight sm:text-5xl">
+        <h2 className="heading-lift-gradient mx-auto mt-4 max-w-2xl text-center text-3xl font-semibold tracking-tight sm:text-5xl">
           <span className="text-gradient">One prompt routes to the</span>{" "}
           <span className="text-gradient-emerald">optimal model.</span>
         </h2>
@@ -37,7 +37,7 @@ export default function AIRouter() {
             <p className="font-mono text-xs uppercase tracking-widest text-black/40">
               Incoming
             </p>
-            <p className="mt-3 font-mono text-sm text-neutral-900">
+            <p className="mt-3 font-mono text-sm text-ink">
               <span className="text-navy">{">"}</span> Analyze Q3
               commissions &amp; forecast Q4
             </p>
@@ -113,7 +113,7 @@ export default function AIRouter() {
                         boxShadow: m.selected ? `0 0 10px ${it.hex}` : undefined,
                       }}
                     />
-                    <span className="text-sm font-medium text-neutral-900">{m.name}</span>
+                    <span className="text-sm font-medium text-ink">{m.name}</span>
                   </div>
                   <span className="flex items-center gap-2">
                     {m.selected && (

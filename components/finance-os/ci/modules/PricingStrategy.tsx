@@ -44,14 +44,14 @@ export function PricingStrategy() {
     );
   }, [rows, setModuleRecs]);
 
-  if (!cat.sonnysReady) return <EngineEmpty note={"Research Sonny's catalog (Research tab) \u2014 pricing strategy is computed per Sonny's SKU vs competitors."} />;
+  if (!cat.sonnysReady) return <EngineEmpty note="Research Sonny's catalog (Research tab) — pricing strategy is computed per Sonny's SKU vs competitors." />;
 
   return (
     <Card title={`Pricing Strategy · ${rows.length} SKUs`}>
       <div className="space-y-2.5">
         {rows.map((r, i) => <Row key={i} r={r} />)}
       </div>
-      <p className="mt-3 font-mono text-[10px] text-fos-faint">{"Impacts are % from web-sourced price gaps. $ totals need Sonny's volumes. Win-rate impact is directional (price \u2191 lowers win-rate)."}</p>
+      <p className="mt-3 font-mono text-[10px] text-fos-faint">Impacts are % from web-sourced price gaps. $ totals need Sonny&apos;s volumes. Win-rate impact is directional (price ↑ lowers win-rate).</p>
     </Card>
   );
 }

@@ -218,10 +218,10 @@ export default function CommissionTool() {
                 Payout detail
               </span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-neutral-900">
+                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">
                   Export CSV
                 </button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-neutral-900">
+                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">
                   New file
                 </button>
               </div>
@@ -240,7 +240,7 @@ export default function CommissionTool() {
                 <tbody>
                   {result.rows.map((r, i) => (
                     <tr key={i} className="border-b border-black/5 last:border-0">
-                      <td className="px-4 py-2 text-neutral-900">{r.rep}</td>
+                      <td className="px-4 py-2 text-ink">{r.rep}</td>
                       <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.revenue)}</td>
                       <td className="px-4 py-2 text-right font-mono font-semibold text-navy">{fmtMoney(r.commission)}</td>
                       <td className="px-4 py-2 text-right font-mono text-black/50">{r.effRate.toFixed(1)}%</td>

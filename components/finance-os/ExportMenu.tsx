@@ -19,7 +19,7 @@ export function ExportMenu({
 }) {
   const disabled = rows.length === 0;
   const btn =
-    "rounded-lg border border-line px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-canvas disabled:opacity-40";
+    "rounded-lg border border-fos-border px-3 py-1.5 text-xs font-medium text-fos-text transition-colors hover:bg-fos-surface2 disabled:opacity-40";
   return (
     <div className="flex gap-2">
       <button className={btn} disabled={disabled} onClick={() => exportExcel(filename, columns, rows)}>

@@ -17,15 +17,21 @@ export type IntentColor = {
   label: string;
   rgb: string; // "r,g,b" — canvas + rgba() friendly
   hex: string; // Tailwind / SVG friendly
+  emoji: string; // ChatGPT-style glyph for the model/LLM identity
 };
 
 export const INTENTS: Record<Intent, IntentColor> = {
-  reasoning: { label: "Reasoning", rgb: "139,92,246", hex: "#8b5cf6" }, // violet (secondary)
-  coding: { label: "Coding", rgb: "59,130,246", hex: "#3b82f6" }, // blue (brand)
-  general: { label: "General", rgb: "6,182,212", hex: "#06b6d4" }, // cyan
-  research: { label: "Research", rgb: "245,158,11", hex: "#f59e0b" }, // amber
-  vision: { label: "Vision", rgb: "236,72,153", hex: "#ec4899" }, // pink
+  reasoning: { label: "Reasoning", rgb: "139,92,246", hex: "#8b5cf6", emoji: "🧠" }, // violet (secondary)
+  coding: { label: "Coding", rgb: "59,130,246", hex: "#3b82f6", emoji: "💻" }, // blue (brand)
+  general: { label: "General", rgb: "6,182,212", hex: "#06b6d4", emoji: "💬" }, // cyan
+  research: { label: "Research", rgb: "245,158,11", hex: "#f59e0b", emoji: "🔎" }, // amber
+  vision: { label: "Vision", rgb: "236,72,153", hex: "#ec4899", emoji: "🎨" }, // pink
 };
+
+/** Emoji for an intent key (falls back to the NEXERA assistant glyph). */
+export function intentEmoji(intent?: string): string {
+  return (intent && INTENTS[intent as Intent]?.emoji) || "🤖";
+}
 
 export const INTENT_ORDER: Intent[] = [
   "reasoning",

@@ -77,7 +77,7 @@ No model provider configured — this is a grounded stub.
 
 Top signal on this view: ${firstKpi.replace(/^- /, "")}.
 
-Your question: "${question}". Add a provider key in Admin → Providers (free clouds supported) or set ANTHROPIC_API_KEY to enable the real copilot.`;
+Your question: "${question}". Add a free provider key in Admin → Providers (OpenRouter, Groq, Cerebras, Google) or set the matching env var to enable the real copilot.`;
 
   const words = text.split(/(\s+)/);
   const readable = new ReadableStream<Uint8Array>({

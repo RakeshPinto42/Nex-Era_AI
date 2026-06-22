@@ -38,12 +38,23 @@ export const PRESETS: ProviderPreset[] = [
       "HTTP-Referer": "https://rak.os",
       "X-Title": "Mesh",
     },
+    // OpenRouter free-tier pool (all carry the `:free` suffix). The fallback
+    // walker rotates across these and skips any that 404/429 upstream, so a
+    // retired id is harmless. Refresh ids from https://openrouter.ai/models?max_price=0
     models: [
       { id: "deepseek/deepseek-r1:free", label: "DeepSeek R1 (free)", intent: "reasoning" },
+      { id: "deepseek/deepseek-r1-0528:free", label: "DeepSeek R1 0528 (free)", intent: "reasoning" },
       { id: "deepseek/deepseek-chat-v3.1:free", label: "DeepSeek V3.1 (free)", intent: "general" },
+      { id: "deepseek/deepseek-chat-v3-0324:free", label: "DeepSeek V3 0324 (free)", intent: "general" },
       { id: "qwen/qwen-2.5-coder-32b-instruct:free", label: "Qwen 2.5 Coder (free)", intent: "coding" },
+      { id: "qwen/qwen3-coder:free", label: "Qwen3 Coder (free)", intent: "coding" },
+      { id: "qwen/qwq-32b:free", label: "Qwen QwQ 32B (free)", intent: "reasoning" },
+      { id: "qwen/qwen3-235b-a22b:free", label: "Qwen3 235B (free)", intent: "reasoning" },
       { id: "moonshotai/kimi-k2:free", label: "Kimi K2 (free)", intent: "general" },
       { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B (free)", intent: "general" },
+      { id: "meta-llama/llama-4-maverick:free", label: "Llama 4 Maverick (free)", intent: "general" },
+      { id: "mistralai/mistral-small-3.2-24b-instruct:free", label: "Mistral Small 3.2 (free)", intent: "general" },
+      { id: "google/gemini-2.0-flash-exp:free", label: "Gemini 2.0 Flash Exp (free)", intent: "vision" },
     ],
   },
   {
@@ -84,32 +95,6 @@ export const PRESETS: ProviderPreset[] = [
     models: [
       { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash (free)", intent: "general" },
       { id: "gemini-2.0-flash-thinking-exp", label: "Gemini 2.0 Flash Thinking", intent: "reasoning" },
-    ],
-  },
-  {
-    id: "deepinfra",
-    name: "DeepInfra",
-    kind: "openai",
-    baseUrl: "https://api.deepinfra.com/v1/openai",
-    free: false,
-    docsUrl: "https://deepinfra.com/dash/api_keys",
-    keyHint: "…",
-    models: [
-      { id: "deepseek-ai/DeepSeek-R1", label: "DeepSeek R1", intent: "reasoning" },
-      { id: "Qwen/Qwen2.5-Coder-32B-Instruct", label: "Qwen 2.5 Coder", intent: "coding" },
-    ],
-  },
-  {
-    id: "anthropic",
-    name: "Anthropic (native)",
-    kind: "anthropic",
-    baseUrl: "https://api.anthropic.com",
-    free: false,
-    docsUrl: "https://console.anthropic.com/settings/keys",
-    keyHint: "sk-ant-…",
-    models: [
-      { id: "claude-opus-4-7", label: "Claude Opus 4.7", intent: "reasoning" },
-      { id: "claude-haiku-4-5", label: "Claude Haiku 4.5", intent: "general" },
     ],
   },
 ];

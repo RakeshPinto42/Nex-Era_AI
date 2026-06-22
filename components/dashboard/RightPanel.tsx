@@ -66,7 +66,7 @@ export default function RightPanel() {
   const conf = routedConfidence != null ? Math.round(routedConfidence * 100) : null;
 
   return (
-    <aside className="hidden h-full w-[320px] flex-none flex-col gap-4 overflow-y-auto border-l border-line bg-canvas p-4 xl:flex">
+    <aside className="hidden h-full w-[320px] flex-none flex-col gap-4 overflow-y-auto border-l border-black/[0.06] bg-canvas/70 p-4 backdrop-blur-xl xl:flex">
       {/* ---- Model Router (flagship) ---- */}
       <Card title="Model Router" accent="#3b82f6">
         {availableModels.length === 0 ? (

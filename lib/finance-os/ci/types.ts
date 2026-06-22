@@ -49,7 +49,9 @@ export const CI_MODULES: CiModuleDef[] = [
   { slug: "executive-action", name: "Executive Action Center", desc: "Top-10 moves Sonny's should make next, with impact, risk & confidence.", ready: true },
 ];
 
-export const CI_REGIONS = ["Northeast", "Southeast", "Midwest", "West", "Texas"] as const;
+// Geographic markets the research agent actually resolves against. Kept aligned
+// with the research region vocabulary so the Scope rail "speaks" to the agent.
+export const CI_REGIONS = ["United States", "Europe", "United States & Europe"] as const;
 export type CiRegion = (typeof CI_REGIONS)[number];
 
 /** Scope sentinel: no region filter (national view). Default scope. */

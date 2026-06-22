@@ -10,7 +10,7 @@
 // the shared health cache so subsequent calls route around busy free models.
 
 import "server-only";
-import { resolveCandidates } from "@/lib/llm/store";
+import { resolveCandidates, isFreeModel } from "@/lib/llm/store";
 import {
   readHealthMap,
   recordHealth,
@@ -58,7 +58,8 @@ export async function openrouterWebChat(
   opts?: { maxResults?: number; maxTokens?: number },
 ): Promise<ORWeb> {
   const candidates = await resolveCandidates();
-  const ors = candidates.filter((c) => c.providerId === "openrouter");
+  // Free-tier only for agentic CI work: rotate across :free OpenRouter models.
+  const ors = candidates.filter((c) => c.providerId === "openrouter" && isFreeModel(c.model));
   if (!ors.length) return { ok: false, status: 503, error: "no_openrouter" };
 
   const health = await readHealthMap();

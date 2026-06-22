@@ -15,7 +15,7 @@ export default function FpaShell({ children }: { children: React.ReactNode }) {
   useEffect(() => setNavOpen(false), [path]);
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-[#f6f7f9] text-neutral-900">
+    <div className="relative flex h-screen overflow-hidden bg-[#f6f7f9] text-ink">
       {/* floating gradients */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute left-[14%] top-[-10%] h-[420px] w-[520px] rounded-full bg-navy/10 blur-[150px]" />

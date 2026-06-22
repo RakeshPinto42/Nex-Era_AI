@@ -41,9 +41,9 @@ export function MarginAnalysis() {
         <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-12">
           {/* ---- P&L statement sheet ---- */}
           <div className="lg:col-span-8">
-            <div className="overflow-hidden rounded-2xl border border-line bg-white">
+            <div className="overflow-hidden rounded-2xl border border-fos-border bg-fos-surface">
               <div className="flex items-center justify-between border-b-2 px-5 py-3" style={{ borderColor: ACCENT }}>
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-900">Profit &amp; Loss — by segment</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-fos-text">Profit &amp; Loss — by segment</h3>
                 <ExportMenu
                   filename="margin_analysis"
                   columns={[{ header: "Segment", key: "segment" }, { header: "Revenue", key: "revenue" }, { header: "Cost", key: "cost" }, { header: "Gross Profit", key: "profit" }, { header: "Margin %", key: "margin" }]}
@@ -53,7 +53,7 @@ export function MarginAnalysis() {
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-line text-right font-mono text-[10px] uppercase tracking-wider text-muted">
+                  <tr className="border-b border-fos-border text-right font-mono text-[10px] uppercase tracking-wider text-fos-muted">
                     <th className="px-5 py-2 text-left">Segment</th>
                     <th className="px-3 py-2">Revenue</th>
                     <th className="px-3 py-2">Cost</th>
@@ -64,16 +64,16 @@ export function MarginAnalysis() {
                 <tbody>
                   {result.rows.map((r) => (
                     <tr key={r.segment} className="border-b border-line/50">
-                      <td className="px-5 py-2 text-ink">{r.segment}</td>
-                      <td className="px-3 py-2 text-right font-mono tabular-nums text-ink">{fmtMoney(r.revenue)}</td>
-                      <td className="px-3 py-2 text-right font-mono tabular-nums text-muted">({fmtMoney(r.cost)})</td>
-                      <td className="px-3 py-2 text-right font-mono tabular-nums font-medium text-slate-900">{fmtMoney(r.profit)}</td>
+                      <td className="px-5 py-2 text-fos-text">{r.segment}</td>
+                      <td className="px-3 py-2 text-right font-mono tabular-nums text-fos-text">{fmtMoney(r.revenue)}</td>
+                      <td className="px-3 py-2 text-right font-mono tabular-nums text-fos-muted">({fmtMoney(r.cost)})</td>
+                      <td className="px-3 py-2 text-right font-mono tabular-nums font-medium text-fos-text">{fmtMoney(r.profit)}</td>
                       <td className="px-5 py-2">
                         <div className="flex items-center gap-2">
                           <div className="h-2 w-20 overflow-hidden rounded bg-black/5">
                             <div className="h-full rounded" style={{ width: `${Math.max(0, Math.min(100, r.margin))}%`, background: ACCENT }} />
                           </div>
-                          <span className="w-12 text-right font-mono text-xs tabular-nums text-ink">{r.margin.toFixed(1)}%</span>
+                          <span className="w-12 text-right font-mono text-xs tabular-nums text-fos-text">{r.margin.toFixed(1)}%</span>
                         </div>
                       </td>
                     </tr>
@@ -81,11 +81,11 @@ export function MarginAnalysis() {
                 </tbody>
                 <tfoot>
                   <tr className="border-t-2 font-semibold" style={{ borderColor: ACCENT }}>
-                    <td className="px-5 py-3 text-slate-900">Total</td>
-                    <td className="px-3 py-3 text-right font-mono tabular-nums text-slate-900">{fmtMoney(result.totals.revenue)}</td>
-                    <td className="px-3 py-3 text-right font-mono tabular-nums text-muted">({fmtMoney(result.totals.cost)})</td>
+                    <td className="px-5 py-3 text-fos-text">Total</td>
+                    <td className="px-3 py-3 text-right font-mono tabular-nums text-fos-text">{fmtMoney(result.totals.revenue)}</td>
+                    <td className="px-3 py-3 text-right font-mono tabular-nums text-fos-muted">({fmtMoney(result.totals.cost)})</td>
                     <td className="px-3 py-3 text-right font-mono tabular-nums" style={{ color: ACCENT }}>{fmtMoney(result.totals.profit)}</td>
-                    <td className="px-5 py-3 font-mono text-slate-900">{result.totals.margin.toFixed(1)}%</td>
+                    <td className="px-5 py-3 font-mono text-fos-text">{result.totals.margin.toFixed(1)}%</td>
                   </tr>
                 </tfoot>
               </table>
@@ -94,18 +94,18 @@ export function MarginAnalysis() {
 
           {/* ---- summary + build-up ---- */}
           <div className="space-y-4 lg:col-span-4">
-            <div className="rounded-2xl border border-line bg-white p-5">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted">Blended gross margin</p>
+            <div className="rounded-2xl border border-fos-border bg-fos-surface p-5">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-fos-muted">Blended gross margin</p>
               <p className="text-4xl font-semibold tabular-nums" style={{ color: ACCENT }}>{result.totals.margin.toFixed(1)}%</p>
-              <p className="mt-1 text-sm text-muted">{fmtMoney(result.totals.profit)} gross profit on {fmtMoney(result.totals.revenue)} revenue</p>
+              <p className="mt-1 text-sm text-fos-muted">{fmtMoney(result.totals.profit)} gross profit on {fmtMoney(result.totals.revenue)} revenue</p>
               <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                <div className="rounded-lg bg-canvas p-2">
-                  <p className="text-[10px] uppercase text-muted">Best margin</p>
-                  <p className="font-medium text-slate-900">{[...result.rows].sort((a, b) => b.margin - a.margin)[0]?.segment} · {[...result.rows].sort((a, b) => b.margin - a.margin)[0]?.margin.toFixed(0)}%</p>
+                <div className="rounded-lg bg-fos-surface2 p-2">
+                  <p className="text-[10px] uppercase text-fos-muted">Best margin</p>
+                  <p className="font-medium text-fos-text">{[...result.rows].sort((a, b) => b.margin - a.margin)[0]?.segment} · {[...result.rows].sort((a, b) => b.margin - a.margin)[0]?.margin.toFixed(0)}%</p>
                 </div>
-                <div className="rounded-lg bg-canvas p-2">
-                  <p className="text-[10px] uppercase text-muted">Worst margin</p>
-                  <p className="font-medium text-slate-900">{[...result.rows].sort((a, b) => a.margin - b.margin)[0]?.segment} · {[...result.rows].sort((a, b) => a.margin - b.margin)[0]?.margin.toFixed(0)}%</p>
+                <div className="rounded-lg bg-fos-surface2 p-2">
+                  <p className="text-[10px] uppercase text-fos-muted">Worst margin</p>
+                  <p className="font-medium text-fos-text">{[...result.rows].sort((a, b) => a.margin - b.margin)[0]?.segment} · {[...result.rows].sort((a, b) => a.margin - b.margin)[0]?.margin.toFixed(0)}%</p>
                 </div>
               </div>
             </div>

@@ -20,7 +20,7 @@ export function Statements({
   audit: AuditRecord[];
 }) {
   if (!results) {
-    return <p className="text-sm text-muted">No results yet. Go to the <b>Run</b> tab and compute.</p>;
+    return <p className="text-sm text-fos-muted">No results yet. Go to the <b>Run</b> tab and compute.</p>;
   }
 
   const columns: ColumnDef<CommissionStatement, unknown>[] = [
@@ -79,9 +79,9 @@ export function Statements({
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="text-sm text-muted">
+        <div className="text-sm text-fos-muted">
           {results.statements.length} statements · total payout{" "}
-          <b className="text-ink">{fmtMoney(results.totals.totalCommission)}</b>
+          <b className="text-fos-text">{fmtMoney(results.totals.totalCommission)}</b>
         </div>
         <div className="flex gap-2">
           <ExportMenu
@@ -105,20 +105,20 @@ export function Statements({
         data={results.statements}
         renderDetail={(s) => (
           <div className="text-sm">
-            <p className="mb-2 font-semibold text-ink">{s.rep} — payout breakdown</p>
+            <p className="mb-2 font-semibold text-fos-text">{s.rep} — payout breakdown</p>
             <table className="w-72">
               <tbody>
                 <tr>
-                  <td className="py-0.5 text-ink/70">Base commission</td>
+                  <td className="py-0.5 text-fos-text">Base commission</td>
                   <td className="py-0.5 text-right font-mono">{fmtMoney(s.baseCommission)}</td>
                 </tr>
                 {s.modifiers.map((m, i) => (
                   <tr key={i}>
-                    <td className="py-0.5 text-ink/70">{m.label}</td>
+                    <td className="py-0.5 text-fos-text">{m.label}</td>
                     <td className={`py-0.5 text-right font-mono ${m.amount < 0 ? "text-rose-600" : ""}`}>{fmtMoney(m.amount)}</td>
                   </tr>
                 ))}
-                <tr className="border-t border-line">
+                <tr className="border-t border-fos-border">
                   <td className="py-0.5 font-semibold">Total</td>
                   <td className="py-0.5 text-right font-mono font-semibold">{fmtMoney(s.totalCommission)}</td>
                 </tr>
@@ -136,16 +136,16 @@ export function Statements({
 function AuditTrail({ audit }: { audit: AuditRecord[] }) {
   if (!audit.length) return null;
   return (
-    <div className="rounded-2xl border border-line bg-white p-5">
-      <h3 className="mb-3 text-sm font-semibold text-neutral-900">Audit trail</h3>
+    <div className="rounded-2xl border border-fos-border bg-fos-surface p-5">
+      <h3 className="mb-3 text-sm font-semibold text-fos-text">Audit trail</h3>
       <div className="space-y-2">
         {audit.map((a) => (
-          <div key={a.runId} className="rounded-lg border border-line bg-canvas px-3 py-2 text-xs">
+          <div key={a.runId} className="rounded-lg border border-fos-border bg-fos-surface2 px-3 py-2 text-xs">
             <div className="flex flex-wrap justify-between gap-2">
-              <span className="font-mono text-muted">{a.runId}</span>
-              <span className="text-muted">{new Date(a.timestamp).toLocaleString()}</span>
+              <span className="font-mono text-fos-muted">{a.runId}</span>
+              <span className="text-fos-muted">{new Date(a.timestamp).toLocaleString()}</span>
             </div>
-            <div className="mt-1 text-ink/80">
+            <div className="mt-1 text-fos-text">
               {a.filesProcessed.length} files · {a.validationExceptions} exceptions (
               {a.exceptionsBySeverity.error}E/{a.exceptionsBySeverity.warning}W) · payout{" "}
               {fmtMoney(a.totals.commission ?? 0)} · {a.totals.reps ?? 0} reps

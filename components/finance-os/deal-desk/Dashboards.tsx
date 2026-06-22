@@ -50,7 +50,7 @@ export function Dashboards({ deals }: { deals: Deal[] }) {
   const rows = apply(allRows as unknown as Record<string, unknown>[]) as unknown as DealRow[];
 
   if (!rows.length) {
-    return <p className="text-sm text-muted">No deals match the current filters.</p>;
+    return <p className="text-sm text-fos-muted">No deals match the current filters.</p>;
   }
 
   const revenue = sum(rows, (r) => r.revenue);

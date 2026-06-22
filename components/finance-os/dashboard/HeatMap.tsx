@@ -34,7 +34,7 @@ export function HeatMap({
   };
 
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
       <p className="mb-3 text-sm font-semibold text-fos-text">{title}</p>
       <div className="flex gap-1.5">
         {counts.map((c, i) => {

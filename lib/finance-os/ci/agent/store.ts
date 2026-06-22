@@ -4,7 +4,10 @@
 
 import type { CompetitorProduct, CompetitorRecord, ProductChange, Snapshot } from "./types";
 
-const KEY = "ci.competitor-tracking.v1";
+// v2: dropped all v1 snapshots — they predate accurate-or-nothing and could hold
+// estimate-mode data (wrong-industry guesses, fabricated SKUs). v2 only ever stores
+// live web-sourced catalogs.
+const KEY = "ci.competitor-tracking.v2";
 
 type Store = Record<string, CompetitorRecord>; // keyed by lowercased competitor name
 

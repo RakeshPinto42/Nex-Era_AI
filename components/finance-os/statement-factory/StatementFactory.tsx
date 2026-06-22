@@ -83,15 +83,15 @@ export function StatementFactory() {
             <button onClick={batchPdf} className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:scale-[1.02]">
               Generate {stmts.length} PDF statements
             </button>
-            <button onClick={batchExcel} className="rounded-lg border border-line px-4 py-2 text-sm font-medium text-ink hover:bg-canvas">
+            <button onClick={batchExcel} className="rounded-lg border border-fos-border px-4 py-2 text-sm font-medium text-fos-text hover:bg-fos-surface2">
               Export Excel summary
             </button>
           </div>
 
-          <div className="overflow-auto rounded-xl border border-line bg-white">
+          <div className="overflow-auto rounded-xl border border-fos-border bg-fos-surface">
             <table className="w-full text-sm">
-              <thead className="bg-canvas">
-                <tr className="text-left text-muted">
+              <thead className="bg-fos-surface2">
+                <tr className="text-left text-fos-muted">
                   <th className="px-3 py-2 font-medium">Employee</th>
                   <th className="px-3 py-2 font-medium">Region</th>
                   <th className="px-3 py-2 font-medium text-right">Revenue</th>
@@ -101,8 +101,8 @@ export function StatementFactory() {
               <tbody>
                 {stmts.map((s) => (
                   <tr key={s.employee} className="border-t border-line/60">
-                    <td className="px-3 py-1.5 text-ink">{s.employee}</td>
-                    <td className="px-3 py-1.5 text-ink/70">{s.region || "—"}</td>
+                    <td className="px-3 py-1.5 text-fos-text">{s.employee}</td>
+                    <td className="px-3 py-1.5 text-fos-text">{s.region || "—"}</td>
                     <td className="px-3 py-1.5 text-right font-mono">{s.revenue ? fmtMoney(s.revenue) : "—"}</td>
                     <td className="px-3 py-1.5 text-right font-mono">{fmtMoney(s.amount)}</td>
                   </tr>

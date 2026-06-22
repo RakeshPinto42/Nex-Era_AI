@@ -6,7 +6,7 @@
 // recommendations so the panel always answers "what should we do next?".
 
 import { useState } from "react";
-import { CI_MODULES, CI_REGIONS, type CiModuleSlug } from "@/lib/finance-os/ci/types";
+import { CI_MODULES, CI_REGIONS, CI_REGION_ALL, type CiModuleSlug } from "@/lib/finance-os/ci/types";
 import { cn } from "@/lib/utils";
 import { CiProvider, useCi } from "./context";
 import { RecommendationsPanel } from "./RecommendationsPanel";
@@ -106,7 +106,7 @@ function ScopeRail() {
 
       <p className="mt-4 mb-1.5 text-xs font-medium text-fos-text">Region</p>
       <div className="flex flex-col gap-1">
-        {CI_REGIONS.map((reg) => (
+        {[CI_REGION_ALL, ...CI_REGIONS].map((reg) => (
           <button
             key={reg}
             onClick={() => setRegion(reg)}

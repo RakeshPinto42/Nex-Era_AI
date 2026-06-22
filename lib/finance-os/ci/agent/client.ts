@@ -45,8 +45,8 @@ export async function setTavilyKey(apiKey: string): Promise<SearchKeyStatus> {
   return postJson("/api/admin/ci-search-key", { apiKey });
 }
 
-export type NewsItem = { headline: string; type: string; date: string | null; summary: string; url: string | null; assessment: "Threat" | "Opportunity" | "Neutral"; response: string };
+export type NewsItem = { headline: string; type: string; date: string | null; summary: string; url: string | null; assessment: "Threat" | "Opportunity" | "Neutral"; impact: "High" | "Medium" | "Low"; impactRationale: string; response: string };
 
-export async function fetchCompetitorNews(competitor: string): Promise<{ competitor: string; news: NewsItem[]; sources: { title: string; url: string }[]; backend: string; model: string; fetchedAt: string }> {
-  return postJson("/api/ci/competitor-news", { competitor });
+export async function fetchCompetitorNews(competitor: string, region?: string): Promise<{ competitor: string; news: NewsItem[]; sources: { title: string; url: string }[]; backend: string; model: string; fetchedAt: string }> {
+  return postJson("/api/ci/competitor-news", { competitor, region });
 }

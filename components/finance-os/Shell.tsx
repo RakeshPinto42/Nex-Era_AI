@@ -110,11 +110,17 @@ function Rail({
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     active ? "text-fos-text" : "text-fos-muted hover:bg-fos-surface2 hover:text-fos-text",
                   )}
-                  style={active ? { backgroundColor: `${id.accent}24` } : undefined}
+                  style={active ? { backgroundColor: `${id.accent}1f` } : undefined}
                 >
+                  {active && (
+                    <span
+                      className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-full"
+                      style={{ background: id.accent }}
+                    />
+                  )}
                   {Icon && (
                     <span
                       className="grid h-6 w-6 flex-none place-items-center rounded-md"

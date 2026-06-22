@@ -5,6 +5,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runWebAgent } from "@/lib/finance-os/ci/agent/research-core";
 
+// Web search + LLM extraction can run tens of seconds — raise past Vercel's 10s
+// default (Hobby max 60s; bump to 300 on Pro).
+export const maxDuration = 60;
+
 const SYSTEM = `You identify a company's competitors using web search.
 Output STRICT JSON ONLY (no prose, no markdown): {"competitors":[{"name":string,"descriptor":string,"region":string|null,"url":string|null}]}
 RULES:

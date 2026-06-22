@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-// Geist (Vercel) — clean, technical, AI-native. Drives body + display; mono for
-// data/code. CSS vars keep the existing --font-* token names.
+// Geist (Vercel) drives body + mono (clean, technical, AI-native). Space Grotesk
+// is the display face — geometric, heavy, with real character at large sizes; it
+// extrudes cleanly for the dimensional headings. CSS vars keep the --font-* tokens.
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "NEXERA — Decentralized Intelligence Network",
@@ -24,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable}`}>
       <body className="font-sans antialiased">{children}</body>
     </html>
   );

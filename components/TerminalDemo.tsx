@@ -52,7 +52,7 @@ export default function TerminalDemo() {
     <section id="terminal" className="relative px-6 py-28">
       <div className="mx-auto max-w-4xl">
         <SectionLabel>Live Terminal</SectionLabel>
-        <h2 className="mt-4 text-center text-3xl font-semibold tracking-tight sm:text-5xl">
+        <h2 className="heading-lift-gradient mt-4 text-center text-3xl font-semibold tracking-tight sm:text-5xl">
           <span className="text-gradient">Speak intent.</span>{" "}
           <span className="text-gradient-emerald">Watch it ship.</span>
         </h2>
@@ -62,7 +62,7 @@ export default function TerminalDemo() {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mt-12 overflow-hidden rounded-2xl glass-strong shadow-2xl shadow-black/60"
+          className="mt-12 overflow-hidden rounded-2xl glass-strong shadow-lift"
         >
           {/* title bar */}
           <div className="flex items-center gap-2 border-b border-black/10 px-4 py-3">
@@ -78,7 +78,7 @@ export default function TerminalDemo() {
           <div className="space-y-3 p-5 font-mono text-sm leading-relaxed sm:p-7 sm:text-[15px]">
             <div className="flex items-start gap-2">
               <span className="select-none text-navy">{">"}</span>
-              <span className="text-neutral-900">
+              <span className="text-ink">
                 {typed}
                 {typed.length < PROMPT.length && (
                   <span className="ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-navy animate-blink" />

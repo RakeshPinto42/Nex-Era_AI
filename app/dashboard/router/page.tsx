@@ -114,7 +114,7 @@ export default function RouterPage() {
           }}
           rows={2}
           placeholder="Describe your task… ⌘↵ to route"
-          className="w-full resize-none bg-transparent px-3 py-2 text-sm text-neutral-900 placeholder:text-black/35 outline-none"
+          className="w-full resize-none bg-transparent px-3 py-2 text-sm text-ink placeholder:text-black/35 outline-none"
         />
         <div className="flex items-center justify-between px-1 pt-1">
           <span className="font-mono text-[11px] text-black/30">
@@ -139,7 +139,7 @@ export default function RouterPage() {
               setPrompt(e);
               route(e);
             }}
-            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/60 transition-colors hover:border-navy/30 hover:text-neutral-900 disabled:opacity-30"
+            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/60 transition-colors hover:border-navy/30 hover:text-ink disabled:opacity-30"
           >
             {e}
           </button>
@@ -195,7 +195,7 @@ export default function RouterPage() {
                   <ConfidenceMeter value={result.confidence} />
                 </Metric>
                 <Metric label="Intent">
-                  <span className="text-lg font-semibold text-neutral-900">
+                  <span className="text-lg font-semibold text-ink">
                     {result.intentLabel}
                   </span>
                   <span className="block text-xs text-black/40">
@@ -203,7 +203,7 @@ export default function RouterPage() {
                   </span>
                 </Metric>
                 <Metric label="Routing">
-                  <span className="text-lg font-semibold text-neutral-900">
+                  <span className="text-lg font-semibold text-ink">
                     {result.usedFallback ? "Fallback" : "Primary"}
                   </span>
                   <span className="block text-xs text-navy">
@@ -260,7 +260,7 @@ export default function RouterPage() {
                             <span
                               className={
                                 r.m === result.selected
-                                  ? "font-medium text-neutral-900"
+                                  ? "font-medium text-ink"
                                   : "text-black/60"
                               }
                             >
@@ -402,7 +402,7 @@ function ConfidenceMeter({ value }: { value: number }) {
   const pct = Math.round(value * 100);
   return (
     <div>
-      <span className="text-lg font-semibold text-neutral-900">{pct}%</span>
+      <span className="text-lg font-semibold text-ink">{pct}%</span>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/10">
         <motion.div
           initial={{ width: 0 }}
@@ -427,7 +427,7 @@ function Bar({
   return (
     <div>
       <div className="flex justify-between text-xs">
-        <span className={active ? "text-neutral-900" : "text-black/55"}>{label}</span>
+        <span className={active ? "text-ink" : "text-black/55"}>{label}</span>
         <span className="font-mono text-black/40">{pct.toFixed(0)}%</span>
       </div>
       <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-black/10">

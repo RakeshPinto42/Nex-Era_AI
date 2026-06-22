@@ -25,7 +25,7 @@ export function ModuleScreen({
   return (
     <div className="h-full overflow-y-auto bg-fos-bg">
       <header
-        className="relative overflow-hidden px-6 py-7 text-white"
+        className="relative overflow-hidden px-6 py-8 text-white shadow-[0_12px_32px_-14px_rgba(0,0,0,0.45)]"
         style={{ background: `linear-gradient(115deg, ${id.accent}, ${id.accentDark})` }}
       >
         {/* subtle texture (not an icon): soft highlight + faint diagonal sheen */}
@@ -38,10 +38,10 @@ export function ModuleScreen({
         />
         <div className={`relative mx-auto flex items-center gap-4 ${maxWidth}`}>
           {/* accent bar instead of a duplicate icon */}
-          <span className="h-10 w-1.5 flex-none rounded-full bg-white/55" />
+          <span className="h-11 w-1.5 flex-none rounded-full bg-white/60" />
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
-            <p className="text-sm text-white/80">{id.kicker}</p>
+            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+            <p className="mt-0.5 text-sm text-white/80">{id.kicker}</p>
           </div>
           {actions}
         </div>

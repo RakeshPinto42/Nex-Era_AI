@@ -14,7 +14,7 @@ export default function Workspace() {
   const { running, folderName } = useWorkspace();
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[#f6f7f9] text-neutral-900">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#f6f7f9] text-ink">
       {/* app bar */}
       <header className="flex h-12 flex-none items-center gap-4 border-b border-black/10 bg-white/60 px-4 backdrop-blur-xl">
         <Logo size={28} variant="terminal" />
@@ -35,7 +35,7 @@ export default function Workspace() {
         <div className="flex-1" />
         <Link
           href="/dashboard"
-          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 transition-colors hover:bg-black/5 hover:text-neutral-900"
+          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 transition-colors hover:bg-black/5 hover:text-ink"
         >
           ← Dashboard
         </Link>

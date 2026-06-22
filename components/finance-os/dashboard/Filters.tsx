@@ -13,7 +13,7 @@ export function Filters({ slicers }: { slicers: Slicer[] }) {
   const anyActive = Object.values(filters).some((v) => v.length);
 
   return (
-    <div className="flex flex-wrap items-start gap-4 rounded-xl border border-fos-border bg-fos-surface p-3">
+    <div className="flex flex-wrap items-start gap-4 rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-3">
       {slicers
         .filter((s) => s.values.length > 1)
         .map((s) => (

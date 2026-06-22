@@ -26,7 +26,7 @@ function ComingSoon({ module }: { module: ModuleConfig }) {
         <span className="inline-flex rounded-full border border-navy/25 bg-navy/[0.06] px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-navy">
           Coming soon
         </span>
-        <h3 className="mt-4 text-lg font-semibold text-neutral-900">{module.name}</h3>
+        <h3 className="mt-4 text-lg font-semibold text-ink">{module.name}</h3>
         <p className="mt-2 text-sm text-black/50">{module.blurb}</p>
         <p className="mt-4 text-xs text-black/40">
           This tool isn&apos;t built yet. The live tools — Variance, Commission, Forecasting and

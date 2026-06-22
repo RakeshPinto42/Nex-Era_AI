@@ -18,10 +18,6 @@ export async function runWebAgent(input: {
   searchQuery: string;
   maxResults?: number;
   maxTokens?: number;
-  // Used ONLY when live search is unavailable (no credits / no Tavily). Lets the
-  // caller swap in a system prompt that permits model-knowledge answers (flagged
-  // as estimates) instead of returning empty. Omit to keep the strict behaviour.
-  fallbackSystem?: string;
 }): Promise<AgentOutcome> {
   const tav = await searchKeyStatus();
 
@@ -34,7 +30,7 @@ export async function runWebAgent(input: {
     const context = s.results
       .map((r, i) => `[Source ${i + 1}] ${r.title}\nURL: ${r.url}\n${(r.raw_content || r.content || "").slice(0, 2200)}`)
       .join("\n\n---\n\n");
-    const out = await completeWithFallback(input.system, [{ role: "user", content: `${input.user}\n\nSearch results:\n\n${context}` }], undefined, { maxTokens: input.maxTokens ?? 1800 });
+    const out = await completeWithFallback(input.system, [{ role: "user", content: `${input.user}\n\nSearch results:\n\n${context}` }], undefined, { maxTokens: input.maxTokens ?? 1800, freeOnly: true });
     if (!out) return { ok: false, status: 503, error: "no_provider" };
     return { ok: true, text: out.text, sources, model: out.model, backend: "tavily", estimated: false };
   }
@@ -48,25 +44,9 @@ export async function runWebAgent(input: {
     return { ok: true, text: or.content, sources: or.citations, model: or.model, backend: "openrouter", estimated: false };
   }
 
-  // Every live-search path failed (no OpenRouter credits / free tier busy, no
-  // Tavily key). Rather than dead-end, fall back to a plain completion across ALL
-  // providers (OpenRouter / Gemini) using the caller's fallbackSystem when given
-  // — model knowledge, no citations. Flagged estimated:true so the UI warns the
-  // figures are not live-sourced.
-  const fb = await completeWithFallback(
-    input.fallbackSystem ?? input.system,
-    [
-      {
-        role: "user",
-        content: `${input.user}\n\n(Live web search is unavailable right now — answer from your own knowledge. These figures are ESTIMATES, not live-sourced; flag them as such.)`,
-      },
-    ],
-    undefined,
-    { maxTokens: input.maxTokens ?? 1800 },
-  );
-  if (fb && fb.provider !== "none" && fb.text.trim()) {
-    return { ok: true, text: fb.text, sources: [], model: `${fb.model} (estimate)`, backend: "openrouter", estimated: true };
-  }
-
+  // Accurate-or-nothing: every LIVE search path failed (no OpenRouter credits /
+  // free tier busy, no Tavily key). We do NOT fabricate from model knowledge —
+  // wrong-industry guesses (pizza, cabinets) are worse than no data. Surface the
+  // error so the UI tells the user to configure a search backend.
   return { ok: false, status: or.status, error: or.error === "no_openrouter" ? "no_search_backend" : or.error, detail: or.detail };
 }

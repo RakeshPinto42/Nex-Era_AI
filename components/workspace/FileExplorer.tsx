@@ -18,7 +18,7 @@ export default function FileExplorer() {
         </span>
         <button
           onClick={selectFolder}
-          className="rounded-md border border-black/10 bg-black/[0.04] px-2 py-1 text-[11px] text-black/70 transition-colors hover:border-navy/40 hover:text-neutral-900"
+          className="rounded-md border border-black/10 bg-black/[0.04] px-2 py-1 text-[11px] text-black/70 transition-colors hover:border-navy/40 hover:text-ink"
         >
           Open Folder
         </button>
@@ -108,7 +108,7 @@ function Node({
       onClick={() => onOpen(node.path)}
       className={`flex w-full items-center gap-2 rounded-md py-1 pr-2 text-left text-[13px] ${
         isActive
-          ? "bg-navy/12 text-neutral-900"
+          ? "bg-navy/12 text-ink"
           : "text-black/55 hover:bg-black/[0.04] hover:text-black/80"
       }`}
       style={{ paddingLeft: depth * 12 + 18 }}

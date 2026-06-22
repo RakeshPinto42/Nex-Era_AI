@@ -38,7 +38,7 @@ export function DataGrid<T extends object>({
   });
 
   return (
-    <div className="overflow-auto rounded-xl border border-fos-border bg-fos-surface" style={{ maxHeight }}>
+    <div className="overflow-auto rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)]" style={{ maxHeight }}>
       <table className="w-full border-collapse text-sm">
         <thead className="sticky top-0 z-10 bg-fos-surface2">
           {table.getHeaderGroups().map((hg) => (

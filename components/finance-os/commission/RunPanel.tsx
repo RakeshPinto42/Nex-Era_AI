@@ -22,9 +22,9 @@ import type { ColumnMapping, Dataset } from "@/lib/finance-os/types";
 import { uid } from "@/lib/utils";
 import type { HubState } from "./CommissionHub";
 import { SALES_FIELDS, TARGET_FIELDS } from "./fields";
-import { buildSampleDatasets } from "./sample";
+import { buildSampleDatasets, carWashPlan } from "./sample";
 
-const card = "rounded-2xl border border-line bg-white p-5";
+const card = "rounded-2xl border border-fos-border bg-fos-surface p-5";
 
 export function RunPanel({
   state,
@@ -109,7 +109,10 @@ export function RunPanel({
   };
 
   const loadSample = () => {
-    onState({ datasets: buildSampleDatasets(), mappings: {} });
+    // Load the car-wash dataset together with a matching car-wash commission plan
+    // so "Compute" shows membership/retail commissions out of the box.
+    const plan = carWashPlan();
+    onState({ datasets: buildSampleDatasets(), mappings: {}, plans: [plan], activePlanId: plan.id });
     setExceptions(null);
   };
 
@@ -119,20 +122,20 @@ export function RunPanel({
 
       <div className={card}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-neutral-900">1 · Data</h3>
-          <button onClick={loadSample} className="rounded-lg border border-line px-3 py-1.5 text-xs text-ink hover:bg-canvas">
-            Load sample data
+          <h3 className="text-sm font-semibold text-fos-text">1 · Data</h3>
+          <button onClick={loadSample} className="rounded-lg border border-fos-border px-3 py-1.5 text-xs text-fos-text hover:bg-fos-surface2">
+            Load car-wash sample
           </button>
         </div>
         <FileDrop datasets={state.datasets} onChange={(datasets) => onState({ datasets })} defaultRole="sales" />
-        <p className="mt-2 text-xs text-muted">
+        <p className="mt-2 text-xs text-fos-muted">
           Tag one file as <b>Sales</b>, optionally <b>Targets</b> and <b>Employee Master</b>.
         </p>
       </div>
 
       {sales && (
         <div className={card}>
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">2 · Map sales columns</h3>
+          <h3 className="mb-3 text-sm font-semibold text-fos-text">2 · Map sales columns</h3>
           <ColumnMapper
             table={sales.table}
             fields={SALES_FIELDS}
@@ -144,7 +147,7 @@ export function RunPanel({
 
       {targets && (
         <div className={card}>
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">3 · Map target columns</h3>
+          <h3 className="mb-3 text-sm font-semibold text-fos-text">3 · Map target columns</h3>
           <ColumnMapper
             table={targets.table}
             fields={TARGET_FIELDS}
@@ -156,7 +159,7 @@ export function RunPanel({
 
       {exceptions && (
         <div className={card}>
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">Validation</h3>
+          <h3 className="mb-3 text-sm font-semibold text-fos-text">Validation</h3>
           <ExceptionPanel exceptions={exceptions} />
         </div>
       )}
@@ -170,7 +173,7 @@ export function RunPanel({
           Validate &amp; Compute →
         </button>
         {facts && (
-          <span className="text-sm text-muted">
+          <span className="text-sm text-fos-muted">
             {facts.length} reps · {fmtMoney(facts.reduce((s, f) => s + f.revenue, 0))} revenue · plan <b>{plan.name}</b>
           </span>
         )}

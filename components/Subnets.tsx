@@ -35,7 +35,7 @@ export default function Subnets() {
         <p className="text-center font-mono text-xs uppercase tracking-[0.25em] text-navy/80">
           The Network
         </p>
-        <h2 className="mx-auto mt-4 max-w-2xl text-center text-3xl font-semibold tracking-tight sm:text-5xl">
+        <h2 className="heading-lift-gradient mx-auto mt-4 max-w-2xl text-center text-3xl font-semibold tracking-tight sm:text-5xl">
           <span className="text-gradient">Every provider is a</span>{" "}
           <span className="text-gradient-emerald">subnet.</span>
         </h2>
@@ -54,7 +54,7 @@ export default function Subnets() {
                 i > 0 ? "border-l border-black/10" : ""
               }`}
             >
-              <p className="font-mono text-2xl font-bold text-neutral-900 sm:text-3xl">
+              <p className="font-mono text-2xl font-bold text-ink sm:text-3xl">
                 {s.k}
               </p>
               <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-black/40">
@@ -86,7 +86,7 @@ export default function Subnets() {
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-navy/60" />
                       <span className="relative inline-flex h-2 w-2 rounded-full bg-navy" />
                     </span>
-                    <span className="font-mono text-sm font-semibold text-neutral-900">
+                    <span className="font-mono text-sm font-semibold text-ink">
                       {p.name}
                     </span>
                   </div>
@@ -105,11 +105,11 @@ export default function Subnets() {
                 <div className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-black/10 font-mono text-[11px]">
                   <div className="bg-black/[0.02] px-2.5 py-1.5">
                     <span className="text-black/40">models </span>
-                    <span className="text-neutral-900">{p.models.length}</span>
+                    <span className="text-ink">{p.models.length}</span>
                   </div>
                   <div className="border-l border-black/10 bg-black/[0.02] px-2.5 py-1.5">
                     <span className="text-black/40">~lat </span>
-                    <span className="text-neutral-900">{latency}ms</span>
+                    <span className="text-ink">{latency}ms</span>
                   </div>
                 </div>
 

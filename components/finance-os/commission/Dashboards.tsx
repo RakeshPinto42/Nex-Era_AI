@@ -12,7 +12,7 @@ import type { CommissionRunResult, CommissionStatement } from "@/lib/finance-os/
 export function Dashboards({ results }: { results: CommissionRunResult | null }) {
   const { apply } = useFilters();
   if (!results) {
-    return <p className="text-sm text-muted">No results yet. Run a calculation first.</p>;
+    return <p className="text-sm text-fos-muted">No results yet. Run a calculation first.</p>;
   }
 
   const rows = apply(results.statements as unknown as Record<string, unknown>[]) as unknown as CommissionStatement[];

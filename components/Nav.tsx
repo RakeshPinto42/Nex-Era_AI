@@ -20,7 +20,7 @@ export default function Nav() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4"
     >
-      <nav className="flex w-full max-w-6xl items-center justify-between rounded-2xl border border-black/10 bg-white/85 px-4 py-2.5 shadow-lg shadow-black/40 backdrop-blur-md">
+      <nav className="flex w-full max-w-6xl items-center justify-between rounded-2xl border border-line bg-white/90 px-4 py-2.5 shadow-soft backdrop-blur-md">
         <Logo size={34} />
 
         <div className="hidden items-center gap-1 md:flex">
@@ -28,7 +28,7 @@ export default function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="rounded-lg px-3 py-1.5 text-sm text-black/60 transition-colors hover:bg-black/5 hover:text-neutral-900"
+              className="rounded-lg px-3 py-1.5 text-sm text-muted transition-colors hover:bg-black/5 hover:text-ink"
             >
               {l.label}
             </a>

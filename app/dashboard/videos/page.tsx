@@ -69,7 +69,7 @@ export default function VideosPage() {
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && generate()}
           placeholder="Describe a clip… e.g. drone shot over a neon city at night"
-          className="flex-1 bg-transparent px-3 py-2 text-sm text-neutral-900 placeholder:text-black/35 outline-none"
+          className="flex-1 bg-transparent px-3 py-2 text-sm text-ink placeholder:text-black/35 outline-none"
         />
         <button
           onClick={generate}

@@ -9,6 +9,11 @@ export const HOME = "Sonny's";
 // Query the agent uses for our own public catalog.
 export const HOME_RESEARCH_QUERY = "Sonny's CarWash Factory";
 
+// Industry anchor. Passed as the research "focus" so the agent (and especially the
+// no-search estimate fallback) resolves the RIGHT entity — "Sonny's" is otherwise
+// ambiguous (grocery / BBQ brands) and the model would catalog the wrong company.
+export const INDUSTRY = "car wash equipment and systems (tunnels, conveyors, dryers, chemicals)";
+
 export const COMPETITORS = [
   "WashTec",
   "Istobal",

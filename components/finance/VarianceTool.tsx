@@ -103,7 +103,7 @@ export default function VarianceTool() {
             <select
               value={kind}
               onChange={(e) => setKind(e.target.value as MetricKind)}
-              className="w-full cursor-pointer rounded-lg border border-black/10 bg-black/[0.02] px-2.5 py-2 text-sm text-neutral-900 outline-none focus:border-navy/40"
+              className="w-full cursor-pointer rounded-lg border border-black/10 bg-black/[0.02] px-2.5 py-2 text-sm text-ink outline-none focus:border-navy/40"
             >
               <option value="revenue">Revenue (higher = good)</option>
               <option value="cost">Cost / Expense (lower = good)</option>
@@ -148,10 +148,10 @@ export default function VarianceTool() {
                 Line-item detail
               </span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-neutral-900">
+                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">
                   Export CSV
                 </button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-neutral-900">
+                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">
                   New file
                 </button>
               </div>
@@ -170,7 +170,7 @@ export default function VarianceTool() {
                 <tbody>
                   {result.rows.map((r, i) => (
                     <tr key={i} className="border-b border-black/5 last:border-0">
-                      <td className="px-4 py-2 text-neutral-900">{r.label}</td>
+                      <td className="px-4 py-2 text-ink">{r.label}</td>
                       <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.actual)}</td>
                       <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.budget)}</td>
                       <td className={`px-4 py-2 text-right font-mono ${r.favorable ? "text-emerald-600" : "text-rose-600"}`}>

@@ -7,8 +7,8 @@ import { KpiCard, KpiGrid } from "@/components/finance-os/dashboard/KpiCard";
 import { fmtMoney } from "@/lib/finance/csv";
 import { bridgeCommentary, computeBridge, DEFAULT_DRIVERS, type BridgeDriver } from "@/lib/finance-os/bridge";
 
-const inp = "w-full rounded-lg border border-line bg-white px-2.5 py-1.5 text-sm text-ink outline-none focus:border-brand-600/40";
-const lbl = "mb-1 block text-xs font-medium text-ink/70";
+const inp = "w-full rounded-lg border border-fos-border bg-fos-surface px-2.5 py-1.5 text-sm text-fos-text outline-none focus:border-brand-600/40";
+const lbl = "mb-1 block text-xs font-medium text-fos-text";
 
 const SAMPLE_DRIVERS: BridgeDriver[] = [
   { key: "volume", label: "Volume", value: 420_000 },
@@ -31,22 +31,22 @@ export function RevenueBridge() {
     <ModuleScreen slug="revenue-bridge" title="Revenue Bridge Builder">
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div className="space-y-4">
-          <div className="rounded-2xl border border-line bg-white p-5">
-            <h3 className="mb-3 text-sm font-semibold text-neutral-900">Periods</h3>
+          <div className="rounded-2xl border border-fos-border bg-fos-surface p-5">
+            <h3 className="mb-3 text-sm font-semibold text-fos-text">Periods</h3>
             <div className="grid grid-cols-2 gap-3">
               <label><span className={lbl}>Start revenue</span><input type="number" className={inp} value={start} onChange={(e) => setStart(Number(e.target.value))} /></label>
               <label><span className={lbl}>End revenue</span><input type="number" className={inp} value={end} onChange={(e) => setEnd(Number(e.target.value))} /></label>
             </div>
-            <button onClick={() => { setStart(4_200_000); setEnd(4_915_000); setDrivers(SAMPLE_DRIVERS); }} className="mt-3 rounded-lg border border-line px-3 py-1.5 text-xs text-ink hover:bg-canvas">
+            <button onClick={() => { setStart(4_200_000); setEnd(4_915_000); setDrivers(SAMPLE_DRIVERS); }} className="mt-3 rounded-lg border border-fos-border px-3 py-1.5 text-xs text-fos-text hover:bg-fos-surface2">
               Load sample
             </button>
           </div>
-          <div className="rounded-2xl border border-line bg-white p-5">
-            <h3 className="mb-3 text-sm font-semibold text-neutral-900">Drivers</h3>
+          <div className="rounded-2xl border border-fos-border bg-fos-surface p-5">
+            <h3 className="mb-3 text-sm font-semibold text-fos-text">Drivers</h3>
             <div className="space-y-2">
               {drivers.map((d) => (
                 <label key={d.key} className="flex items-center gap-2">
-                  <span className="w-28 text-sm text-ink/70">{d.label}</span>
+                  <span className="w-28 text-sm text-fos-text">{d.label}</span>
                   <input type="number" className={inp} value={d.value} onChange={(e) => setDriver(d.key, Number(e.target.value))} />
                 </label>
               ))}
@@ -61,9 +61,9 @@ export function RevenueBridge() {
             <KpiCard label="Unexplained" value={fmtMoney(result.residual)} tone={Math.abs(result.residual) > 0.01 ? "bad" : "good"} />
           </KpiGrid>
           <WaterfallChart title="Revenue bridge" steps={result.steps} />
-          <div className="rounded-xl border border-line bg-white p-4">
-            <h3 className="mb-2 text-sm font-semibold text-neutral-900">Commentary</h3>
-            <p className="text-sm text-ink/80">{bridgeCommentary(result)}</p>
+          <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+            <h3 className="mb-2 text-sm font-semibold text-fos-text">Commentary</h3>
+            <p className="text-sm text-fos-text">{bridgeCommentary(result)}</p>
           </div>
         </div>
       </div>

@@ -43,7 +43,7 @@ export default function AgentBar() {
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder="Tell the agent what to do…"
           disabled={running}
-          className="flex-1 bg-transparent py-1.5 text-sm text-neutral-900 placeholder:text-black/35 outline-none disabled:opacity-50"
+          className="flex-1 bg-transparent py-1.5 text-sm text-ink placeholder:text-black/35 outline-none disabled:opacity-50"
         />
         <button
           onClick={submit}

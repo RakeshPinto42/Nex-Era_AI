@@ -90,16 +90,16 @@ export function WorkspaceBar({
       />
 
       {open && (
-        <div className="absolute right-0 top-9 z-20 w-72 rounded-xl border border-line bg-white p-2 shadow-lg">
-          <p className="px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-muted">
+        <div className="absolute right-0 top-9 z-20 w-72 rounded-xl border border-fos-border bg-fos-surface p-2 shadow-lg">
+          <p className="px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-fos-muted">
             Saved on this device
           </p>
-          {saved.length === 0 && <p className="px-2 py-2 text-xs text-muted">None saved yet.</p>}
+          {saved.length === 0 && <p className="px-2 py-2 text-xs text-fos-muted">None saved yet.</p>}
           {saved.map((ws) => (
-            <div key={ws.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-canvas">
-              <button onClick={() => load(ws)} className="min-w-0 flex-1 truncate text-left text-sm text-ink">
+            <div key={ws.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-fos-surface2">
+              <button onClick={() => load(ws)} className="min-w-0 flex-1 truncate text-left text-sm text-fos-text">
                 {ws.name}
-                <span className="ml-2 font-mono text-[10px] text-muted">
+                <span className="ml-2 font-mono text-[10px] text-fos-muted">
                   {new Date(ws.savedAt).toLocaleDateString()}
                 </span>
               </button>
@@ -108,7 +108,7 @@ export function WorkspaceBar({
                   await deleteWorkspace(ws.id);
                   refresh();
                 }}
-                className="text-muted hover:text-rose-600"
+                className="text-fos-muted hover:text-rose-600"
                 aria-label="Delete"
               >
                 ✕

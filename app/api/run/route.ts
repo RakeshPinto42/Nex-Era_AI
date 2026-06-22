@@ -1,4 +1,6 @@
 import { streamChatWithFallback, type ChatMsg } from "@/lib/llm/infer";
+import { buildSystemPrompt } from "@/lib/llm/prompt";
+import { guardStream } from "@/lib/llm/guardrail";
 import { getDataset, datasetContext } from "@/lib/fpa/dataStore";
 import { sessionFromRequest } from "@/lib/auth/session";
 import { consumeQuota } from "@/lib/auth/quota";
@@ -55,13 +57,13 @@ export async function POST(req: Request) {
     }
   }
 
-  const base =
-    body.system?.trim() ||
-    "You are NEXERA, an autonomous AI assistant. Be precise, helpful and concise. Use markdown when useful.";
+  // NEXERA system prompt = identity + capability framing + guardrail. Always
+  // applied so every open model inherits the same persona and safety posture,
+  // regardless of any client-supplied prompt.
   const dataset = await getDataset();
-  const system = dataset
-    ? `${base}\n\nThe user has uploaded a dataset. Use it to answer questions about "my data" / "the upload":\n${datasetContext(dataset)}`
-    : base;
+  const system = buildSystemPrompt({
+    datasetContext: dataset ? datasetContext(dataset) : undefined,
+  });
 
   // Try the explicitly-picked model first, then auto-fall back across other
   // configured providers on 429 / quota errors.
@@ -74,7 +76,8 @@ export async function POST(req: Request) {
     return stub(messages[messages.length - 1].content);
   }
 
-  return new Response(result.stream, {
+  // Enforce the output guardrail on the live stream before it reaches the user.
+  return new Response(guardStream(result.stream), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",

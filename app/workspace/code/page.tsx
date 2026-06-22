@@ -116,7 +116,7 @@ export default function CodeWorkspace() {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-[#f6f7f9] text-neutral-900">
+    <div className="flex h-screen flex-col bg-[#f6f7f9] text-ink">
       <header className="flex h-14 flex-none items-center justify-between border-b border-black/10 px-5">
         <div className="flex items-center gap-3">
           <Logo size={26} variant="terminal" />
@@ -130,7 +130,7 @@ export default function CodeWorkspace() {
         </div>
         <Link
           href="/dashboard"
-          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 hover:text-neutral-900"
+          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 hover:text-ink"
         >
           ← Dashboard
         </Link>
@@ -244,7 +244,7 @@ export default function CodeWorkspace() {
                         </span>
                         <button
                           onClick={() => openFile(a.path)}
-                          className="truncate text-black/70 hover:text-neutral-900"
+                          className="truncate text-black/70 hover:text-ink"
                         >
                           {a.path}
                         </button>
