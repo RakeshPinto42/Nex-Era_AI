@@ -1,4 +1,7 @@
 {
   "extends": "next/core-web-vitals",
-  "ignorePatterns": ["node_modules/", ".next/", "test/"]
+  "ignorePatterns": ["node_modules/", ".next/", "test/"],
+  "rules": {
+    "react/no-unescaped-entities": "off"
+  }
 }
