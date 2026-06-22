@@ -37,6 +37,11 @@ export default function AdminPage() {
   const [healths, setHealths] = useState<Record<string, HealthState>>({});
   const [saving, setSaving] = useState<string | null>(null);
 
+  // Commercial Intelligence web-search (Tavily) key — separate from model providers.
+  const [searchKey, setSearchKey] = useState<{ hasKey: boolean; mask: string; source: string } | null>(null);
+  const [searchKeyInput, setSearchKeyInput] = useState("");
+  const [savingSearch, setSavingSearch] = useState(false);
+
   const api = useCallback(
     async (path: string, init?: RequestInit) => {
       const tok =
@@ -63,7 +68,26 @@ export default function AdminPage() {
     }
     setAuthError(false);
     setState(await res.json());
+    const sk = await api("/api/admin/ci-search-key");
+    if (sk.ok) setSearchKey(await sk.json());
   }, [api]);
+
+  const saveSearchKey = async () => {
+    if (!searchKeyInput.trim()) return;
+    setSavingSearch(true);
+    const res = await api("/api/admin/ci-search-key", {
+      method: "POST",
+      body: JSON.stringify({ apiKey: searchKeyInput.trim() }),
+    });
+    if (res.ok) setSearchKey(await res.json());
+    setSearchKeyInput("");
+    setSavingSearch(false);
+  };
+
+  const removeSearchKey = async () => {
+    const res = await api("/api/admin/ci-search-key", { method: "DELETE" });
+    if (res.ok) setSearchKey(await res.json());
+  };
 
   useEffect(() => {
     const saved = sessionStorage.getItem(TOKEN_KEY);
@@ -179,7 +203,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f7f9] text-neutral-900">
+    <div className="min-h-screen bg-[#f6f7f9] text-ink">
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute left-1/4 top-0 h-96 w-[500px] rounded-full bg-navy/10 blur-[150px]" />
       </div>
@@ -192,7 +216,7 @@ export default function AdminPage() {
         </div>
         <Link
           href="/fpa"
-          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 hover:text-neutral-900"
+          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 hover:text-ink"
         >
           ← FP&A OS
         </Link>
@@ -252,7 +276,7 @@ export default function AdminPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="font-semibold text-neutral-900">{preset.name}</h2>
+                      <h2 className="font-semibold text-ink">{preset.name}</h2>
                       {preset.free && (
                         <span className="rounded-full bg-navy/12 px-2 py-0.5 font-mono text-[10px] uppercase text-navy">
                           free
@@ -297,7 +321,7 @@ export default function AdminPage() {
                       setKeyInputs((k) => ({ ...k, [preset.id]: e.target.value }))
                     }
                     placeholder={cfg?.hasKey ? "Replace key…" : preset.keyHint}
-                    className="flex-1 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-2 font-mono text-sm text-neutral-900 placeholder:text-black/30 outline-none focus:border-navy/40"
+                    className="flex-1 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-2 font-mono text-sm text-ink placeholder:text-black/30 outline-none focus:border-navy/40"
                   />
                   <button
                     onClick={() => save(preset, cfg?.models ?? [])}
@@ -385,8 +409,8 @@ export default function AdminPage() {
                           onClick={() => toggleModel(preset, m.id)}
                           className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs transition-colors disabled:opacity-30 ${
                             on
-                              ? "border-navy/40 bg-navy/10 text-neutral-900"
-                              : "border-black/10 text-black/55 hover:text-neutral-900"
+                              ? "border-navy/40 bg-navy/10 text-ink"
+                              : "border-black/10 text-black/55 hover:text-ink"
                           }`}
                           title={m.id}
                         >
@@ -418,6 +442,55 @@ export default function AdminPage() {
           })}
         </div>
 
+        {/* Commercial Intelligence web-search key (Tavily) */}
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold tracking-tight">Web Search · Commercial Intelligence</h2>
+          <p className="mt-1 text-sm text-black/50">
+            Tavily key powers live competitor research &amp; news (web scraping → cited data).
+            Without it, Commercial Intelligence has no live source and shows empty states.
+          </p>
+          <div className="mt-4 rounded-2xl border border-black/10 bg-black/[0.03] p-5">
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-ink">Tavily</h3>
+              <span className="rounded-full bg-navy/12 px-2 py-0.5 font-mono text-[10px] uppercase text-navy">free tier</span>
+              {searchKey?.hasKey && (
+                <span className="rounded-full border border-black/15 px-2 py-0.5 font-mono text-[10px] text-black/60">
+                  key {searchKey.mask} · {searchKey.source}
+                </span>
+              )}
+              {searchKey?.hasKey && (
+                <button onClick={removeSearchKey} className="ml-auto text-xs text-black/40 hover:text-[#ff8a8a]">
+                  remove
+                </button>
+              )}
+            </div>
+            <a href="https://tavily.com" target="_blank" rel="noreferrer" className="font-mono text-[11px] text-black/35 hover:text-black/60">
+              tavily.com · get free key ↗
+            </a>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <input
+                type="password"
+                value={searchKeyInput}
+                onChange={(e) => setSearchKeyInput(e.target.value)}
+                placeholder={searchKey?.hasKey ? "Replace key…" : "tvly-…"}
+                className="flex-1 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-2 font-mono text-sm text-ink placeholder:text-black/30 outline-none focus:border-navy/40"
+              />
+              <button
+                onClick={saveSearchKey}
+                disabled={savingSearch || !searchKeyInput.trim()}
+                className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.02] disabled:opacity-30"
+              >
+                {savingSearch ? "Saving…" : "Save key"}
+              </button>
+            </div>
+            {searchKey?.source === "env" && (
+              <p className="mt-2 text-xs text-black/45">
+                Currently using the <code className="font-mono">TAVILY_API_KEY</code> env var. Saving here overrides it.
+              </p>
+            )}
+          </div>
+        </div>
+
         <p className="mt-8 text-center text-xs text-black/30">
           Chat/reasoning/coding models run live. Image/video models (Flux, Wan)
           need a generation endpoint — chat inference only here.
@@ -430,7 +503,7 @@ export default function AdminPage() {
 function Gate({ onSubmit }: { onSubmit: (t: string) => void }) {
   const [v, setV] = useState("");
   return (
-    <div className="grid min-h-screen place-items-center bg-[#f6f7f9] text-neutral-900">
+    <div className="grid min-h-screen place-items-center bg-[#f6f7f9] text-ink">
       <div className="w-full max-w-sm rounded-2xl border border-black/10 bg-black/[0.03] p-6">
         <Logo size={30} variant="terminal" />
         <h1 className="mt-4 text-lg font-semibold">Admin access</h1>

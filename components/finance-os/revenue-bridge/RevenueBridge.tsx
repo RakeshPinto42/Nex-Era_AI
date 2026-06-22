@@ -32,7 +32,7 @@ export function RevenueBridge() {
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div className="space-y-4">
           <div className="rounded-2xl border border-line bg-white p-5">
-            <h3 className="mb-3 text-sm font-semibold text-neutral-900">Periods</h3>
+            <h3 className="mb-3 text-sm font-semibold text-ink">Periods</h3>
             <div className="grid grid-cols-2 gap-3">
               <label><span className={lbl}>Start revenue</span><input type="number" className={inp} value={start} onChange={(e) => setStart(Number(e.target.value))} /></label>
               <label><span className={lbl}>End revenue</span><input type="number" className={inp} value={end} onChange={(e) => setEnd(Number(e.target.value))} /></label>
@@ -42,7 +42,7 @@ export function RevenueBridge() {
             </button>
           </div>
           <div className="rounded-2xl border border-line bg-white p-5">
-            <h3 className="mb-3 text-sm font-semibold text-neutral-900">Drivers</h3>
+            <h3 className="mb-3 text-sm font-semibold text-ink">Drivers</h3>
             <div className="space-y-2">
               {drivers.map((d) => (
                 <label key={d.key} className="flex items-center gap-2">
@@ -62,7 +62,7 @@ export function RevenueBridge() {
           </KpiGrid>
           <WaterfallChart title="Revenue bridge" steps={result.steps} />
           <div className="rounded-xl border border-line bg-white p-4">
-            <h3 className="mb-2 text-sm font-semibold text-neutral-900">Commentary</h3>
+            <h3 className="mb-2 text-sm font-semibold text-ink">Commentary</h3>
             <p className="text-sm text-ink/80">{bridgeCommentary(result)}</p>
           </div>
         </div>

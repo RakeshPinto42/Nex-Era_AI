@@ -232,6 +232,9 @@ export async function resolveActive(): Promise<{
 
 export type Candidate = { providerId: string; apiKey: string; model: string };
 
+/** OpenRouter free-tier models carry the `:free` suffix (e.g. `…:free`). */
+export const isFreeModel = (model: string): boolean => /:free\b/i.test(model);
+
 /**
  * Server-only: ordered inference candidates for fallback. The configured
  * default (provider+model) comes first, then its sibling models, then every

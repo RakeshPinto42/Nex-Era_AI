@@ -62,7 +62,7 @@ export function FileDrop({
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="text-muted" aria-hidden>
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
         </svg>
-        <span className="text-sm font-medium text-neutral-900">Drop CSV / XLSX files, or click</span>
+        <span className="text-sm font-medium text-ink">Drop CSV / XLSX files, or click</span>
         <span className="font-mono text-[11px] text-muted">parsed in your browser — never uploaded</span>
         <input
           ref={inputRef}

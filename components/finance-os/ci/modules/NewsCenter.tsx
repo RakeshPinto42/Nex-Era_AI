@@ -96,7 +96,7 @@ export function NewsCenter() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
         <div className="flex items-center gap-2">
           <p className="text-sm font-semibold text-fos-text">Monitor competitors</p>
           <button onClick={scanAll} disabled={scanning || !!loading} className="ml-auto flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-[11px] font-semibold text-white disabled:opacity-50">

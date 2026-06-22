@@ -66,7 +66,7 @@ export function MarginOptimizer() {
       </div>
 
       {/* inputs */}
-      <div className="grid grid-cols-2 gap-3 rounded-xl border border-fos-border bg-fos-surface p-4 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4 sm:grid-cols-3 lg:grid-cols-6">
         {num("cost")}
         {num("currentPrice")}
         {num("competitorPrice")}
@@ -98,7 +98,7 @@ export function MarginOptimizer() {
       </div>
 
       {/* sensitivity */}
-      <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
         <p className="mb-3 text-sm font-semibold text-fos-text">Price sensitivity</p>
         <table className="w-full text-sm">
           <thead>
@@ -150,7 +150,7 @@ function TierCard({ label, price, cost, sub, tone }: { label: string; price: num
 function Metric({ label, value, tone = "neutral" }: { label: string; value: string; tone?: "neutral" | "good" | "bad" }) {
   const txt = tone === "good" ? "text-emerald-400" : tone === "bad" ? "text-rose-400" : "text-fos-text";
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
       <p className="font-mono text-[10px] uppercase tracking-wider text-fos-muted">{label}</p>
       <p className={cn("mt-1 text-xl font-semibold tabular-nums", txt)}>{value}</p>
     </div>

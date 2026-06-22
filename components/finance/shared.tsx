@@ -51,7 +51,7 @@ export function Dropzone({
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="text-black/40" aria-hidden="true">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
         </svg>
-        <span className="text-sm font-medium text-neutral-900">{hint}</span>
+        <span className="text-sm font-medium text-ink">{hint}</span>
         <span className="font-mono text-[11px] text-black/40">.csv — parsed in your browser</span>
         <input
           type="file"
@@ -84,7 +84,7 @@ export function ColumnSelect({
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full cursor-pointer rounded-lg border border-black/10 bg-black/[0.02] px-2.5 py-2 text-sm text-neutral-900 outline-none focus:border-navy/40"
+        className="w-full cursor-pointer rounded-lg border border-black/10 bg-black/[0.02] px-2.5 py-2 text-sm text-ink outline-none focus:border-navy/40"
       >
         {table.columns.map((c, i) => (
           <option key={i} value={i}>
@@ -114,7 +114,7 @@ export function StatCard({
       ? "text-emerald-600"
       : tone === "bad"
         ? "text-rose-600"
-        : "text-neutral-900";
+        : "text-ink";
   return (
     <div className="rounded-xl border border-black/10 bg-white p-4">
       <p className="font-mono text-[10px] uppercase tracking-wider text-black/40">
@@ -150,7 +150,7 @@ export function BarList({
               }}
             />
           </div>
-          <span className="w-24 flex-none text-right font-mono text-xs text-neutral-900">
+          <span className="w-24 flex-none text-right font-mono text-xs text-ink">
             {it.display}
           </span>
         </div>

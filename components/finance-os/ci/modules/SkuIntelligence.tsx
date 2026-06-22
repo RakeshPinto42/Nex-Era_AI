@@ -41,7 +41,7 @@ export function SkuIntelligence() {
       </div>
 
       {/* SKU Comparison Matrix */}
-      <div className="overflow-hidden rounded-xl border border-fos-border bg-fos-surface">
+      <div className="overflow-hidden rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)]">
         <p className="border-b border-fos-border px-4 py-3 text-sm font-semibold text-fos-text">SKU Comparison Matrix</p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -105,7 +105,7 @@ export function SkuIntelligence() {
 function Detail({ m }: { m: SkuMatch }) {
   const comp = m.match!;
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
       <p className="mb-3 text-sm font-semibold text-fos-text">Head-to-head · {m.our.product}</p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <SkuCard title="Ours" accent="blue" name={m.our.product} sub={`${m.our.category} · ${m.currentMarginPct.toFixed(0)}% margin`} price={m.our.price} capacity={m.our.capacity} warranty={m.our.warrantyMonths} features={m.our.features} highlight={m.featureGap.weHave} />
@@ -162,7 +162,7 @@ function SimilarityBar({ pct }: { pct: number }) {
 function Kpi({ label, value, tone = "neutral" }: { label: string; value: string; tone?: "neutral" | "good" | "bad" }) {
   const txt = tone === "good" ? "text-emerald-400" : tone === "bad" ? "text-rose-400" : "text-fos-text";
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
       <p className="font-mono text-[10px] uppercase tracking-wider text-fos-muted">{label}</p>
       <p className={cn("mt-1 text-2xl font-semibold tabular-nums", txt)}>{value}</p>
     </div>

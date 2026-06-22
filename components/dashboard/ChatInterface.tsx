@@ -12,6 +12,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import CodeBlock from "./CodeBlock";
 import { NexeraMark } from "@/components/Logo";
+import { INTENTS, intentEmoji, type Intent } from "@/lib/brand/intent";
 import {
   useDashboard,
   type ChatMessage as Message,
@@ -82,16 +83,20 @@ export default function ChatInterface() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  // Aborts the in-flight generation when the user hits Stop.
+  const abortRef = useRef<AbortController | null>(null);
 
   // Latest history for the API payload without re-creating send().
   const historyRef = useRef<Message[]>([]);
   historyRef.current = messages;
 
+  // Stick to the bottom only when the user is already near it — never yank them
+  // up mid-read. Instant (not smooth) so rapid streaming chunks don't queue jank.
   useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    const el = scrollRef.current;
+    if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 160;
+    if (nearBottom) el.scrollTo({ top: el.scrollHeight });
   }, [messages]);
 
   const send = useCallback(
@@ -116,18 +121,28 @@ export default function ChatInterface() {
         content: m.content,
       }));
 
+      // Resolve target model (auto-routes by task in Auto mode) before the
+      // placeholder so the assistant turn carries its routed intent + model.
+      const routed = resolveSendModel(trimmed);
+
       updateMessages(convId, (m) => [
         ...m,
         userMsg,
-        { id: aiId, role: "assistant", content: "", streaming: true },
+        {
+          id: aiId,
+          role: "assistant",
+          content: "",
+          streaming: true,
+          intent: mode === "code" ? "coding" : routed.intent,
+          model: routed.label,
+        },
       ]);
       addTokens(Math.ceil(trimmed.length / 4), 0);
       setInput("");
       setAttachments([]);
       setBusy(true);
-
-      // Resolve target model (auto-routes by task in Auto mode).
-      const routed = resolveSendModel(trimmed);
+      const controller = new AbortController();
+      abortRef.current = controller;
 
       setWorkflow([
         { label: "Parse request", state: "active" },
@@ -161,6 +176,7 @@ export default function ChatInterface() {
               providerId: routed.providerId,
               model: routed.model,
             }),
+            signal: controller.signal,
           });
           setAgentStatus("running");
           advanceWorkflow();
@@ -189,6 +205,7 @@ export default function ChatInterface() {
               model: routed.model,
               messages: payload,
             }),
+            signal: controller.signal,
           });
 
           setAgentStatus("running");
@@ -205,9 +222,15 @@ export default function ChatInterface() {
             addTokens(0, Math.max(1, Math.round(chunk.length / 4)));
           }
         }
-      } catch {
-        setAi((prev) => prev || "Request failed. Check your provider in Admin.");
+      } catch (err) {
+        if ((err as Error)?.name === "AbortError") {
+          // User stopped it — keep whatever streamed, mark it stopped.
+          setAi((prev) => (prev ? `${prev}\n\n_⏹ Stopped._` : "_⏹ Stopped._"));
+        } else {
+          setAi((prev) => prev || "Request failed. Check your provider in Admin.");
+        }
       } finally {
+        abortRef.current = null;
         updateMessages(convId, (m) =>
           m.map((msg) =>
             msg.id === aiId ? { ...msg, streaming: false } : msg,
@@ -234,6 +257,8 @@ export default function ChatInterface() {
       updateMessages,
     ],
   );
+
+  const stop = useCallback(() => abortRef.current?.abort(), []);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -318,7 +343,7 @@ export default function ChatInterface() {
                           arr.filter((_, idx) => idx !== i),
                         )
                       }
-                      className="text-black/40 hover:text-neutral-900"
+                      className="text-black/40 hover:text-ink"
                     >
                       ×
                     </button>
@@ -335,7 +360,7 @@ export default function ChatInterface() {
                 type="button"
                 onClick={() => setMode("chat")}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  mode === "chat" ? "bg-black/10 text-neutral-900" : "text-black/55 hover:text-neutral-900"
+                  mode === "chat" ? "bg-black/10 text-ink" : "text-black/55 hover:text-ink"
                 }`}
               >
                 NEXERA Chat
@@ -344,7 +369,7 @@ export default function ChatInterface() {
                 type="button"
                 onClick={() => setMode("code")}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  mode === "code" ? "bg-black/10 text-neutral-900" : "text-black/55 hover:text-neutral-900"
+                  mode === "code" ? "bg-black/10 text-ink" : "text-black/55 hover:text-ink"
                 }`}
               >
                 NEXERA Code
@@ -352,7 +377,7 @@ export default function ChatInterface() {
             </div>
             <a
               href="/workspace/code"
-              className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/50 hover:text-neutral-900"
+              className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/50 hover:text-ink"
               title="Full code workspace with file tree"
             >
               NEXERA Workspace ↗
@@ -366,7 +391,7 @@ export default function ChatInterface() {
                 <button
                   type="button"
                   onClick={() => setFolderRoot(null)}
-                  className="text-black/40 hover:text-neutral-900"
+                  className="text-black/40 hover:text-ink"
                   title="Close folder"
                 >
                   ×
@@ -399,7 +424,7 @@ export default function ChatInterface() {
 
           <form
             onSubmit={onSubmit}
-            className="rounded-2xl border border-line bg-white p-2 shadow-sm transition-all focus-within:border-brand/40 focus-within:shadow-md focus-within:shadow-brand/5 focus-within:ring-4 focus-within:ring-brand/10"
+            className="rounded-2xl border border-line bg-white p-2 shadow-soft transition-all focus-within:border-brand/40 focus-within:shadow-lift focus-within:ring-4 focus-within:ring-brand/10"
           >
             <textarea
               value={input}
@@ -421,14 +446,14 @@ export default function ChatInterface() {
                     : "Open a folder above, then describe the change…"
                   : "Ask, build, analyze, automate…"
               }
-              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[15px] text-neutral-900 placeholder:text-black/35 outline-none"
+              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[15px] text-ink placeholder:text-black/35 outline-none"
             />
             <div className="flex items-center justify-between px-1 pt-1">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-black/45 transition-colors hover:bg-black/5 hover:text-neutral-900"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-black/45 transition-colors hover:bg-black/5 hover:text-ink"
                   aria-label="Attach files"
                   title="Attach files"
                 >
@@ -447,20 +472,27 @@ export default function ChatInterface() {
                   {autoRoute ? "✦ Auto-route" : model}
                 </span>
               </div>
-              <button
-                type="submit"
-                disabled={!input.trim() || busy || (mode === "code" && !folderRoot)}
-                aria-label="Send message"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-navy text-white transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                {busy ? (
-                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-obsidian border-t-transparent" aria-hidden="true" />
-                ) : (
+              {busy ? (
+                <button
+                  type="button"
+                  onClick={stop}
+                  aria-label="Stop generating"
+                  className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-white transition-all hover:scale-105"
+                >
+                  <span className="h-3 w-3 rounded-[3px] bg-white" aria-hidden="true" />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={!input.trim() || (mode === "code" && !folderRoot)}
+                  aria-label="Send message"
+                  className="grid h-8 w-8 place-items-center rounded-lg bg-navy text-white transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-30"
+                >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M22 2 11 13M22 2l-7 20-4-9-9-4z" />
                   </svg>
-                )}
-              </button>
+                </button>
+              )}
             </div>
           </form>
           <p className="mt-2 text-center text-[11px] text-black/30">
@@ -507,7 +539,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
           <button
             key={s}
             onClick={() => onPick(s)}
-            className="group rounded-xl border border-line bg-white px-4 py-3 text-left text-[15px] text-ink/80 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md hover:shadow-brand/5"
+            className="group rounded-xl border border-line bg-white px-4 py-3 text-left text-[15px] text-ink/80 shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lift"
           >
             {s}
           </button>
@@ -538,7 +570,7 @@ function MessageRow({ message }: { message: Message }) {
         transition={{ duration: 0.3 }}
         className="flex justify-end"
       >
-        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-black/[0.08] px-4 py-2.5 text-[15px] leading-relaxed text-neutral-900">
+        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-black/[0.08] px-4 py-2.5 text-[15px] leading-relaxed text-ink">
           {attachments}
           <Content text={message.content} streaming={message.streaming} />
         </div>
@@ -546,21 +578,113 @@ function MessageRow({ message }: { message: Message }) {
     );
   }
 
+  const it = message.intent ? INTENTS[message.intent as Intent] : undefined;
+  const hex = it?.hex ?? "#3b82f6";
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex gap-3"
+      className="group flex gap-3"
     >
-      <div className="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg bg-gradient-to-br from-navy to-ice text-[11px] font-bold text-white">
-        ◈
+      {/* identity tile — tinted by the routed intent, not a flat box */}
+      <div
+        className="mt-0.5 grid h-8 w-8 flex-none place-items-center rounded-xl text-[15px]"
+        style={{
+          background: `linear-gradient(135deg, ${hex}22, ${hex}0a)`,
+          boxShadow: `inset 0 0 0 1px ${hex}33`,
+        }}
+        title={message.model ?? "NEXERA"}
+        aria-label={`${message.model ?? "NEXERA"} response`}
+      >
+        {intentEmoji(message.intent)}
       </div>
-      <div className="min-w-0 max-w-[85%] rounded-2xl rounded-tl-md border border-black/10 bg-white px-4 py-2.5 text-[15px] leading-relaxed text-black/90 shadow-sm">
-        {attachments}
-        <Content text={message.content} streaming={message.streaming} />
+      <div className="min-w-0 max-w-[85%]">
+        {message.model && (
+          <div className="mb-1.5 flex items-center gap-2">
+            <span className="text-[13px] font-medium text-ink">{message.model}</span>
+            {it && (
+              <span
+                className="rounded-full px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
+                style={{ background: `${hex}14`, color: hex }}
+              >
+                {it.label}
+              </span>
+            )}
+          </div>
+        )}
+        <div className="rounded-2xl rounded-tl-md border border-black/[0.07] bg-white px-4 py-3 text-[15px] leading-relaxed text-ink/90 shadow-soft">
+          {attachments}
+          {message.streaming && !message.content ? (
+            <ThinkingDots />
+          ) : (
+            <Content text={message.content} streaming={message.streaming} />
+          )}
+        </div>
+        {!message.streaming && message.content && (
+          <div className="mt-1.5 flex items-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <CopyButton text={message.content} />
+          </div>
+        )}
       </div>
     </motion.div>
+  );
+}
+
+// Shown in the assistant bubble before the first token lands — never a blank
+// gap. Pulsing dots + label, the ChatGPT/Claude "thinking" affordance.
+function ThinkingDots() {
+  return (
+    <div className="flex items-center gap-2 py-0.5 text-muted">
+      <span className="flex gap-1">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="h-1.5 w-1.5 rounded-full bg-muted"
+            animate={{ opacity: [0.25, 1, 0.25], y: [0, -2.5, 0] }}
+            transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: i * 0.16 }}
+          />
+        ))}
+      </span>
+      <span className="text-[13px]">Thinking…</span>
+    </div>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
+  return (
+    <button
+      onClick={copy}
+      aria-label="Copy response"
+      className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-black/40 transition-colors hover:bg-black/5 hover:text-ink"
+    >
+      {copied ? (
+        <>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+          Copied
+        </>
+      ) : (
+        <>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+          </svg>
+          Copy
+        </>
+      )}
+    </button>
   );
 }
 
@@ -583,11 +707,7 @@ function Content({
           const body = nl > -1 ? part.slice(nl + 1) : part;
           return <CodeBlock key={i} code={body.replace(/\n$/, "")} lang={lang || "code"} />;
         }
-        return (
-          <span key={i} className="whitespace-pre-wrap">
-            {renderInline(part)}
-          </span>
-        );
+        return <MarkdownBlocks key={i} text={part} />;
       })}
       {streaming && (
         <span className="ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-navy animate-blink" />
@@ -596,16 +716,228 @@ function Content({
   );
 }
 
-// Minimal **bold** inline rendering.
-function renderInline(text: string) {
-  return text.split(/(\*\*[^*]+\*\*)/).map((seg, i) => {
-    if (seg.startsWith("**") && seg.endsWith("**")) {
-      return (
-        <strong key={i} className="font-semibold text-neutral-900">
-          {seg.slice(2, -2)}
-        </strong>
-      );
+// ---- lightweight block markdown (headings, tables, paragraphs) ----
+// Code fences are already extracted by Content; this handles the prose between.
+
+type Block =
+  | { kind: "h"; level: number; text: string }
+  | { kind: "p"; text: string }
+  | { kind: "list"; ordered: boolean; items: string[] }
+  | { kind: "quote"; text: string }
+  | { kind: "table"; head: string[]; rows: string[][] };
+
+const BULLET = /^\s*[-*+]\s+(.*)$/;
+const NUMBERED = /^\s*\d+[.)]\s+(.*)$/;
+
+const tableCells = (row: string): string[] =>
+  row.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((c) => c.trim());
+
+function parseBlocks(text: string): Block[] {
+  const lines = text.split("\n");
+  const blocks: Block[] = [];
+  let para: string[] = [];
+  const flush = () => {
+    if (para.length) blocks.push({ kind: "p", text: para.join("\n") });
+    para = [];
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const h = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (h) {
+      flush();
+      blocks.push({ kind: "h", level: h[1].length, text: h[2] });
+      continue;
     }
-    return <span key={i}>{seg}</span>;
-  });
+    // Table = a pipe row immediately followed by a |---|---| separator.
+    const next = lines[i + 1] ?? "";
+    if (
+      /^\s*\|.*\|\s*$/.test(line) &&
+      /^\s*\|?[\s:|-]*-[\s:|-]*$/.test(next) &&
+      next.includes("|")
+    ) {
+      flush();
+      const head = tableCells(line);
+      const rows: string[][] = [];
+      i += 2; // consume header + separator
+      while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) {
+        rows.push(tableCells(lines[i]));
+        i++;
+      }
+      i--; // for-loop will ++ back
+      blocks.push({ kind: "table", head, rows });
+      continue;
+    }
+    // Blockquote: consecutive lines starting with ">".
+    if (/^\s*>\s?/.test(line)) {
+      flush();
+      const quoted: string[] = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+        quoted.push(lines[i].replace(/^\s*>\s?/, ""));
+        i++;
+      }
+      i--; // for-loop will ++ back
+      blocks.push({ kind: "quote", text: quoted.join("\n") });
+      continue;
+    }
+    // Lists: consecutive bullet (-,*,+) or numbered (1. / 1)) lines.
+    const bm = BULLET.exec(line);
+    const nm = NUMBERED.exec(line);
+    if (bm || nm) {
+      flush();
+      const ordered = Boolean(nm);
+      const re = ordered ? NUMBERED : BULLET;
+      const items: string[] = [];
+      while (i < lines.length) {
+        const mm = re.exec(lines[i]);
+        if (!mm) break;
+        items.push(mm[1]);
+        i++;
+      }
+      i--; // for-loop will ++ back
+      blocks.push({ kind: "list", ordered, items });
+      continue;
+    }
+    if (line.trim() === "") {
+      flush();
+      continue;
+    }
+    para.push(line);
+  }
+  flush();
+  return blocks;
+}
+
+const HEAD_CLS: Record<number, string> = {
+  1: "mt-3 mb-1.5 text-lg font-semibold text-ink first:mt-0",
+  2: "mt-3 mb-1.5 text-base font-semibold text-ink first:mt-0",
+  3: "mt-2.5 mb-1 text-[15px] font-semibold text-ink first:mt-0",
+};
+
+function MarkdownBlocks({ text }: { text: string }) {
+  const blocks = parseBlocks(text);
+  return (
+    <>
+      {blocks.map((b, i) => {
+        if (b.kind === "h") {
+          return (
+            <p key={i} className={HEAD_CLS[b.level] ?? HEAD_CLS[3]}>
+              {renderInline(b.text)}
+            </p>
+          );
+        }
+        if (b.kind === "quote") {
+          return (
+            <blockquote
+              key={i}
+              className="my-2 border-l-2 border-brand/30 pl-3 text-ink/70 [&_p]:my-0"
+            >
+              <MarkdownBlocks text={b.text} />
+            </blockquote>
+          );
+        }
+        if (b.kind === "list") {
+          const Tag = b.ordered ? "ol" : "ul";
+          return (
+            <Tag
+              key={i}
+              className={`my-1.5 space-y-0.5 pl-5 marker:text-muted ${
+                b.ordered ? "list-decimal" : "list-disc"
+              }`}
+            >
+              {b.items.map((it, j) => (
+                <li key={j} className="whitespace-pre-wrap pl-0.5">
+                  {renderInline(it)}
+                </li>
+              ))}
+            </Tag>
+          );
+        }
+        if (b.kind === "table") {
+          return (
+            <div key={i} className="my-2 overflow-x-auto">
+              <table className="w-full border-collapse text-[13px]">
+                <thead>
+                  <tr>
+                    {b.head.map((c, j) => (
+                      <th
+                        key={j}
+                        className="border border-black/10 bg-black/[0.03] px-3 py-1.5 text-left font-semibold text-ink"
+                      >
+                        {renderInline(c)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {b.rows.map((row, r) => (
+                    <tr key={r}>
+                      {row.map((c, j) => (
+                        <td
+                          key={j}
+                          className="border border-black/10 px-3 py-1.5 align-top text-ink/85"
+                        >
+                          {renderInline(c)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+        return (
+          <p key={i} className="whitespace-pre-wrap [&:not(:first-child)]:mt-2">
+            {renderInline(b.text)}
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
+// Inline markdown: **bold**, `code`, and [links](url).
+function renderInline(text: string) {
+  return text
+    .split(/(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/)
+    .map((seg, i) => {
+      if (seg.startsWith("**") && seg.endsWith("**")) {
+        return (
+          <strong key={i} className="font-semibold text-ink">
+            {seg.slice(2, -2)}
+          </strong>
+        );
+      }
+      if (seg.startsWith("`") && seg.endsWith("`") && seg.length > 1) {
+        return (
+          <code
+            key={i}
+            className="rounded bg-black/[0.06] px-1 py-0.5 font-mono text-[0.85em] text-ink"
+          >
+            {seg.slice(1, -1)}
+          </code>
+        );
+      }
+      const lm = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(seg);
+      if (lm) {
+        const url = lm[2].trim();
+        // Only render an anchor for safe schemes — never javascript:/data:.
+        if (/^(https?:|mailto:)/i.test(url)) {
+          return (
+            <a
+              key={i}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand underline underline-offset-2 hover:text-brand-600"
+            >
+              {lm[1]}
+            </a>
+          );
+        }
+        return <span key={i}>{lm[1]}</span>;
+      }
+      return <span key={i}>{seg}</span>;
+    });
 }

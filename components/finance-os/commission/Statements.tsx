@@ -137,7 +137,7 @@ function AuditTrail({ audit }: { audit: AuditRecord[] }) {
   if (!audit.length) return null;
   return (
     <div className="rounded-2xl border border-line bg-white p-5">
-      <h3 className="mb-3 text-sm font-semibold text-neutral-900">Audit trail</h3>
+      <h3 className="mb-3 text-sm font-semibold text-ink">Audit trail</h3>
       <div className="space-y-2">
         {audit.map((a) => (
           <div key={a.runId} className="rounded-lg border border-line bg-canvas px-3 py-2 text-xs">

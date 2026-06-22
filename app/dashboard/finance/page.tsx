@@ -37,7 +37,7 @@ export default function FinancePage() {
                 : "border-black/10 hover:bg-black/[0.03]"
             }`}
           >
-            <span className="block text-sm font-semibold text-neutral-900">{t.label}</span>
+            <span className="block text-sm font-semibold text-ink">{t.label}</span>
             <span className="block text-xs text-black/45">{t.desc}</span>
           </button>
         ))}

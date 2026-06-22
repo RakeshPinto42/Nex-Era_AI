@@ -7,7 +7,7 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { PRESET_BY_ID, type ProviderPreset } from "./providers";
-import { resolveActive, resolveCandidates, getKey } from "./store";
+import { resolveActive, resolveCandidates, getKey, isFreeModel } from "./store";
 
 export type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -81,10 +81,16 @@ export async function streamChatWithFallback(
   system: string,
   messages: ChatMsg[],
   preferred?: { providerId?: string; model?: string },
-  opts?: { maxTokens?: number },
+  opts?: { maxTokens?: number; freeOnly?: boolean },
 ): Promise<(InferResult & { fellBack: boolean }) | null> {
   const maxTokens = opts?.maxTokens ?? 1500;
   let candidates = await resolveCandidates();
+
+  // Agentic CI work restricts to OpenRouter free-tier models — rotate across the
+  // :free pool only, never a paid/non-free provider.
+  if (opts?.freeOnly) {
+    candidates = candidates.filter((c) => c.providerId === "openrouter" && isFreeModel(c.model));
+  }
 
   // An explicitly-picked model (router / agent selector) goes first, then the
   // rest act as automatic fallbacks if it 429s.
@@ -129,8 +135,8 @@ export async function streamChatWithFallback(
     if (res.dead) deadProviders.add(c.providerId);
   }
 
-  // Env Anthropic key as a last resort.
-  if (process.env.ANTHROPIC_API_KEY) {
+  // Env Anthropic key as a last resort — skipped in free-only mode (it's paid).
+  if (!opts?.freeOnly && process.env.ANTHROPIC_API_KEY) {
     const res = await tryConnect(
       PRESET_BY_ID["anthropic"],
       process.env.ANTHROPIC_API_KEY,
@@ -174,7 +180,7 @@ export async function completeWithFallback(
   system: string,
   messages: ChatMsg[],
   preferred?: { providerId?: string; model?: string },
-  opts?: { maxTokens?: number },
+  opts?: { maxTokens?: number; freeOnly?: boolean },
 ): Promise<{ text: string; provider: string; model: string } | null> {
   const result = await streamChatWithFallback(system, messages, preferred, opts);
   if (!result) return null;

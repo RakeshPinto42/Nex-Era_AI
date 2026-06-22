@@ -29,7 +29,7 @@ export default function LogsPanel() {
         {logs.length > 0 && (
           <button
             onClick={clearLogs}
-            className="font-mono text-[11px] text-black/40 hover:text-neutral-900"
+            className="font-mono text-[11px] text-black/40 hover:text-ink"
           >
             clear
           </button>

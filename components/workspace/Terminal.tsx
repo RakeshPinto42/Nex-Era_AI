@@ -26,7 +26,7 @@ export default function Terminal() {
                   rak@{folderName}
                 </span>
                 <span className="text-black/40">:~$ </span>
-                <span className="text-neutral-900">{l.text}</span>
+                <span className="text-ink">{l.text}</span>
               </span>
             ) : l.kind === "err" ? (
               <span className="text-[#ff8a8a]">{l.text}</span>

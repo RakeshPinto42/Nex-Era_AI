@@ -66,7 +66,7 @@ export default function FeatureGrid() {
         <p className="text-center font-mono text-xs uppercase tracking-[0.25em] text-navy/80">
           The Operating System
         </p>
-        <h2 className="mx-auto mt-4 max-w-3xl text-center text-3xl font-semibold tracking-tight sm:text-5xl">
+        <h2 className="heading-lift-gradient mx-auto mt-4 max-w-3xl text-center text-3xl font-semibold tracking-tight sm:text-5xl">
           <span className="text-gradient">
             Every capability, one surface.
           </span>
@@ -86,7 +86,7 @@ export default function FeatureGrid() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
-                className={`group relative overflow-hidden rounded-2xl glass p-6 transition-colors hover:bg-black/[0.06] ${
+                className={`group relative overflow-hidden rounded-2xl glass p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/15 hover:shadow-lift ${
                   f.span ?? ""
                 }`}
               >
@@ -109,7 +109,7 @@ export default function FeatureGrid() {
                     {it.label}
                   </span>
                 </div>
-                <h3 className="mt-5 text-lg font-semibold text-neutral-900">
+                <h3 className="mt-5 text-lg font-semibold text-ink">
                   {f.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-black/55">

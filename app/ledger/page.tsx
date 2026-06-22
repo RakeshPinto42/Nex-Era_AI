@@ -18,7 +18,7 @@ export default function FinanceOsHome() {
       <header className="border-b border-line bg-white px-6 py-8">
         <div className="mx-auto max-w-6xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-brand-600">NEXERA Workspace</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-neutral-900">NEXERA Ledger</h1>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink">NEXERA Ledger</h1>
           <p className="mt-1 text-base text-muted">Commercial Finance Toolkit</p>
           <div className="mt-4 max-w-xl"><PrivacyNote /></div>
         </div>
@@ -47,7 +47,7 @@ export default function FinanceOsHome() {
                     <span className="grid h-11 w-11 place-items-center rounded-xl" style={{ background: `${id.accent}1a`, color: id.accent }}>
                       <Icon size={22} />
                     </span>
-                    <h3 className="mt-4 font-semibold text-neutral-900">{m.name}</h3>
+                    <h3 className="mt-4 font-semibold text-ink">{m.name}</h3>
                     <p className="mt-1 flex-1 text-sm text-muted">{m.desc}</p>
                     <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium transition-transform group-hover:translate-x-0.5" style={{ color: id.accent }}>
                       Open →
@@ -75,7 +75,7 @@ export default function FinanceOsHome() {
                   <Icon size={18} />
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-neutral-900">{m.name}</p>
+                  <p className="truncate text-sm font-semibold text-ink">{m.name}</p>
                   <p className="truncate text-xs text-muted">{m.desc}</p>
                 </div>
               </Link>

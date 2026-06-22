@@ -10,7 +10,7 @@ export function Kpi({ label, value, tone = "neutral" }: { label: string; value: 
   const txt =
     tone === "good" ? "text-emerald-400" : tone === "bad" ? "text-rose-400" : tone === "brand" ? "text-blue-300" : "text-fos-text";
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
       <p className="font-mono text-[10px] uppercase tracking-wider text-fos-muted">{label}</p>
       <p className={cn("mt-1 text-2xl font-semibold tabular-nums", txt)}>{value}</p>
     </div>
@@ -19,7 +19,7 @@ export function Kpi({ label, value, tone = "neutral" }: { label: string; value: 
 
 export function Card({ title, children, action }: { title: string; children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-fos-border bg-fos-surface">
+    <div className="overflow-hidden rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)]">
       <div className="flex items-center justify-between border-b border-fos-border px-4 py-3">
         <p className="text-sm font-semibold text-fos-text">{title}</p>
         {action}

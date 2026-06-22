@@ -30,7 +30,7 @@ export async function runWebAgent(input: {
     const context = s.results
       .map((r, i) => `[Source ${i + 1}] ${r.title}\nURL: ${r.url}\n${(r.raw_content || r.content || "").slice(0, 2200)}`)
       .join("\n\n---\n\n");
-    const out = await completeWithFallback(input.system, [{ role: "user", content: `${input.user}\n\nSearch results:\n\n${context}` }], undefined, { maxTokens: input.maxTokens ?? 1800 });
+    const out = await completeWithFallback(input.system, [{ role: "user", content: `${input.user}\n\nSearch results:\n\n${context}` }], undefined, { maxTokens: input.maxTokens ?? 1800, freeOnly: true });
     if (!out) return { ok: false, status: 503, error: "no_provider" };
     return { ok: true, text: out.text, sources, model: out.model, backend: "tavily", estimated: false };
   }

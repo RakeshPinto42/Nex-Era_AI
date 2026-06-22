@@ -74,6 +74,11 @@ const config: Config = {
       boxShadow: {
         glow: "0 0 50px -12px rgba(59,130,246,0.45)",
         "glow-blue": "0 0 60px -15px rgba(139,92,246,0.4)",
+        // Light-theme elevation scale — cool ink-tinted shadows, never raw black.
+        // soft = resting card, lift = hover / showpiece panel, pop = popover/menu.
+        soft: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.10)",
+        lift: "0 2px 6px rgba(15,23,42,0.05), 0 18px 44px -16px rgba(15,23,42,0.20)",
+        pop: "0 4px 12px rgba(15,23,42,0.08), 0 22px 52px -18px rgba(15,23,42,0.26)",
       },
       keyframes: {
         float: {

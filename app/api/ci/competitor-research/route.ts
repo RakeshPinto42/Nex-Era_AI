@@ -7,6 +7,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { runWebAgent } from "@/lib/finance-os/ci/agent/research-core";
 import type { CompetitorProduct } from "@/lib/finance-os/ci/agent/types";
 
+// Web search + LLM extraction can run tens of seconds — raise past Vercel's 10s
+// default (Hobby max 60s; bump to 300 on Pro).
+export const maxDuration = 60;
+
 const EXTRACT_SYSTEM = `You are a competitive-pricing research agent. Using web search, find the competitor's products and pricing, then output them.
 Output STRICT JSON ONLY (no prose, no markdown fences):
 {"products":[{"product":string,"sku":string|null,"category":string|null,"price":number|null,"currency":string|null,"features":string[],"sourceUrl":string|null,"note":string|null}]}

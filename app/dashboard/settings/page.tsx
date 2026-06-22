@@ -37,7 +37,7 @@ function Section({
 }) {
   return (
     <Reveal className="rounded-2xl border border-black/10 bg-black/[0.03] p-5">
-      <h2 className="mb-4 text-sm font-semibold text-neutral-900">{title}</h2>
+      <h2 className="mb-4 text-sm font-semibold text-ink">{title}</h2>
       <div className="space-y-4">{children}</div>
     </Reveal>
   );
@@ -79,13 +79,13 @@ export default function SettingsPage() {
             <Row label="Name">
               <input
                 defaultValue="Rakesh Pinto"
-                className="w-48 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-neutral-900 outline-none focus:border-navy/40"
+                className="w-48 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
               />
             </Row>
             <Row label="Email">
               <input
                 defaultValue="rakesh.pinto42@gmail.com"
-                className="w-48 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-neutral-900 outline-none focus:border-navy/40"
+                className="w-48 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
               />
             </Row>
             <Row label="Plan" desc="Pro · renews monthly">
@@ -108,7 +108,7 @@ export default function SettingsPage() {
                 <select
                   value={activeModel ? modelKey(activeModel) : ""}
                   onChange={(e) => setActiveModel(e.target.value)}
-                  className="w-56 cursor-pointer rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-neutral-900 outline-none focus:border-navy/40"
+                  className="w-56 cursor-pointer rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
                 >
                   {availableModels.map((m) => (
                     <option
@@ -135,7 +135,7 @@ export default function SettingsPage() {
 
           <Section title="Appearance">
             <Row label="Theme" desc="Obsidian dark is optimized for NEXERA">
-              <span className="rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-neutral-900">
+              <span className="rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink">
                 Obsidian
               </span>
             </Row>

@@ -27,7 +27,7 @@ export default function CodeBlock({
         <span className="font-mono text-xs text-black/45">{lang}</span>
         <button
           onClick={copy}
-          className="flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-xs text-black/50 transition-colors hover:bg-black/5 hover:text-neutral-900"
+          className="flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-xs text-black/50 transition-colors hover:bg-black/5 hover:text-ink"
         >
           {copied ? "✓ Copied" : "Copy"}
         </button>

@@ -32,7 +32,7 @@ export default function ConnectWallet({ compact = false }: { compact?: boolean }
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -6, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-black/10 bg-white/95 p-1.5 shadow-2xl shadow-black/60 backdrop-blur-xl"
+                className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-line bg-white/95 p-1.5 shadow-pop backdrop-blur-xl"
               >
                 <div className="border-b border-black/10 px-3 py-2.5">
                   <p className="font-mono text-xs text-black/50">Connected identity</p>
@@ -46,7 +46,7 @@ export default function ConnectWallet({ compact = false }: { compact?: boolean }
                     navigator.clipboard?.writeText(address);
                     setOpen(false);
                   }}
-                  className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-black/70 hover:bg-black/5 hover:text-neutral-900"
+                  className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-black/70 hover:bg-black/5 hover:text-ink"
                 >
                   Copy address
                 </button>

@@ -69,7 +69,7 @@ export default function ImagesPage() {
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && generate(prompt)}
           placeholder="Describe an image… e.g. obsidian trading terminal, navy glow"
-          className="flex-1 bg-transparent px-3 py-2 text-sm text-neutral-900 placeholder:text-black/35 outline-none"
+          className="flex-1 bg-transparent px-3 py-2 text-sm text-ink placeholder:text-black/35 outline-none"
         />
         <button
           onClick={() => generate(prompt)}
@@ -90,7 +90,7 @@ export default function ImagesPage() {
             key={s}
             onClick={() => generate(s)}
             disabled={busy}
-            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/55 transition-colors hover:text-neutral-900 disabled:opacity-40"
+            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/55 transition-colors hover:text-ink disabled:opacity-40"
           >
             {s.split(",")[0]}
           </button>

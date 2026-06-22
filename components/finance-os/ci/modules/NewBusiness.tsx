@@ -43,7 +43,7 @@ export function NewBusiness() {
       <Group title="White-Space (competitors sell, Sonny's doesn't)" opps={whiteSpace} empty="No category white-space found in the current catalogs." />
       <Group title="Adjacency Attaches (service · chemical · reclaim · subscription)" opps={adjacency} />
       <Group title="Strategic Expansion" opps={strategic} />
-      <p className="font-mono text-[10px] text-fos-faint">Revenue sizing needs Sonny's internal customer/sales data (add locally later). These are evidence- and framework-based, not dollar estimates.</p>
+      <p className="font-mono text-[10px] text-fos-faint">Revenue sizing needs Sonny&apos;s internal customer/sales data (add locally later). These are evidence- and framework-based, not dollar estimates.</p>
     </div>
   );
 }

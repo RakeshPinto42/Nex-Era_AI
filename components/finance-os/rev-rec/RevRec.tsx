@@ -57,7 +57,7 @@ export function RevRec() {
           </KpiGrid>
 
           <div className="rounded-xl border border-line bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold text-neutral-900">Checks</h3>
+            <h3 className="mb-3 text-sm font-semibold text-ink">Checks</h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {Object.entries(result.byCheck).map(([check, count]) => (
                 <span key={check} className="rounded-full border border-line px-2.5 py-0.5 text-ink/70">
@@ -69,7 +69,7 @@ export function RevRec() {
           </div>
 
           <div className="rounded-xl border border-line bg-white p-4">
-            <h3 className="mb-3 text-sm font-semibold text-neutral-900">Exceptions</h3>
+            <h3 className="mb-3 text-sm font-semibold text-ink">Exceptions</h3>
             <ExceptionPanel exceptions={result.exceptions} />
           </div>
         </div>

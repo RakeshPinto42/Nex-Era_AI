@@ -139,7 +139,7 @@ export function CompetitorIntelligence() {
   return (
     <div className="space-y-5">
       {/* targets: Sonny's + the fixed competitor set */}
-      <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
         <div className="flex items-center gap-2">
           <Building2 size={15} className="text-blue-300" />
           <p className="text-sm font-semibold text-fos-text">Sonny&apos;s vs Competitors</p>
@@ -169,7 +169,7 @@ export function CompetitorIntelligence() {
       </div>
 
       {/* discovery (find more competitors) */}
-      <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+      <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
         <div className="flex items-center gap-2">
           <Building2 size={15} className="text-blue-300" />
           <p className="text-sm font-semibold text-fos-text">Discover competitors</p>

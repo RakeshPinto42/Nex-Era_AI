@@ -37,7 +37,7 @@ export function UploadMapper({
       <PrivacyNote />
       <div className="rounded-2xl border border-line bg-white p-5">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-neutral-900">Data</h3>
+          <h3 className="text-sm font-semibold text-ink">Data</h3>
           {sample && (
             <button
               onClick={() => {
@@ -62,7 +62,7 @@ export function UploadMapper({
 
       {table && (
         <div className="rounded-2xl border border-line bg-white p-5">
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">{mapTitle}</h3>
+          <h3 className="mb-3 text-sm font-semibold text-ink">{mapTitle}</h3>
           <ColumnMapper table={table} fields={fields} value={mapping} onChange={setMapping} />
         </div>
       )}

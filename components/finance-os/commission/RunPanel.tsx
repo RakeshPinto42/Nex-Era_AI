@@ -119,7 +119,7 @@ export function RunPanel({
 
       <div className={card}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-neutral-900">1 · Data</h3>
+          <h3 className="text-sm font-semibold text-ink">1 · Data</h3>
           <button onClick={loadSample} className="rounded-lg border border-line px-3 py-1.5 text-xs text-ink hover:bg-canvas">
             Load sample data
           </button>
@@ -132,7 +132,7 @@ export function RunPanel({
 
       {sales && (
         <div className={card}>
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">2 · Map sales columns</h3>
+          <h3 className="mb-3 text-sm font-semibold text-ink">2 · Map sales columns</h3>
           <ColumnMapper
             table={sales.table}
             fields={SALES_FIELDS}
@@ -144,7 +144,7 @@ export function RunPanel({
 
       {targets && (
         <div className={card}>
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">3 · Map target columns</h3>
+          <h3 className="mb-3 text-sm font-semibold text-ink">3 · Map target columns</h3>
           <ColumnMapper
             table={targets.table}
             fields={TARGET_FIELDS}
@@ -156,7 +156,7 @@ export function RunPanel({
 
       {exceptions && (
         <div className={card}>
-          <h3 className="mb-3 text-sm font-semibold text-neutral-900">Validation</h3>
+          <h3 className="mb-3 text-sm font-semibold text-ink">Validation</h3>
           <ExceptionPanel exceptions={exceptions} />
         </div>
       )}

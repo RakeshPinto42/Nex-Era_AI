@@ -37,6 +37,9 @@ export type ChatMessage = {
   content: string;
   streaming?: boolean;
   attachments?: ChatAttachment[];
+  /** Routed intent + model label for this assistant turn (drives the emoji avatar). */
+  intent?: string;
+  model?: string;
 };
 export type Conversation = {
   id: string;

@@ -36,7 +36,7 @@ export default function Hero() {
 
         <motion.h1
           variants={item}
-          className="text-[3rem] font-bold leading-[1.02] tracking-tight sm:text-[5rem]"
+          className="heading-lift-gradient text-[3rem] font-bold leading-[1.02] tracking-tight sm:text-[5rem]"
         >
           <span className="block text-gradient">One Interface.</span>
           <span className="block text-gradient-emerald">Infinite Models.</span>

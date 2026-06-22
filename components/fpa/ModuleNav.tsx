@@ -47,14 +47,14 @@ export default function ModuleNav() {
       <div className="border-t border-black/10 p-3">
         <Link
           href="/admin"
-          className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-black/55 transition-colors hover:text-neutral-900"
+          className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-black/55 transition-colors hover:text-ink"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-ice/60" />
           Admin · Model Providers
         </Link>
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-black/45 transition-colors hover:text-neutral-900"
+          className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-black/45 transition-colors hover:text-ink"
         >
           ← Back to NEXERA
         </Link>
@@ -81,10 +81,10 @@ function NavLink({
       href={href}
       className={`relative my-0.5 flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors ${
         active
-          ? "text-neutral-900"
+          ? "text-ink"
           : soon
             ? "text-black/35 hover:bg-black/[0.03] hover:text-black/60"
-            : "text-black/55 hover:bg-black/[0.04] hover:text-neutral-900"
+            : "text-black/55 hover:bg-black/[0.04] hover:text-ink"
       }`}
     >
       {active && (

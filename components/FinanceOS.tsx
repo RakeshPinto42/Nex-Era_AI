@@ -30,7 +30,7 @@ export default function FinanceOS() {
             >
               Ledger · Reasoning
             </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
+            <h2 className="heading-lift-gradient mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
               <span className="text-gradient">Your finance team,</span>{" "}
               <span className="text-gradient-emerald">on autopilot.</span>
             </h2>
@@ -64,7 +64,7 @@ export default function FinanceOS() {
                     </svg>
                   </span>
                   <div>
-                    <p className="text-sm font-medium text-neutral-900">{c.title}</p>
+                    <p className="text-sm font-medium text-ink">{c.title}</p>
                     <p className="text-sm text-black/45">{c.desc}</p>
                   </div>
                 </motion.div>
@@ -78,14 +78,14 @@ export default function FinanceOS() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7 }}
-            className="relative rounded-2xl glass-strong p-6 shadow-2xl shadow-black/50"
+            className="relative rounded-2xl glass-strong p-6 shadow-lift"
           >
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-mono text-xs uppercase tracking-widest text-black/40">
                   Q4 Forecast
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-neutral-900">
+                <p className="mt-1 text-2xl font-semibold text-ink">
                   $4.82M
                 </p>
               </div>
@@ -131,7 +131,7 @@ export default function FinanceOS() {
                   <p className="font-mono text-[11px] uppercase tracking-wider text-black/40">
                     {s.k}
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-neutral-900">{s.v}</p>
+                  <p className="mt-1 text-sm font-semibold text-ink">{s.v}</p>
                 </div>
               ))}
             </div>

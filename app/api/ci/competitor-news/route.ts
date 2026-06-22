@@ -6,6 +6,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runWebAgent } from "@/lib/finance-os/ci/agent/research-core";
 
+// Web search + LLM validation can run tens of seconds — raise past Vercel's 10s
+// default (Hobby max 60s; bump to 300 on Pro).
+export const maxDuration = 60;
+
 const SYSTEM = `You monitor a competitor for commercial news using web search, then VALIDATE each item and rate its business impact on Sonny's (a car-wash equipment maker).
 Find RECENT news: product launches, acquisitions/M&A, dealer or territory expansion, technology releases, partnerships, executive changes, trade-show announcements, new service programs.
 Output STRICT JSON ONLY (no prose, no markdown): {"news":[{"headline":string,"type":string,"date":string|null,"summary":string,"url":string|null,"assessment":"Threat"|"Opportunity"|"Neutral","impact":"High"|"Medium"|"Low","impactRationale":string,"response":string}]}

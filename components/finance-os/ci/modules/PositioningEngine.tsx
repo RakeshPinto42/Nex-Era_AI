@@ -40,7 +40,7 @@ export function PositioningEngine() {
                 <th className="py-2 text-left">Competitor</th>
                 <th className="py-2">Products</th>
                 <th className="py-2">Avg Price</th>
-                <th className="py-2">vs Sonny's</th>
+                <th className="py-2">vs Sonny&apos;s</th>
                 <th className="py-2 text-right">Threat</th>
               </tr>
             </thead>
@@ -59,7 +59,7 @@ export function PositioningEngine() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 font-mono text-[10px] text-fos-faint">"vs Sonny's" = competitor avg price relative to ours (negative = they undercut). Threat blends undercut + range.</p>
+        <p className="mt-2 font-mono text-[10px] text-fos-faint">&quot;vs Sonny&apos;s&quot; = competitor avg price relative to ours (negative = they undercut). Threat blends undercut + range.</p>
       </Card>
 
       <Card title="Category Position">

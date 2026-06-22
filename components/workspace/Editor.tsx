@@ -39,7 +39,7 @@ export default function Editor() {
               onClick={() => setActive(path)}
               className={`group flex flex-none items-center gap-2 border-r border-black/10 px-3 py-2.5 text-xs ${
                 isActive
-                  ? "bg-white/60 text-neutral-900"
+                  ? "bg-white/60 text-ink"
                   : "text-black/45 hover:bg-black/[0.03] hover:text-black/70"
               }`}
             >
@@ -51,7 +51,7 @@ export default function Editor() {
                   e.stopPropagation();
                   closeTab(path);
                 }}
-                className="ml-1 rounded px-1 text-black/30 opacity-0 hover:bg-black/10 hover:text-neutral-900 group-hover:opacity-100"
+                className="ml-1 rounded px-1 text-black/30 opacity-0 hover:bg-black/10 hover:text-ink group-hover:opacity-100"
               >
                 ×
               </span>

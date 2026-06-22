@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDashboard, modelKey } from "./store";
-import { INTENTS, type Intent } from "@/lib/brand/intent";
+import { INTENTS, intentEmoji, type Intent } from "@/lib/brand/intent";
 import Logo from "@/components/Logo";
 
 export default function TopBar({ onMenu }: { onMenu?: () => void }) {
@@ -26,13 +26,13 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
   };
 
   return (
-    <header className="flex h-14 flex-none items-center gap-3 border-b border-black/10 bg-white/50 px-4 backdrop-blur-xl">
+    <header className="flex h-14 flex-none items-center gap-3 border-b border-black/[0.06] bg-white/60 px-4 backdrop-blur-xl">
       {/* mobile menu */}
       <button
         type="button"
         onClick={onMenu}
         aria-label="Open navigation menu"
-        className="grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-black/70 hover:bg-black/5 hover:text-neutral-900 lg:hidden"
+        className="grid h-9 w-9 place-items-center rounded-lg border border-black/10 text-black/70 hover:bg-black/5 hover:text-ink lg:hidden"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
           <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
@@ -66,7 +66,7 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
           type="search"
           aria-label="Search chats, files and agents"
           placeholder="Search chats, files, agents…"
-          className="w-full rounded-lg border border-black/10 bg-black/[0.04] py-2 pl-9 pr-16 text-sm text-neutral-900 placeholder:text-black/35 outline-none transition-colors focus:border-navy/40 focus:bg-black/[0.06]"
+          className="w-full rounded-lg border border-black/10 bg-black/[0.04] py-2 pl-9 pr-16 text-sm text-ink placeholder:text-black/35 outline-none transition-colors focus:border-navy/40 focus:bg-black/[0.06]"
         />
         <kbd className="absolute right-2.5 hidden rounded border border-black/10 bg-black/5 px-1.5 py-0.5 font-mono text-[10px] text-black/40 sm:block">
           ⌘K
@@ -104,10 +104,10 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -6, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-black/10 bg-white/95 p-1.5 shadow-2xl shadow-black/60 backdrop-blur-xl"
+                className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-black/10 bg-white/95 p-1.5 shadow-pop backdrop-blur-xl"
               >
                 <div className="border-b border-black/10 px-3 py-2.5">
-                  <p className="text-sm font-medium text-neutral-900">
+                  <p className="text-sm font-medium text-ink">
                     {me?.username ?? "…"}
                   </p>
                   <p className="text-xs capitalize text-black/40">
@@ -117,7 +117,7 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
                 {me?.role === "admin" && (
                   <a
                     href="/admin"
-                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-black/70 transition-colors hover:bg-black/5 hover:text-neutral-900"
+                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-black/70 transition-colors hover:bg-black/5 hover:text-ink"
                   >
                     API Keys / Providers
                   </a>
@@ -135,11 +135,6 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
       </div>
     </header>
   );
-}
-
-function intentDot(intent?: string): string {
-  const it = intent ? INTENTS[intent as Intent] : undefined;
-  return it ? it.hex : "#5e9dff";
 }
 
 // Friendly capability label per model intent.
@@ -180,7 +175,7 @@ function ModelPicker() {
     return (
       <a
         href="/admin"
-        className="hidden items-center gap-1.5 rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/55 transition-colors hover:text-neutral-900 sm:flex"
+        className="hidden items-center gap-1.5 rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/55 transition-colors hover:text-ink sm:flex"
       >
         + Add provider
       </a>
@@ -200,15 +195,14 @@ function ModelPicker() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-lg border border-black/10 bg-black/[0.03] px-3 py-1.5 text-sm text-neutral-900 transition-colors hover:bg-black/[0.06]"
+        className="flex items-center gap-2 rounded-lg border border-black/10 bg-black/[0.03] px-3 py-1.5 text-sm text-ink transition-colors hover:bg-black/[0.06]"
       >
         {autoRoute ? (
           <span className="font-mono text-xs font-semibold text-navy">✦ Auto</span>
         ) : (
-          <span
-            className="h-1.5 w-1.5 flex-none rounded-full"
-            style={{ background: intentDot(activeModel?.intent) }}
-          />
+          <span className="text-sm leading-none" aria-hidden="true">
+            {intentEmoji(activeModel?.intent)}
+          </span>
         )}
         <span className="max-w-[110px] truncate sm:max-w-[170px]">
           {autoRoute
@@ -232,7 +226,7 @@ function ModelPicker() {
               exit={{ opacity: 0, y: -6, scale: 0.97 }}
               transition={{ duration: 0.15 }}
               role="listbox"
-              className="absolute left-0 z-50 mt-2 max-h-[66vh] w-80 overflow-y-auto rounded-xl border border-black/10 bg-white/95 p-1.5 shadow-2xl shadow-black/60 backdrop-blur-xl"
+              className="absolute left-0 z-50 mt-2 max-h-[66vh] w-80 overflow-y-auto rounded-xl border border-black/10 bg-white/95 p-1.5 shadow-pop backdrop-blur-xl"
             >
               {/* Auto */}
               <button
@@ -251,7 +245,7 @@ function ModelPicker() {
                   ✦
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-neutral-900">
+                  <span className="block text-sm font-semibold text-ink">
                     Auto
                   </span>
                   <span className="block truncate text-[11px] text-black/45">
@@ -283,12 +277,11 @@ function ModelPicker() {
                       isActive ? "bg-black/[0.06]" : "hover:bg-black/5"
                     }`}
                   >
-                    <span
-                      className="h-2 w-2 flex-none rounded-full"
-                      style={{ background: intentDot(m.intent) }}
-                    />
+                    <span className="grid h-7 w-7 flex-none place-items-center rounded-lg border border-black/10 bg-white text-sm" aria-hidden="true">
+                      {intentEmoji(m.intent)}
+                    </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm text-neutral-900">
+                      <span className="block truncate text-sm text-ink">
                         {m.label}
                       </span>
                       <span className="block truncate font-mono text-[10px] text-black/40">

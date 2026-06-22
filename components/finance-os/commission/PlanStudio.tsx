@@ -139,7 +139,7 @@ export function PlanStudio({
       {/* components */}
       <div className={card}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-neutral-900">
+          <h3 className="text-sm font-semibold text-ink">
             {plan.basis === "hybrid" ? "Components (weighted)" : "Slab schedule"}
           </h3>
           {plan.basis === "hybrid" && (
@@ -167,7 +167,7 @@ export function PlanStudio({
       {/* modifiers */}
       <div className={card}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-neutral-900">Modifiers</h3>
+          <h3 className="text-sm font-semibold text-ink">Modifiers</h3>
           <select
             className="rounded-lg border border-line bg-white px-2.5 py-1 text-xs text-ink"
             value=""

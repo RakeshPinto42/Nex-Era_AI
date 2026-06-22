@@ -16,7 +16,7 @@ export function RankingTable({
 }) {
   const max = Math.max(1, ...items.map((i) => Math.abs(i.value)));
   return (
-    <div className="rounded-xl border border-fos-border bg-fos-surface p-4">
+    <div className="rounded-2xl border border-fos-border bg-fos-surface shadow-[var(--fos-shadow)] p-4">
       <p className="mb-3 text-sm font-semibold text-fos-text">{title}</p>
       <div className="space-y-2">
         {items.length === 0 && <p className="text-xs text-fos-muted">No data.</p>}

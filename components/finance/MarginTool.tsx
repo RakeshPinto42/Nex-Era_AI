@@ -105,8 +105,8 @@ export default function MarginTool() {
             <div className="flex items-center justify-between border-b border-black/10 bg-black/[0.02] px-4 py-2.5">
               <span className="font-mono text-[11px] uppercase tracking-widest text-black/45">Segment detail</span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-neutral-900">Export CSV</button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-neutral-900">New file</button>
+                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">Export CSV</button>
+                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">New file</button>
               </div>
             </div>
             <div className="max-h-[420px] overflow-y-auto">
@@ -123,10 +123,10 @@ export default function MarginTool() {
                 <tbody>
                   {result.rows.map((r, i) => (
                     <tr key={i} className="border-b border-black/5 last:border-0">
-                      <td className="px-4 py-2 text-neutral-900">{r.segment}</td>
+                      <td className="px-4 py-2 text-ink">{r.segment}</td>
                       <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.revenue)}</td>
                       <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.cost)}</td>
-                      <td className="px-4 py-2 text-right font-mono text-neutral-900">{fmtMoney(r.profit)}</td>
+                      <td className="px-4 py-2 text-right font-mono text-ink">{fmtMoney(r.profit)}</td>
                       <td className={`px-4 py-2 text-right font-mono ${r.margin >= 25 ? "text-emerald-600" : "text-rose-600"}`}>
                         {r.margin.toFixed(1)}%
                       </td>

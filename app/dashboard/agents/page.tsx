@@ -91,7 +91,7 @@ export default function AgentsPage() {
                   {a.status}
                 </span>
               </div>
-              <h3 className="mt-4 font-semibold text-neutral-900">{a.name}</h3>
+              <h3 className="mt-4 font-semibold text-ink">{a.name}</h3>
               <p className="mt-1 text-sm text-black/50">{a.desc}</p>
               <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-3 text-xs text-black/40">
                 <span className="font-mono">{a.runs} runs</span>

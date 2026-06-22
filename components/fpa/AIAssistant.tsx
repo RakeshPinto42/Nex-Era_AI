@@ -118,7 +118,7 @@ export default function AIAssistant({ open }: { open: boolean }) {
               <span className="absolute inset-0 rounded-lg ring-1 ring-navy/40" />
             </span>
             <div>
-              <p className="text-sm font-semibold text-neutral-900">Ledger Assistant</p>
+              <p className="text-sm font-semibold text-ink">Ledger Assistant</p>
               <p className="font-mono text-[10px] text-black/40">
                 context: {moduleName}
               </p>
@@ -134,7 +134,7 @@ export default function AIAssistant({ open }: { open: boolean }) {
               <div className="px-1 pt-2">
                 <p className="text-sm text-black/55">
                   Ask anything about{" "}
-                  <span className="text-neutral-900">{moduleName}</span>. I can model
+                  <span className="text-ink">{moduleName}</span>. I can model
                   scenarios, explain variances and draft commentary.
                 </p>
                 <p className="mt-4 mb-2 font-mono text-[10px] uppercase tracking-widest text-black/35">
@@ -145,7 +145,7 @@ export default function AIAssistant({ open }: { open: boolean }) {
                     <button
                       key={p}
                       onClick={() => send(p)}
-                      className="w-full rounded-lg border border-black/10 bg-black/[0.03] px-3 py-2 text-left text-[13px] text-black/70 transition-colors hover:border-navy/30 hover:text-neutral-900"
+                      className="w-full rounded-lg border border-black/10 bg-black/[0.03] px-3 py-2 text-left text-[13px] text-black/70 transition-colors hover:border-navy/30 hover:text-ink"
                     >
                       {p}
                     </button>
@@ -176,7 +176,7 @@ export default function AIAssistant({ open }: { open: boolean }) {
                 rows={1}
                 aria-label="Ask Ledger"
                 placeholder="Ask the copilot…"
-                className="max-h-28 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-neutral-900 placeholder:text-black/35 outline-none"
+                className="max-h-28 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-ink placeholder:text-black/35 outline-none"
               />
               <button
                 onClick={() => send(input)}
@@ -201,7 +201,7 @@ function Bubble({ msg }: { msg: Msg }) {
       <div
         className={`max-w-[88%] rounded-xl px-3 py-2 text-[13px] leading-relaxed ${
           isUser
-            ? "bg-navy/12 text-neutral-900"
+            ? "bg-navy/12 text-ink"
             : "border border-black/10 bg-black/[0.03] text-black/80"
         }`}
       >
@@ -219,7 +219,7 @@ function Rendered({ text }: { text: string }) {
     <span className="whitespace-pre-wrap">
       {text.split(/(\*\*[^*]+\*\*)/).map((seg, i) =>
         seg.startsWith("**") && seg.endsWith("**") ? (
-          <strong key={i} className="font-semibold text-neutral-900">
+          <strong key={i} className="font-semibold text-ink">
             {seg.slice(2, -2)}
           </strong>
         ) : (
