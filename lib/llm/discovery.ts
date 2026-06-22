@@ -6,12 +6,14 @@ import { promises as fs } from "fs";
 import path from "path";
 import { PRESET_BY_ID } from "./providers";
 import { getKey, listMasked, upsertProvider } from "./store";
+import { kvEnabled, kvGetJSON, kvSetJSON } from "./kv";
 
 // Free ids that aren't usable chat models (guardrail / classifier endpoints).
 const SKIP = [/content-safety/i, /moderation/i, /guard/i];
 
 const DIR = path.join(process.cwd(), ".rak");
 const HEALTH_FILE = path.join(DIR, "health.json");
+const HEALTH_KV_KEY = "rak:health";
 
 // How long a health result is trusted before we re-ping (protects the daily
 // free-request quota — we don't want to "Hi" every model on every chat open).
@@ -27,15 +29,28 @@ export type HealthEntry = {
 export type HealthMap = Record<string, HealthEntry>;
 
 async function readHealth(): Promise<HealthMap> {
+  if (kvEnabled()) {
+    return (await kvGetJSON<HealthMap>(HEALTH_KV_KEY)) ?? {};
+  }
   try {
     return JSON.parse(await fs.readFile(HEALTH_FILE, "utf8")) as HealthMap;
   } catch {
     return {};
   }
 }
+// Best-effort: health is a cache, never let a write failure (e.g. Vercel's
+// read-only disk) bubble up and break sync/inference.
 async function writeHealth(h: HealthMap): Promise<void> {
-  await fs.mkdir(DIR, { recursive: true });
-  await fs.writeFile(HEALTH_FILE, JSON.stringify(h, null, 2), "utf8");
+  try {
+    if (kvEnabled()) {
+      await kvSetJSON(HEALTH_KV_KEY, h);
+      return;
+    }
+    await fs.mkdir(DIR, { recursive: true });
+    await fs.writeFile(HEALTH_FILE, JSON.stringify(h, null, 2), "utf8");
+  } catch {
+    /* health cache is best-effort */
+  }
 }
 
 // A free model that just 429'd is treated as "busy" for this window — live

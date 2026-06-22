@@ -103,7 +103,14 @@ async function readMerged(): Promise<StoreData> {
   const envs = envProviders();
   if (!envs.length) return disk;
   const byId = new Map(disk.providers.map((p) => [p.providerId, p]));
-  for (const e of envs) if (!byId.has(e.providerId)) byId.set(e.providerId, e);
+  for (const e of envs) {
+    const cur = byId.get(e.providerId);
+    // No stored entry → add the env provider wholesale. Stored entry with an
+    // empty key (e.g. written by Sync, which doesn't persist env keys) → keep
+    // its model list but fill the key from env so it isn't shadowed dead.
+    if (!cur) byId.set(e.providerId, e);
+    else if (!cur.apiKey) byId.set(e.providerId, { ...cur, apiKey: e.apiKey });
+  }
   const providers = [...byId.values()];
   let { defaultProviderId, defaultModel } = disk;
   if (!defaultProviderId && providers.length) {
