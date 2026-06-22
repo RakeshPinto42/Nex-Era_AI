@@ -21,14 +21,14 @@ export function ExecutiveActionCenter() {
     return buildExecutiveActions(positioning, comparisons);
   }, [cat]);
 
-  if (!res.hasData) return <EngineEmpty note="Research Sonny's + competitors first — the action center aggregates every engine into the Top-10 moves." />;
+  if (!res.hasData) return <EngineEmpty note={"Research Sonny's + competitors first \u2014 the action center aggregates every engine into the Top-10 moves."} />;
 
   return (
     <div className="space-y-5">
       <div className="rounded-2xl border border-blue-500/40 bg-gradient-to-br from-blue-600/15 to-transparent p-5">
         <div className="flex items-center gap-2 text-blue-300">
           <Target size={16} />
-          <p className="font-mono text-[11px] uppercase tracking-widest">What should Sonny's do next</p>
+          <p className="font-mono text-[11px] uppercase tracking-widest">{"What should Sonny's do next"}</p>
         </div>
         <p className="mt-2 text-sm text-fos-muted">Top {res.actions.length} actions, ranked by expected impact × confidence. Data coverage: {res.dataCoverage}% of SKUs priced.</p>
       </div>
@@ -37,7 +37,7 @@ export function ExecutiveActionCenter() {
         {res.actions.map((a) => <ActionRow key={a.rank} a={a} />)}
       </div>
 
-      <p className="font-mono text-[10px] text-fos-faint">Impacts are % derived from real web-sourced price gaps. Absolute $ revenue/margin needs Sonny's internal volumes &amp; costs — add those (locally) to convert % to $.</p>
+      <p className="font-mono text-[10px] text-fos-faint">{"Impacts are % derived from real web-sourced price gaps. Absolute $ revenue/margin needs Sonny's internal volumes & costs \u2014 add those (locally) to convert % to $."}</p>
     </div>
   );
 }
