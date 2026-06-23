@@ -1,0 +1,6 @@
+# Never ship the local key store / secrets into the deployment bundle.
+# (Vercel CLI does not reliably honor .gitignore for uploads.)
+.rak
+.env
+.env.local
+.env.*.local

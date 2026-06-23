@@ -40,21 +40,21 @@ export const PRESETS: ProviderPreset[] = [
     },
     // OpenRouter free-tier pool (all carry the `:free` suffix). The fallback
     // walker rotates across these and skips any that 404/429 upstream, so a
-    // retired id is harmless. Refresh ids from https://openrouter.ai/models?max_price=0
+    // retired id is harmless. Verified-live ids first (the default + early
+    // fallbacks should be ones that currently respond). Refresh from
+    // https://openrouter.ai/models?max_price=0 — or via Admin → Providers → Sync.
     models: [
-      { id: "deepseek/deepseek-r1:free", label: "DeepSeek R1 (free)", intent: "reasoning" },
-      { id: "deepseek/deepseek-r1-0528:free", label: "DeepSeek R1 0528 (free)", intent: "reasoning" },
-      { id: "deepseek/deepseek-chat-v3.1:free", label: "DeepSeek V3.1 (free)", intent: "general" },
-      { id: "deepseek/deepseek-chat-v3-0324:free", label: "DeepSeek V3 0324 (free)", intent: "general" },
-      { id: "qwen/qwen-2.5-coder-32b-instruct:free", label: "Qwen 2.5 Coder (free)", intent: "coding" },
+      { id: "openai/gpt-oss-120b:free", label: "GPT-OSS 120B (free)", intent: "reasoning" },
+      { id: "openai/gpt-oss-20b:free", label: "GPT-OSS 20B (free)", intent: "general" },
+      { id: "nvidia/nemotron-3-super-120b-a12b:free", label: "Nemotron 3 Super 120B (free)", intent: "reasoning" },
+      { id: "nvidia/nemotron-nano-9b-v2:free", label: "Nemotron Nano 9B (free)", intent: "general" },
+      { id: "nvidia/nemotron-3-nano-30b-a3b:free", label: "Nemotron 3 Nano 30B (free)", intent: "general" },
       { id: "qwen/qwen3-coder:free", label: "Qwen3 Coder (free)", intent: "coding" },
-      { id: "qwen/qwq-32b:free", label: "Qwen QwQ 32B (free)", intent: "reasoning" },
-      { id: "qwen/qwen3-235b-a22b:free", label: "Qwen3 235B (free)", intent: "reasoning" },
-      { id: "moonshotai/kimi-k2:free", label: "Kimi K2 (free)", intent: "general" },
+      { id: "qwen/qwen3-next-80b-a3b-instruct:free", label: "Qwen3 Next 80B (free)", intent: "general" },
       { id: "meta-llama/llama-3.3-70b-instruct:free", label: "Llama 3.3 70B (free)", intent: "general" },
-      { id: "meta-llama/llama-4-maverick:free", label: "Llama 4 Maverick (free)", intent: "general" },
-      { id: "mistralai/mistral-small-3.2-24b-instruct:free", label: "Mistral Small 3.2 (free)", intent: "general" },
-      { id: "google/gemini-2.0-flash-exp:free", label: "Gemini 2.0 Flash Exp (free)", intent: "vision" },
+      { id: "nousresearch/hermes-3-llama-3.1-405b:free", label: "Hermes 3 405B (free)", intent: "general" },
+      { id: "google/gemma-4-31b-it:free", label: "Gemma 4 31B (free)", intent: "general" },
+      { id: "nvidia/nemotron-nano-12b-v2-vl:free", label: "Nemotron Nano 12B VL (free)", intent: "vision" },
     ],
   },
   {
