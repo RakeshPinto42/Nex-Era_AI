@@ -72,10 +72,12 @@ export async function streamChatWithFallback(
   const maxTokens = opts?.maxTokens ?? 1500;
   let candidates = await resolveCandidates();
 
-  // Agentic CI work restricts to OpenRouter free-tier models — rotate across the
-  // :free pool only, never a paid/non-free provider.
+  // Agentic CI work restricts to free-tier models — rotate across the free pool
+  // only (OpenRouter `:free` + ZenMux `-free`), never a paid model. Used for the
+  // Commercial Intelligence extraction step (sources come from Tavily, so a model
+  // with no web access — e.g. ZenMux GLM — is fine here).
   if (opts?.freeOnly) {
-    candidates = candidates.filter((c) => c.providerId === "openrouter" && isFreeModel(c.model));
+    candidates = candidates.filter((c) => isFreeModel(c.model));
   }
 
   // An explicitly-picked model (router / agent selector) goes first, then the

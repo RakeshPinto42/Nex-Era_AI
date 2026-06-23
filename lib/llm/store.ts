@@ -268,8 +268,9 @@ export async function resolveActive(): Promise<{
 
 export type Candidate = { providerId: string; apiKey: string; model: string };
 
-/** OpenRouter free-tier models carry the `:free` suffix (e.g. `…:free`). */
-export const isFreeModel = (model: string): boolean => /:free\b/i.test(model);
+/** Free-tier model ids: OpenRouter uses a `:free` suffix (`…:free`), ZenMux a
+ *  `-free` suffix (`…-free`). Either marks a $0 model. */
+export const isFreeModel = (model: string): boolean => /(?::|-)free\b/i.test(model);
 
 /**
  * Server-only: ordered inference candidates for fallback. The configured
