@@ -110,6 +110,24 @@ export const PRESETS: ProviderPreset[] = [
       { id: "gemini-2.0-flash-thinking-exp", label: "Gemini 2.0 Flash Thinking", intent: "reasoning" },
     ],
   },
+  {
+    id: "zenmux",
+    name: "ZenMux",
+    kind: "openai",
+    baseUrl: "https://zenmux.ai/api/v1",
+    free: true,
+    docsUrl: "https://zenmux.ai/",
+    keyHint: "sk-…",
+    // ZenMux free tier marks free models with a `-free` id suffix ($0 pricing).
+    // Refresh from https://zenmux.ai/api/v1/models (filter id endsWith "-free",
+    // excluding embedding models).
+    models: [
+      { id: "z-ai/glm-5.2-free", label: "GLM 5.2 (free)", intent: "general" },
+      { id: "z-ai/glm-4.7-flash-free", label: "GLM 4.7 Flash (free)", intent: "general" },
+      { id: "stepfun/step-3.7-flash-free", label: "Step 3.7 Flash (free)", intent: "general" },
+      { id: "z-ai/glm-4.6v-flash-free", label: "GLM 4.6V Flash (free)", intent: "vision" },
+    ],
+  },
 ];
 
 export const PRESET_BY_ID = Object.fromEntries(

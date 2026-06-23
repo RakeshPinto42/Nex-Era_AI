@@ -77,6 +77,7 @@ const ENV_KEYS: Record<string, string> = {
   groq: "GROQ_API_KEY",
   cerebras: "CEREBRAS_API_KEY",
   google: "GOOGLE_API_KEY",
+  zenmux: "ZENMUX_API_KEY",
 };
 
 function envProviders(): ProviderConfig[] {
