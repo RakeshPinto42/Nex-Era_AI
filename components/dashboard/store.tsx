@@ -30,7 +30,15 @@ export const modelKey = (m: LiveModelLite) => `${m.providerId}:${m.model}`;
 
 // ---- conversations (ChatGPT-style thread history) ----
 
-export type ChatAttachment = { name: string; size: string };
+export type ChatAttachment = {
+  name: string;
+  size: string;
+  /** Extracted document text (PDF/Word/Excel/text) folded into the model payload. */
+  text?: string;
+  kind?: string;
+  status?: "parsing" | "ready" | "error";
+  error?: string;
+};
 export type ChatMessage = {
   id: string;
   role: "user" | "assistant";

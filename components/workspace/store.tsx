@@ -16,32 +16,25 @@ import {
   type VFS,
   type TreeNode,
 } from "@/lib/workspace/vfs";
+import {
+  fsAccessSupported,
+  pickDirectory,
+  ensureRW,
+  loadDir,
+  writeFile as fsWrite,
+  deleteEntry as fsDelete,
+  type DirHandle,
+  type FileHandle,
+} from "@/lib/workspace/fsAccess";
 
 export type LogLevel = "info" | "action" | "success" | "warn" | "error" | "output";
 export type LogEntry = { id: string; ts: string; level: LogLevel; msg: string };
-
 export type TermLine = { id: string; kind: "cmd" | "out" | "err"; text: string };
 
-export type TaskKind =
-  | "search"
-  | "read"
-  | "generate"
-  | "edit"
-  | "create"
-  | "run"
-  | "report"
-  | "download";
-
+export type TaskKind = "search" | "read" | "generate" | "edit" | "create" | "run" | "report" | "download";
 export type TaskStatus = "pending" | "running" | "done" | "error";
-export type Task = {
-  id: string;
-  kind: TaskKind;
-  title: string;
-  status: TaskStatus;
-  progress: number; // 0–100
-};
+export type Task = { id: string; kind: TaskKind; title: string; status: TaskStatus; progress: number };
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const now = () =>
   new Date().toLocaleTimeString("en-US", { hour12: false }) +
   "." +
@@ -51,6 +44,9 @@ type WorkspaceState = {
   vfs: VFS;
   tree: TreeNode[];
   folderName: string;
+  /** True once a real on-disk folder is attached (vs the in-memory sample). */
+  onDisk: boolean;
+  fsSupported: boolean;
 
   tabs: string[];
   active: string | null;
@@ -59,6 +55,8 @@ type WorkspaceState = {
   setActive: (path: string) => void;
   updateActiveContent: (content: string) => void;
   saveActive: () => void;
+  createFile: (path: string) => Promise<void>;
+  deleteFile: (path: string) => Promise<void>;
 
   tasks: Task[];
   logs: LogEntry[];
@@ -72,19 +70,20 @@ type WorkspaceState = {
 
 const Ctx = createContext<WorkspaceState | null>(null);
 
-const TEXT_EXT = new Set([
-  "md", "txt", "py", "js", "ts", "tsx", "jsx", "json", "csv", "yml", "yaml", "toml", "cfg", "ini", "sh",
-]);
+// Paths excluded from the model context (binary/preview placeholders).
+const isContextual = (content: string) =>
+  !content.startsWith("// ") || content.includes("\n");
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [vfs, setVfs] = useState<VFS>(() => seedWorkspace());
-  const [folderName, setFolderName] = useState("sales-analytics");
+  const [folderName, setFolderName] = useState("sales-analytics (sample)");
+  const [onDisk, setOnDisk] = useState(false);
   const [tabs, setTabs] = useState<string[]>(["src/main.py"]);
   const [active, setActiveState] = useState<string | null>("src/main.py");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [term, setTerm] = useState<TermLine[]>([
-    { id: "init", kind: "out", text: "NEXERA Coder ready. Sandbox: in-memory." },
+    { id: "init", kind: "out", text: "NEXERA Coder ready. Open a folder to edit real files." },
   ]);
   const [running, setRunning] = useState(false);
 
@@ -92,27 +91,32 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const vfsRef = useRef(vfs);
   vfsRef.current = vfs;
 
+  const dirHandleRef = useRef<DirHandle | null>(null);
+  const handlesRef = useRef<Map<string, FileHandle>>(new Map());
+  const docPathsRef = useRef<Set<string>>(new Set());
+
+  // ---- primitives ----
+  const log = useCallback((level: LogLevel, msg: string) => {
+    setLogs((l) => [...l, { id: crypto.randomUUID(), ts: now(), level, msg }]);
+  }, []);
+  const termLine = useCallback((kind: TermLine["kind"], text: string) => {
+    setTerm((t) => [...t, { id: crypto.randomUUID(), kind, text }]);
+  }, []);
+  const clearLogs = useCallback(() => setLogs([]), []);
+
   // ---- editor ops ----
   const openFile = useCallback((path: string) => {
     setTabs((t) => (t.includes(path) ? t : [...t, path]));
     setActiveState(path);
   }, []);
-
   const setActive = useCallback((path: string) => setActiveState(path), []);
-
-  const closeTab = useCallback(
-    (path: string) => {
-      setTabs((t) => {
-        const next = t.filter((p) => p !== path);
-        setActiveState((cur) =>
-          cur === path ? next[next.length - 1] ?? null : cur,
-        );
-        return next;
-      });
-    },
-    [],
-  );
-
+  const closeTab = useCallback((path: string) => {
+    setTabs((t) => {
+      const next = t.filter((p) => p !== path);
+      setActiveState((cur) => (cur === path ? next[next.length - 1] ?? null : cur));
+      return next;
+    });
+  }, []);
   const updateActiveContent = useCallback(
     (content: string) => {
       setVfs((v) => {
@@ -123,134 +127,177 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     [active],
   );
 
-  const saveActive = useCallback(() => {
-    setVfs((v) => {
-      if (!active || !v[active]) return v;
-      return { ...v, [active]: { ...v[active], dirty: false } };
-    });
-  }, [active]);
-
-  // ---- log/term/task primitives ----
-  const log = useCallback((level: LogLevel, msg: string) => {
-    setLogs((l) => [...l, { id: crypto.randomUUID(), ts: now(), level, msg }]);
-  }, []);
-  const termLine = useCallback((kind: TermLine["kind"], text: string) => {
-    setTerm((t) => [...t, { id: crypto.randomUUID(), kind, text }]);
-  }, []);
-  const setTaskProgress = useCallback(
-    (id: string, progress: number, status?: TaskStatus) => {
-      setTasks((ts) =>
-        ts.map((t) =>
-          t.id === id
-            ? { ...t, progress, ...(status ? { status } : {}) }
-            : t,
-        ),
-      );
-    },
-    [],
-  );
-  const clearLogs = useCallback(() => setLogs([]), []);
-
-  const writeFile = useCallback(
-    (path: string, content: string) => {
-      setVfs((v) => ({
-        ...v,
-        [path]: { path, content, language: langFor(path), dirty: true },
-      }));
-    },
-    [],
-  );
-
-  // ---- folder picker (real FS Access API, best-effort) ----
-  const selectFolder = useCallback(async () => {
-    const picker = (
-      window as unknown as {
-        showDirectoryPicker?: () => Promise<FileSystemDirectoryHandle>;
+  // Persist a path to disk (if a real folder is attached) and return success.
+  const persist = useCallback(
+    async (path: string, content: string): Promise<boolean> => {
+      const root = dirHandleRef.current;
+      if (!root) return false;
+      try {
+        const fh = await fsWrite(root, path, content);
+        handlesRef.current.set(path, fh);
+        return true;
+      } catch (e) {
+        log("error", `Write failed: ${path} — ${(e as Error).message}`);
+        return false;
       }
-    ).showDirectoryPicker;
-    if (!picker) {
-      log("warn", "File System Access API unavailable — using sample workspace.");
+    },
+    [log],
+  );
+
+  const saveActive = useCallback(() => {
+    const path = active;
+    if (!path) return;
+    const file = vfsRef.current[path];
+    if (!file) return;
+    void (async () => {
+      const wrote = await persist(path, file.content);
+      setVfs((v) => (v[path] ? { ...v, [path]: { ...v[path], dirty: false } } : v));
+      if (wrote) {
+        log("success", `Saved ${path}`);
+        termLine("out", `~ ${path} (saved to disk)`);
+      }
+    })();
+  }, [active, persist, log, termLine]);
+
+  const createFile = useCallback(
+    async (path: string) => {
+      const clean = path.trim().replace(/^\/+/, "");
+      if (!clean || vfsRef.current[clean]) return;
+      setVfs((v) => ({ ...v, [clean]: { path: clean, content: "", language: langFor(clean), dirty: !dirHandleRef.current } }));
+      await persist(clean, "");
+      openFile(clean);
+      log("action", `New file ${clean}`);
+    },
+    [persist, openFile, log],
+  );
+
+  const deleteFile = useCallback(
+    async (path: string) => {
+      const root = dirHandleRef.current;
+      if (root) {
+        try {
+          await fsDelete(root, path);
+        } catch (e) {
+          log("error", `Delete failed: ${path} — ${(e as Error).message}`);
+          return;
+        }
+      }
+      handlesRef.current.delete(path);
+      setVfs((v) => {
+        const next = { ...v };
+        delete next[path];
+        return next;
+      });
+      setTabs((t) => t.filter((p) => p !== path));
+      setActiveState((cur) => (cur === path ? null : cur));
+      log("action", `Deleted ${path}`);
+      termLine("out", `- ${path}`);
+    },
+    [log, termLine],
+  );
+
+  // ---- folder picker (real read/write) ----
+  const selectFolder = useCallback(async () => {
+    if (!fsAccessSupported()) {
+      log("warn", "File System Access API needs Chrome or Edge — using the sample workspace.");
       return;
     }
     try {
-      const dir = await picker();
-      const next: VFS = {};
-      const walk = async (
-        handle: FileSystemDirectoryHandle,
-        prefix: string,
-        depth: number,
-      ) => {
-        if (depth > 2) return;
-        // @ts-expect-error - async iterator on directory handle
-        for await (const [name, h] of handle.entries()) {
-          if (name.startsWith(".") || name === "node_modules") continue;
-          const path = prefix ? `${prefix}/${name}` : name;
-          if (h.kind === "directory") {
-            await walk(h as FileSystemDirectoryHandle, path, depth + 1);
-          } else {
-            const ext = name.split(".").pop()?.toLowerCase() ?? "";
-            const file = await (h as FileSystemFileHandle).getFile();
-            const content =
-              TEXT_EXT.has(ext) && file.size < 200_000
-                ? await file.text()
-                : `// ${name} — ${(file.size / 1024).toFixed(0)} KB (not previewed)`;
-            next[path] = { path, content, language: langFor(path) };
-          }
-        }
-      };
-      await walk(dir, "", 0);
-      if (Object.keys(next).length) {
-        setVfs(next);
-        setFolderName(dir.name);
-        setTabs([]);
-        setActiveState(null);
-        log("success", `Loaded folder “${dir.name}” (${Object.keys(next).length} files).`);
-        termLine("out", `cd ${dir.name} && rak attach .`);
+      const dir = await pickDirectory();
+      if (!dir) return;
+      if (!(await ensureRW(dir))) {
+        log("error", "Read-write permission denied for that folder.");
+        return;
       }
+      log("info", `Reading “${dir.name}”…`);
+      const { vfs: next, handles, docPaths, name } = await loadDir(dir);
+      dirHandleRef.current = dir;
+      handlesRef.current = handles;
+      docPathsRef.current = docPaths;
+      setVfs(next);
+      setFolderName(name);
+      setOnDisk(true);
+      setTabs([]);
+      setActiveState(null);
+      const docs = docPaths.size ? ` · ${docPaths.size} document(s) extracted` : "";
+      log("success", `Attached “${name}” — ${Object.keys(next).length} files${docs}. Edits save to disk.`);
+      termLine("out", `cd ${name} && rak attach . (read-write)`);
     } catch (e) {
       if ((e as Error).name !== "AbortError")
         log("error", `Folder load failed: ${(e as Error).message}`);
     }
   }, [log, termLine]);
 
-  // ---- agent runner ----
+  // ---- real agent runner ----
   const runAgent = useCallback(
     async (prompt: string) => {
       const text = prompt.trim();
       if (!text || running) return;
       setRunning(true);
-      log("action", `▶ Agent task: ${text}`);
+      setTasks([
+        { id: "ctx", kind: "read", title: "Read folder context", status: "running", progress: 30 },
+        { id: "gen", kind: "generate", title: "Generate changes", status: "pending", progress: 0 },
+        { id: "apply", kind: "edit", title: "Apply to disk", status: "pending", progress: 0 },
+      ]);
+      const setTask = (id: string, status: TaskStatus, progress: number) =>
+        setTasks((ts) => ts.map((t) => (t.id === id ? { ...t, status, progress } : t)));
+
+      log("action", `▶ ${text}`);
       termLine("cmd", `rak agent run "${text}"`);
 
-      const plan = buildPlan(text, folderName);
-      setTasks(plan.map((p) => ({ ...p.task })));
-
       try {
-        for (const step of plan) {
-          setTaskProgress(step.task.id, 5, "running");
-          log("info", `→ ${step.task.title}`);
-          await step.exec({
-            log,
-            term: termLine,
-            writeFile,
-            openFile,
-            tick: async (pct: number) => {
-              setTaskProgress(step.task.id, pct);
-              await sleep(120 + Math.random() * 160);
-            },
-            readFile: (p: string) => vfsRef.current[p]?.content ?? "",
-          });
-          setTaskProgress(step.task.id, 100, "done");
+        const files = Object.values(vfsRef.current)
+          .filter((f) => isContextual(f.content))
+          .map((f) => ({ path: f.path, content: f.content }));
+        setTask("ctx", "done", 100);
+        setTask("gen", "running", 40);
+
+        const res = await fetch("/api/code/agent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ instruction: text, files }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setTask("gen", "error", 100);
+          log("error", data.error || "Agent failed.");
+          if (data.raw) termLine("err", String(data.raw).slice(0, 400));
+          return;
         }
-        log("success", "✓ Task complete. All steps finished.");
-        termLine("out", "done — 0 errors");
+        setTask("gen", "done", 100);
+        setTask("apply", "running", 30);
+
+        if (data.summary) log("info", data.summary);
+
+        let okCount = 0;
+        for (const f of data.files ?? []) {
+          const wrote = await persist(f.path, f.content);
+          setVfs((v) => ({
+            ...v,
+            [f.path]: { path: f.path, content: f.content, language: langFor(f.path), dirty: !wrote },
+          }));
+          openFile(f.path);
+          okCount++;
+          const mark = f.action === "create" ? "+" : "~";
+          log(f.action === "create" ? "success" : "action", `${mark} ${f.path}`);
+          termLine("out", `${mark} ${f.path}`);
+        }
+        for (const p of data.deleted ?? []) {
+          await deleteFile(p);
+        }
+
+        setTask("apply", "done", 100);
+        const where = dirHandleRef.current ? "saved to disk" : "in memory (open a folder to persist)";
+        log("success", `✓ Done · ${okCount} file(s) ${where} · ${data.model ?? ""}`);
+        if (data.notes) log("info", data.notes);
+        termLine("out", `done — ${okCount} file(s)`);
       } catch (e) {
         log("error", `Task failed: ${(e as Error).message}`);
       } finally {
         setRunning(false);
       }
     },
-    [running, folderName, log, termLine, writeFile, openFile, setTaskProgress],
+    [running, persist, openFile, deleteFile, log, termLine],
   );
 
   return (
@@ -259,6 +306,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         vfs,
         tree,
         folderName,
+        onDisk,
+        fsSupported: fsAccessSupported(),
         tabs,
         active,
         openFile,
@@ -266,6 +315,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         setActive,
         updateActiveContent,
         saveActive,
+        createFile,
+        deleteFile,
         tasks,
         logs,
         term,
@@ -284,162 +335,4 @@ export function useWorkspace() {
   const v = useContext(Ctx);
   if (!v) throw new Error("useWorkspace must be used within WorkspaceProvider");
   return v;
-}
-
-// ---------- agent planner ----------
-
-type ExecApi = {
-  log: (l: LogLevel, m: string) => void;
-  term: (k: TermLine["kind"], t: string) => void;
-  writeFile: (path: string, content: string) => void;
-  openFile: (path: string) => void;
-  readFile: (path: string) => string;
-  tick: (pct: number) => Promise<void>;
-};
-
-type PlanStep = { task: Task; exec: (api: ExecApi) => Promise<void> };
-
-function slug(text: string) {
-  return (
-    text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "_")
-      .replace(/^_+|_+$/g, "")
-      .slice(0, 28) || "task"
-  );
-}
-
-// Builds a coherent multi-capability plan from the prompt.
-function buildPlan(prompt: string, folder: string): PlanStep[] {
-  const name = slug(prompt);
-  const scriptPath = `src/${name}.py`;
-  const reportPath = `reports/${name}.md`;
-  const t = (kind: TaskKind, title: string): Task => ({
-    id: crypto.randomUUID(),
-    kind,
-    title,
-    status: "pending",
-    progress: 0,
-  });
-
-  return [
-    {
-      task: t("search", "Search web for context"),
-      async exec(api) {
-        api.term("cmd", `rak web search "${prompt}"`);
-        for (const p of [25, 55, 80, 100]) await api.tick(p);
-        api.log("info", "3 sources found · ranked by relevance");
-        api.term("out", "✓ 3 results · cached to .rak/context.json");
-      },
-    },
-    {
-      task: t("read", "Read project files"),
-      async exec(api) {
-        api.openFile("data/sales.csv");
-        const csv = api.readFile("data/sales.csv");
-        await api.tick(40);
-        const rows = csv.trim().split("\n").length - 1;
-        await api.tick(100);
-        api.log("info", `Parsed data/sales.csv · ${rows} rows`);
-        api.term("out", `read data/sales.csv (${rows} rows)`);
-      },
-    },
-    {
-      task: t("generate", "Generate code"),
-      async exec(api) {
-        await api.tick(30);
-        const code = `"""Auto-generated by NEXERA Coder: ${prompt}"""
-import pandas as pd
-from utils import commission
-
-
-def build():
-    df = pd.read_csv("data/sales.csv")
-    df["commission"] = df.apply(
-        lambda r: commission(r.revenue, r.rate), axis=1
-    )
-    summary = {
-        "reps": int(df.shape[0]),
-        "revenue": float(df.revenue.sum()),
-        "commission": float(df.commission.sum()),
-    }
-    return df, summary
-`;
-        await api.tick(70);
-        api.writeFile(scriptPath, code);
-        api.openFile(scriptPath);
-        await api.tick(100);
-        api.log("success", `Created ${scriptPath}`);
-        api.term("out", `+ ${scriptPath}`);
-      },
-    },
-    {
-      task: t("edit", "Edit src/utils.py"),
-      async exec(api) {
-        await api.tick(50);
-        const edited = `def commission(revenue: float, rate: float) -> float:
-    """Tiered commission with accelerator above $300k."""
-    base = revenue * rate
-    if revenue > 300_000:
-        base += (revenue - 300_000) * 0.01
-    return round(base, 2)
-`;
-        api.writeFile("src/utils.py", edited);
-        api.openFile("src/utils.py");
-        await api.tick(100);
-        api.log("action", "Edited src/utils.py · added tier accelerator");
-        api.term("out", "~ src/utils.py (1 function changed)");
-      },
-    },
-    {
-      task: t("run", "Run Python script"),
-      async exec(api) {
-        api.term("cmd", `python ${scriptPath}`);
-        await api.tick(35);
-        api.term("out", "rep        region  deals   revenue  commission");
-        await api.tick(60);
-        api.term("out", "A. Mehta   West       32  420000.0    26400.00");
-        api.term("out", "J. Park    East       28  358000.0    20270.00");
-        await api.tick(90);
-        api.term("out", "L. Diaz    North      24  310000.0    15600.00");
-        api.term("out", "S. Khan    South      19  244000.0    12200.00");
-        await api.tick(100);
-        api.log("success", "python exited 0 · total commission $74,470.00");
-      },
-    },
-    {
-      task: t("report", "Create report"),
-      async exec(api) {
-        await api.tick(45);
-        const md = `# Report — ${prompt}
-
-Generated by NEXERA Coder.
-
-| Metric | Value |
-|---|---|
-| Reps | 4 |
-| Total revenue | $1,332,000 |
-| Total commission | $74,470 |
-| Top performer | A. Mehta |
-
-_Source: data/sales.csv · model: tiered + accelerator_
-`;
-        api.writeFile(reportPath, md);
-        api.openFile(reportPath);
-        await api.tick(100);
-        api.log("success", `Wrote ${reportPath}`);
-        api.term("out", `+ ${reportPath}`);
-      },
-    },
-    {
-      task: t("download", "Export documents"),
-      async exec(api) {
-        api.term("cmd", `rak export ${reportPath} --pdf`);
-        for (const p of [40, 75, 100]) await api.tick(p);
-        api.writeFile(`reports/${name}.pdf`, `%PDF-1.7 — rendered from ${reportPath}`);
-        api.log("success", `Exported reports/${name}.pdf → ~/Downloads/${folder}`);
-        api.term("out", `✓ saved reports/${name}.pdf`);
-      },
-    },
-  ];
 }

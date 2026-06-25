@@ -6,9 +6,14 @@ import { useWorkspace } from "./store";
 import type { TreeNode } from "@/lib/workspace/vfs";
 
 export default function FileExplorer() {
-  const { tree, active, openFile, folderName, selectFolder, vfs } =
+  const { tree, active, openFile, folderName, selectFolder, vfs, createFile } =
     useWorkspace();
   const fileCount = Object.keys(vfs).length;
+
+  const newFile = () => {
+    const name = window.prompt("New file path (relative)", "src/new.ts");
+    if (name) void createFile(name);
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-obsidian-100/[0.03]">
@@ -16,12 +21,21 @@ export default function FileExplorer() {
         <span className="font-mono text-[11px] uppercase tracking-widest text-white/40">
           Explorer
         </span>
-        <button
-          onClick={selectFolder}
-          className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[11px] text-white/70 transition-colors hover:border-navy/40 hover:text-white"
-        >
-          Open Folder
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={newFile}
+            title="New file"
+            className="grid h-6 w-6 place-items-center rounded-md border border-white/[0.08] bg-white/[0.04] text-[13px] text-white/70 transition-colors hover:border-navy/40 hover:text-white"
+          >
+            +
+          </button>
+          <button
+            onClick={selectFolder}
+            className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[11px] text-white/70 transition-colors hover:border-navy/40 hover:text-white"
+          >
+            Open Folder
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-none items-center gap-2 px-3 py-2 text-xs text-white/60">

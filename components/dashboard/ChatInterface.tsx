@@ -26,6 +26,19 @@ const SUGGESTIONS = [
   "Summarize this research paper",
 ];
 
+// Composer attachments carry a transient local id so async extraction results
+// can be matched back to the right chip; the id is dropped before persisting.
+type PendingAttachment = Attachment & { id: string };
+
+// Fold a message's extracted file text into the content the model receives.
+// The displayed bubble stays clean (chips + question); the model sees the docs.
+function contentForModel(content: string, attachments?: Attachment[]): string {
+  const docs = (attachments ?? []).filter((a) => a.text && a.text.trim());
+  if (docs.length === 0) return content;
+  const blocks = docs.map((a) => `[File: ${a.name}]\n${a.text}`).join("\n\n");
+  return content ? `${blocks}\n\n${content}` : blocks;
+}
+
 export default function ChatInterface() {
   const {
     setAgentStatus,
@@ -46,7 +59,7 @@ export default function ChatInterface() {
     [activeConversation],
   );
   const [input, setInput] = useState("");
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachments, setAttachments] = useState<PendingAttachment[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
@@ -103,22 +116,32 @@ export default function ChatInterface() {
     async (text: string) => {
       const trimmed = text.trim();
       if (!trimmed || busy) return;
+      // Don't send while a file is still extracting — the model would miss it.
+      if (attachments.some((a) => a.status === "parsing")) return;
 
       // Ensure a conversation exists to write into (lazy-create on first send).
       const convId = activeId ?? createConversation();
 
+      // Persist only the durable fields (drop the transient id + lifecycle).
+      const cleanAttachments: Attachment[] = attachments.map((a) => ({
+        name: a.name,
+        size: a.size,
+        kind: a.kind,
+        text: a.text,
+      }));
       const userMsg: Message = {
         id: crypto.randomUUID(),
         role: "user",
         content: trimmed,
-        attachments: attachments.length ? attachments : undefined,
+        attachments: cleanAttachments.length ? cleanAttachments : undefined,
       };
       const aiId = crypto.randomUUID();
 
-      // Payload = prior turns + this one (before placeholder).
+      // Payload = prior turns + this one; each turn's attached document text is
+      // folded into the content the model sees.
       const payload = [...historyRef.current, userMsg].map((m) => ({
         role: m.role,
-        content: m.content,
+        content: contentForModel(m.content, m.attachments),
       }));
 
       // Resolve target model (auto-routes by task in Auto mode) before the
@@ -265,14 +288,50 @@ export default function ChatInterface() {
     send(input);
   };
 
-  const onFiles = (files: FileList | null) => {
-    if (!files) return;
-    const next = Array.from(files).map((f) => ({
+  // Attach + extract: chips show "parsing" immediately, upload to /api/extract,
+  // then fill each chip with the document text (or an error).
+  const onFiles = useCallback(async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const picked = Array.from(files);
+    const pending: PendingAttachment[] = picked.map((f) => ({
+      id: crypto.randomUUID(),
       name: f.name,
       size: `${(f.size / 1024).toFixed(0)} KB`,
+      status: "parsing",
     }));
-    setAttachments((a) => [...a, ...next]);
-  };
+    setAttachments((a) => [...a, ...pending]);
+
+    const form = new FormData();
+    picked.forEach((f) => form.append("file", f));
+    try {
+      const res = await fetch("/api/extract", { method: "POST", body: form });
+      const data = await res.json();
+      const results: { kind?: string; text?: string; error?: string }[] = data.files ?? [];
+      setAttachments((a) =>
+        a.map((att) => {
+          const idx = pending.findIndex((p) => p.id === att.id);
+          if (idx === -1) return att;
+          const r = results[idx];
+          if (!r) return { ...att, status: "error", error: "No result" };
+          if (r.kind === "unsupported")
+            return { ...att, kind: r.kind, status: "error", error: "Can't read this type as text" };
+          if (r.kind === "error")
+            return { ...att, kind: r.kind, status: "error", error: r.error || "Extraction failed" };
+          return { ...att, kind: r.kind, text: r.text ?? "", status: "ready" };
+        }),
+      );
+    } catch {
+      setAttachments((a) =>
+        a.map((att) =>
+          pending.some((p) => p.id === att.id)
+            ? { ...att, status: "error", error: "Upload failed" }
+            : att,
+        ),
+      );
+    }
+  }, []);
+
+  const parsing = attachments.some((a) => a.status === "parsing");
 
   const empty = messages.length === 0;
 
@@ -329,19 +388,32 @@ export default function ChatInterface() {
                 exit={{ opacity: 0, height: 0 }}
                 className="mb-2 flex flex-wrap gap-2"
               >
-                {attachments.map((a, i) => (
+                {attachments.map((a) => (
                   <span
-                    key={i}
-                    className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.05] px-2.5 py-1.5 text-xs text-white/70"
+                    key={a.id}
+                    title={a.error ?? (a.text ? `${a.text.length} chars extracted` : a.name)}
+                    className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs ${
+                      a.status === "error"
+                        ? "border-[#ff8a8a]/40 bg-[#ff8a8a]/10 text-[#ff8a8a]"
+                        : "border-white/10 bg-white/[0.05] text-white/70"
+                    }`}
                   >
-                    <span className="text-white/45">▣</span>
+                    <span className="text-white/45">
+                      {a.status === "parsing" ? "◌" : a.status === "error" ? "✕" : "▣"}
+                    </span>
                     {a.name}
-                    <span className="text-white/35">{a.size}</span>
+                    <span className="text-white/35">
+                      {a.status === "parsing"
+                        ? "parsing…"
+                        : a.status === "error"
+                          ? (a.error ?? "failed")
+                          : a.text
+                            ? `✓ ${a.text.length.toLocaleString()} chars`
+                            : a.size}
+                    </span>
                     <button
                       onClick={() =>
-                        setAttachments((arr) =>
-                          arr.filter((_, idx) => idx !== i),
-                        )
+                        setAttachments((arr) => arr.filter((x) => x.id !== a.id))
                       }
                       className="text-white/40 hover:text-white"
                     >
@@ -466,6 +538,7 @@ export default function ChatInterface() {
                   type="file"
                   multiple
                   hidden
+                  accept=".pdf,.docx,.xlsx,.xls,.csv,.tsv,.txt,.md,.json,.xml,.yaml,.yml,.html,.js,.jsx,.ts,.tsx,.py,.java,.c,.cpp,.cs,.go,.rs,.rb,.php,.sql,.css"
                   onChange={(e) => onFiles(e.target.files)}
                 />
                 <span className="font-mono text-[11px] text-white/35">
@@ -484,7 +557,9 @@ export default function ChatInterface() {
               ) : (
                 <button
                   type="submit"
-                  disabled={!input.trim() || (mode === "code" && !folderRoot)}
+                  disabled={
+                    !input.trim() || parsing || (mode === "code" && !folderRoot)
+                  }
                   aria-label="Send message"
                   className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand to-violet text-white transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-30"
                 >
