@@ -22,17 +22,17 @@ export default function CodeBlock({
   };
 
   return (
-    <div className="my-3 overflow-hidden rounded-xl border border-black/10 bg-neutral-100/80">
-      <div className="flex items-center justify-between border-b border-black/10 px-3 py-2">
-        <span className="font-mono text-xs text-black/45">{lang}</span>
+    <div className="my-3 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+      <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
+        <span className="font-mono text-xs text-white/45">{lang}</span>
         <button
           onClick={copy}
-          className="flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-xs text-black/50 transition-colors hover:bg-black/5 hover:text-ink"
+          className="flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-xs text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white"
         >
           {copied ? "✓ Copied" : "Copy"}
         </button>
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-black/85">
+      <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-white/85">
         <code>{code}</code>
       </pre>
     </div>

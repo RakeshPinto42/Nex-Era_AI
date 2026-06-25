@@ -15,7 +15,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
   useEffect(() => setNavOpen(false), [path]);
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-canvas text-ink">
+    <div className="relative flex h-screen overflow-hidden bg-obsidian text-white" style={{ colorScheme: "dark" }}>
       {/* ambient — a single soft brand wash at the top, nothing busy */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute left-1/2 top-[-15%] h-[380px] w-[760px] -translate-x-1/2 rounded-full bg-gradient-to-br from-brand/[0.06] to-violet/[0.06] blur-[120px]" />

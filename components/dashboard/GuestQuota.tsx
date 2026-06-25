@@ -29,7 +29,7 @@ export default function GuestQuota({ action }: { action: "image" | "video" | "te
       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] ${
         low
           ? "border-rose-500/30 bg-rose-500/[0.06] text-rose-600"
-          : "border-black/10 bg-black/[0.03] text-black/55"
+          : "border-white/10 bg-white/[0.04] text-white/60"
       }`}
       title="Guest accounts have a daily limit"
     >

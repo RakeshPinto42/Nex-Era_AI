@@ -291,8 +291,8 @@ export default function ChatInterface() {
       }}
     >
       {dragOver && (
-        <div className="absolute inset-3 z-20 grid place-items-center rounded-2xl border-2 border-dashed border-navy/50 bg-navy/5 backdrop-blur-sm">
-          <p className="text-sm font-medium text-navy">
+        <div className="absolute inset-3 z-20 grid place-items-center rounded-2xl border-2 border-dashed border-brand/50 bg-brand/10 backdrop-blur-sm">
+          <p className="text-sm font-medium text-brand">
             Drop files to attach
           </p>
         </div>
@@ -332,18 +332,18 @@ export default function ChatInterface() {
                 {attachments.map((a, i) => (
                   <span
                     key={i}
-                    className="flex items-center gap-2 rounded-lg border border-black/10 bg-black/5 px-2.5 py-1.5 text-xs text-black/70"
+                    className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.05] px-2.5 py-1.5 text-xs text-white/70"
                   >
-                    <span className="text-black/45">▣</span>
+                    <span className="text-white/45">▣</span>
                     {a.name}
-                    <span className="text-black/35">{a.size}</span>
+                    <span className="text-white/35">{a.size}</span>
                     <button
                       onClick={() =>
                         setAttachments((arr) =>
                           arr.filter((_, idx) => idx !== i),
                         )
                       }
-                      className="text-black/40 hover:text-ink"
+                      className="text-white/40 hover:text-white"
                     >
                       ×
                     </button>
@@ -355,12 +355,12 @@ export default function ChatInterface() {
 
           {/* mode switch: NEXERA Chat · NEXERA Code · NEXERA Workspace */}
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <div className="flex rounded-lg border border-black/10 bg-black/[0.03] p-0.5">
+            <div className="flex rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
               <button
                 type="button"
                 onClick={() => setMode("chat")}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  mode === "chat" ? "bg-black/10 text-ink" : "text-black/55 hover:text-ink"
+                  mode === "chat" ? "bg-white/10 text-white" : "text-white/55 hover:text-white"
                 }`}
               >
                 NEXERA Chat
@@ -369,7 +369,7 @@ export default function ChatInterface() {
                 type="button"
                 onClick={() => setMode("code")}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  mode === "code" ? "bg-black/10 text-ink" : "text-black/55 hover:text-ink"
+                  mode === "code" ? "bg-white/10 text-white" : "text-white/55 hover:text-white"
                 }`}
               >
                 NEXERA Code
@@ -377,21 +377,21 @@ export default function ChatInterface() {
             </div>
             <a
               href="/workspace/code"
-              className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/50 hover:text-ink"
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/50 hover:text-white"
               title="Full code workspace with file tree"
             >
               NEXERA Workspace ↗
             </a>
             {mode === "code" && folderRoot && (
-              <span className="flex items-center gap-2 rounded-lg border border-navy/30 bg-navy/[0.06] px-2.5 py-1.5 text-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-navy" />
-                <span className="max-w-[260px] truncate font-mono text-navy">
+              <span className="flex items-center gap-2 rounded-lg border border-brand/30 bg-brand/[0.10] px-2.5 py-1.5 text-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                <span className="max-w-[260px] truncate font-mono text-brand">
                   {folderRoot}
                 </span>
                 <button
                   type="button"
                   onClick={() => setFolderRoot(null)}
-                  className="text-black/40 hover:text-ink"
+                  className="text-white/40 hover:text-white"
                   title="Close folder"
                 >
                   ×
@@ -408,7 +408,7 @@ export default function ChatInterface() {
                 onChange={(e) => setFolderInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), openFolder())}
                 placeholder="Paste a folder path to edit  (e.g. D:\\Projects\\my-app)"
-                className="min-w-[240px] flex-1 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-2 font-mono text-xs outline-none focus:border-navy/40"
+                className="min-w-[240px] flex-1 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-xs text-white placeholder:text-white/35 outline-none focus:border-brand/40"
               />
               <button
                 type="button"
@@ -424,7 +424,7 @@ export default function ChatInterface() {
 
           <form
             onSubmit={onSubmit}
-            className="rounded-2xl border border-line bg-white p-2 shadow-soft transition-all focus-within:border-brand/40 focus-within:shadow-lift focus-within:ring-4 focus-within:ring-brand/10"
+            className="rounded-2xl border border-white/[0.10] bg-white/[0.04] p-2 transition-all focus-within:border-brand/40 focus-within:bg-white/[0.06] focus-within:ring-4 focus-within:ring-brand/10"
           >
             <textarea
               value={input}
@@ -446,14 +446,14 @@ export default function ChatInterface() {
                     : "Open a folder above, then describe the change…"
                   : "Ask, build, analyze, automate…"
               }
-              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[16px] text-ink placeholder:text-black/35 outline-none"
+              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[16px] text-white placeholder:text-white/35 outline-none"
             />
             <div className="flex items-center justify-between px-1 pt-1">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-black/45 transition-colors hover:bg-black/5 hover:text-ink"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
                   aria-label="Attach files"
                   title="Attach files"
                 >
@@ -468,7 +468,7 @@ export default function ChatInterface() {
                   hidden
                   onChange={(e) => onFiles(e.target.files)}
                 />
-                <span className="font-mono text-[11px] text-black/30">
+                <span className="font-mono text-[11px] text-white/35">
                   {autoRoute ? "✦ Auto-route" : model}
                 </span>
               </div>
@@ -477,7 +477,7 @@ export default function ChatInterface() {
                   type="button"
                   onClick={stop}
                   aria-label="Stop generating"
-                  className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-white transition-all hover:scale-105"
+                  className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 text-white transition-all hover:scale-105 hover:bg-white/25"
                 >
                   <span className="h-3 w-3 rounded-[3px] bg-white" aria-hidden="true" />
                 </button>
@@ -486,7 +486,7 @@ export default function ChatInterface() {
                   type="submit"
                   disabled={!input.trim() || (mode === "code" && !folderRoot)}
                   aria-label="Send message"
-                  className="grid h-8 w-8 place-items-center rounded-lg bg-navy text-white transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-30"
+                  className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand to-violet text-white transition-all hover:scale-105 disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M22 2 11 13M22 2l-7 20-4-9-9-4z" />
@@ -495,7 +495,7 @@ export default function ChatInterface() {
               )}
             </div>
           </form>
-          <p className="mt-2 text-center text-[11px] text-black/30">
+          <p className="mt-2 text-center text-[11px] text-white/30">
             NEXERA can make mistakes. Verify critical financial outputs.
           </p>
         </div>
@@ -520,7 +520,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="mt-7 text-3xl font-bold tracking-tight text-ink sm:text-4xl"
+        className="mt-7 text-3xl font-bold tracking-tight text-white sm:text-4xl"
       >
         One Interface.{" "}
         <span className="text-gradient-emerald">Infinite Models.</span>
@@ -529,7 +529,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.18, duration: 0.5 }}
-        className="mt-3 max-w-md text-[16px] leading-relaxed text-muted"
+        className="mt-3 max-w-md text-[16px] leading-relaxed text-white/55"
       >
         Chat, code, research, generate media and automate workflows through
         decentralized intelligence.
@@ -539,7 +539,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
           <button
             key={s}
             onClick={() => onPick(s)}
-            className="group rounded-xl border border-line bg-white px-4 py-3 text-left text-[16px] text-ink/80 shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lift"
+            className="group rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-left text-[16px] text-white/80 transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:bg-white/[0.05]"
           >
             {s}
           </button>
@@ -554,7 +554,7 @@ function MessageRow({ message }: { message: Message }) {
   const attachments = message.attachments?.map((a, i) => (
     <span
       key={i}
-      className="mb-2 mr-2 inline-flex items-center gap-1.5 rounded-md bg-black/30 px-2 py-1 font-mono text-xs text-black/70"
+      className="mb-2 mr-2 inline-flex items-center gap-1.5 rounded-md bg-white/10 px-2 py-1 font-mono text-xs text-white/70"
     >
       ▣ {a.name}
     </span>
@@ -570,7 +570,7 @@ function MessageRow({ message }: { message: Message }) {
         transition={{ duration: 0.3 }}
         className="flex justify-end"
       >
-        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-black/[0.08] px-4 py-2.5 text-[16px] leading-relaxed text-ink">
+        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-white/[0.08] px-4 py-2.5 text-[16px] leading-relaxed text-white">
           {attachments}
           <Content text={message.content} streaming={message.streaming} />
         </div>
@@ -602,7 +602,7 @@ function MessageRow({ message }: { message: Message }) {
       <div className="min-w-0 max-w-[85%]">
         {message.model && (
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="text-sm font-medium text-ink">{message.model}</span>
+            <span className="text-sm font-medium text-white">{message.model}</span>
             {it && (
               <span
                 className="rounded-full px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
@@ -613,7 +613,7 @@ function MessageRow({ message }: { message: Message }) {
             )}
           </div>
         )}
-        <div className="rounded-2xl rounded-tl-md border border-black/[0.07] bg-white px-4 py-3 text-[16px] leading-relaxed text-ink/90 shadow-soft">
+        <div className="rounded-2xl rounded-tl-md border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[16px] leading-relaxed text-white/90">
           {attachments}
           {message.streaming && !message.content ? (
             <ThinkingDots />
@@ -666,7 +666,7 @@ function CopyButton({ text }: { text: string }) {
     <button
       onClick={copy}
       aria-label="Copy response"
-      className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-black/40 transition-colors hover:bg-black/5 hover:text-ink"
+      className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
     >
       {copied ? (
         <>
@@ -710,7 +710,7 @@ function Content({
         return <MarkdownBlocks key={i} text={part} />;
       })}
       {streaming && (
-        <span className="ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-navy animate-blink" />
+        <span className="ml-0.5 inline-block h-4 w-2 translate-y-0.5 bg-brand animate-blink" />
       )}
     </div>
   );
@@ -809,9 +809,9 @@ function parseBlocks(text: string): Block[] {
 }
 
 const HEAD_CLS: Record<number, string> = {
-  1: "mt-3 mb-1.5 text-lg font-semibold text-ink first:mt-0",
-  2: "mt-3 mb-1.5 text-base font-semibold text-ink first:mt-0",
-  3: "mt-2.5 mb-1 text-[16px] font-semibold text-ink first:mt-0",
+  1: "mt-3 mb-1.5 text-lg font-semibold text-white first:mt-0",
+  2: "mt-3 mb-1.5 text-base font-semibold text-white first:mt-0",
+  3: "mt-2.5 mb-1 text-[16px] font-semibold text-white first:mt-0",
 };
 
 function MarkdownBlocks({ text }: { text: string }) {
@@ -830,7 +830,7 @@ function MarkdownBlocks({ text }: { text: string }) {
           return (
             <blockquote
               key={i}
-              className="my-2 border-l-2 border-brand/30 pl-3 text-ink/70 [&_p]:my-0"
+              className="my-2 border-l-2 border-brand/40 pl-3 text-white/70 [&_p]:my-0"
             >
               <MarkdownBlocks text={b.text} />
             </blockquote>
@@ -862,7 +862,7 @@ function MarkdownBlocks({ text }: { text: string }) {
                     {b.head.map((c, j) => (
                       <th
                         key={j}
-                        className="border border-black/10 bg-black/[0.03] px-3 py-1.5 text-left font-semibold text-ink"
+                        className="border border-white/10 bg-white/[0.04] px-3 py-1.5 text-left font-semibold text-white"
                       >
                         {renderInline(c)}
                       </th>
@@ -875,7 +875,7 @@ function MarkdownBlocks({ text }: { text: string }) {
                       {row.map((c, j) => (
                         <td
                           key={j}
-                          className="border border-black/10 px-3 py-1.5 align-top text-ink/85"
+                          className="border border-white/10 px-3 py-1.5 align-top text-white/85"
                         >
                           {renderInline(c)}
                         </td>
@@ -904,7 +904,7 @@ function renderInline(text: string) {
     .map((seg, i) => {
       if (seg.startsWith("**") && seg.endsWith("**")) {
         return (
-          <strong key={i} className="font-semibold text-ink">
+          <strong key={i} className="font-semibold text-white">
             {seg.slice(2, -2)}
           </strong>
         );
@@ -913,7 +913,7 @@ function renderInline(text: string) {
         return (
           <code
             key={i}
-            className="rounded bg-black/[0.06] px-1 py-0.5 font-mono text-[0.85em] text-ink"
+            className="rounded bg-white/[0.08] px-1 py-0.5 font-mono text-[0.85em] text-white"
           >
             {seg.slice(1, -1)}
           </code>

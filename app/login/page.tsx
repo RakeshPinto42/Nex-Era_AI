@@ -43,7 +43,7 @@ function LoginForm() {
   };
 
   return (
-    <main className="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
+    <main className="grid min-h-screen bg-obsidian text-white lg:grid-cols-[1.05fr_1fr]" style={{ colorScheme: "dark" }}>
       {/* ---- brand panel (left) ---- */}
       <aside className="relative hidden overflow-hidden bg-[#0b1630] lg:flex">
         {/* live mesh */}
@@ -102,15 +102,15 @@ function LoginForm() {
           {/* mobile brand */}
           <div className="mb-8 flex items-center gap-2.5 lg:hidden">
             <NexeraMark size={32} />
-            <span className="font-display text-lg font-semibold tracking-tight text-ink">
+            <span className="font-display text-lg font-semibold tracking-tight text-white">
               NEXERA
             </span>
           </div>
 
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-white">
             Welcome back
           </h1>
-          <p className="mt-1.5 text-sm text-black/50">
+          <p className="mt-1.5 text-sm text-white/50">
             Sign in to your workspace to continue.
           </p>
 
@@ -123,7 +123,7 @@ function LoginForm() {
 
           <form onSubmit={submit} className="mt-7 space-y-4">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-black/60">
+              <label className="mb-1.5 block text-xs font-medium text-white/60">
                 Username
               </label>
               <input
@@ -132,12 +132,12 @@ function LoginForm() {
                 autoComplete="username"
                 autoFocus
                 placeholder="admin"
-                className="w-full rounded-xl border border-black/10 bg-black/[0.015] px-3.5 py-2.5 text-[15px] text-ink outline-none transition-colors placeholder:text-black/25 focus:border-navy/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:border-brand/50 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(59,130,246,0.12)]"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-black/60">
+              <label className="mb-1.5 block text-xs font-medium text-white/60">
                 Password
               </label>
               <div className="relative">
@@ -147,13 +147,13 @@ function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-black/10 bg-black/[0.015] px-3.5 py-2.5 pr-11 text-[15px] text-ink outline-none transition-colors placeholder:text-black/25 focus:border-navy/50 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.08)]"
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 pr-11 text-[15px] text-white outline-none transition-colors placeholder:text-white/30 focus:border-brand/50 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(59,130,246,0.12)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShow((v) => !v)}
                   aria-label={show ? "Hide password" : "Show password"}
-                  className="absolute right-1.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-black/35 transition-colors hover:bg-black/5 hover:text-black/70"
+                  className="absolute right-1.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-white/35 transition-colors hover:bg-white/[0.06] hover:text-white/80"
                 >
                   {show ? (
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -191,12 +191,12 @@ function LoginForm() {
             </button>
           </form>
 
-          <div className="mt-6 flex items-center gap-3 text-[11px] text-black/35">
-            <span className="h-px flex-1 bg-black/10" />
+          <div className="mt-6 flex items-center gap-3 text-[11px] text-white/35">
+            <span className="h-px flex-1 bg-white/10" />
             restricted access
-            <span className="h-px flex-1 bg-black/10" />
+            <span className="h-px flex-1 bg-white/10" />
           </div>
-          <p className="mt-3 text-center text-[11px] text-black/35">
+          <p className="mt-3 text-center text-[11px] text-white/35">
             Contact the workspace owner for credentials.
           </p>
         </div>

@@ -227,6 +227,36 @@ select:focus-visible {
   animation: nexera-pulse 1.8s ease-in-out infinite;
 }
 
+/* ---- 3D orbit core (web3 hero centerpiece) ---- */
+@keyframes spin-y {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+@keyframes ring-spin {
+  from { transform: rotateZ(0deg); }
+  to { transform: rotateZ(360deg); }
+}
+@keyframes ring-spin-rev {
+  from { transform: rotateZ(360deg); }
+  to { transform: rotateZ(0deg); }
+}
+@keyframes float-3d {
+  0%, 100% { transform: translateZ(60px) translateY(0); }
+  50% { transform: translateZ(60px) translateY(-10px); }
+}
+@keyframes core-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+.scene-3d { transform-style: preserve-3d; }
+@media (prefers-reduced-motion: reduce) {
+  .scene-3d, .scene-3d * { animation: none !important; }
+}
+
 @keyframes fos-toast {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }

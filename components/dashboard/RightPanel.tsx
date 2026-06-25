@@ -30,10 +30,10 @@ function CapChip({ intent }: { intent?: string | null }) {
 
 function Card({ title, accent, children }: { title: string; accent?: string; children: React.ReactNode }) {
   return (
-    <div className="card p-4">
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4">
       <div className="mb-3 flex items-center gap-2">
         {accent && <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />}
-        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
+        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-white/50">
           {title}
         </p>
       </div>
@@ -66,11 +66,11 @@ export default function RightPanel() {
   const conf = routedConfidence != null ? Math.round(routedConfidence * 100) : null;
 
   return (
-    <aside className="hidden h-full w-[320px] flex-none flex-col gap-4 overflow-y-auto border-l border-black/[0.06] bg-canvas/70 p-4 backdrop-blur-xl xl:flex">
+    <aside className="hidden h-full w-[320px] flex-none flex-col gap-4 overflow-y-auto border-l border-white/[0.08] bg-obsidian-100/70 p-4 backdrop-blur-xl xl:flex">
       {/* ---- Model Router (flagship) ---- */}
       <Card title="Model Router" accent="#3b82f6">
         {availableModels.length === 0 ? (
-          <div className="text-sm text-muted">
+          <div className="text-sm text-white/55">
             {modelsLoaded ? (
               <>
                 No models configured.{" "}
@@ -84,12 +84,12 @@ export default function RightPanel() {
           </div>
         ) : (
           <>
-            <div className="mb-3 flex rounded-lg border border-line bg-slate-50 p-0.5 text-xs font-medium">
+            <div className="mb-3 flex rounded-lg border border-white/10 bg-white/[0.04] p-0.5 text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setAutoRoute(true)}
                 className={`flex-1 rounded-md px-2 py-1.5 transition-all ${
-                  autoRoute ? "bg-white text-brand shadow-sm" : "text-muted hover:text-ink"
+                  autoRoute ? "bg-white/10 text-brand" : "text-white/55 hover:text-white"
                 }`}
               >
                 ✦ Auto
@@ -98,7 +98,7 @@ export default function RightPanel() {
                 type="button"
                 onClick={() => setAutoRoute(false)}
                 className={`flex-1 rounded-md px-2 py-1.5 transition-all ${
-                  !autoRoute ? "bg-white text-brand shadow-sm" : "text-muted hover:text-ink"
+                  !autoRoute ? "bg-white/10 text-brand" : "text-white/55 hover:text-white"
                 }`}
               >
                 Manual
@@ -106,25 +106,25 @@ export default function RightPanel() {
             </div>
 
             {autoRoute ? (
-              <div className="rounded-xl border border-line bg-gradient-to-br from-brand/[0.04] to-violet/[0.04] p-3">
+              <div className="rounded-xl border border-white/10 bg-gradient-to-br from-brand/[0.10] to-violet/[0.08] p-3">
                 {routedModel ? (
                   <>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="truncate text-sm font-semibold text-ink">
+                      <span className="truncate text-sm font-semibold text-white">
                         {routedModel.label}
                       </span>
                       <CapChip intent={routedIntent} />
                     </div>
-                    <p className="mt-0.5 font-mono text-[10px] text-muted">
+                    <p className="mt-0.5 font-mono text-[10px] text-white/55">
                       {routedModel.providerName}
                     </p>
                     {conf != null && (
                       <div className="mt-3">
-                        <div className="mb-1 flex items-center justify-between text-[10px] font-medium text-muted">
+                        <div className="mb-1 flex items-center justify-between text-[10px] font-medium text-white/55">
                           <span>Routing confidence</span>
                           <span className="font-mono text-brand">{conf}%</span>
                         </div>
-                        <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+                        <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
                           <motion.div
                             className="h-full rounded-full bg-gradient-to-r from-brand to-violet"
                             initial={{ width: 0 }}
@@ -135,11 +135,11 @@ export default function RightPanel() {
                       </div>
                     )}
                     {routedReason && (
-                      <p className="mt-2.5 text-[11px] leading-relaxed text-muted">{routedReason}</p>
+                      <p className="mt-2.5 text-[11px] leading-relaxed text-white/55">{routedReason}</p>
                     )}
                   </>
                 ) : (
-                  <p className="text-xs text-muted">
+                  <p className="text-xs text-white/55">
                     Routes every prompt to the best model — send one to see the pick.
                   </p>
                 )}
@@ -148,7 +148,7 @@ export default function RightPanel() {
               <select
                 value={activeModel ? modelKey(activeModel) : ""}
                 onChange={(e) => setActiveModel(e.target.value)}
-                className="w-full cursor-pointer rounded-lg border border-line bg-white px-2.5 py-2 text-sm text-ink outline-none focus:border-brand/40"
+                className="w-full cursor-pointer rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-sm text-white outline-none focus:border-brand/40"
               >
                 {availableModels.map((m) => (
                   <option key={modelKey(m)} value={modelKey(m)}>
@@ -167,10 +167,10 @@ export default function RightPanel() {
       {/* ---- Token Usage ---- */}
       <Card title="Token Usage">
         <div className="flex items-end justify-between">
-          <span className="text-2xl font-semibold text-ink">{total.toLocaleString()}</span>
-          <span className="font-mono text-xs text-muted">/ {(limit / 1000).toFixed(0)}K</span>
+          <span className="text-2xl font-semibold text-white">{total.toLocaleString()}</span>
+          <span className="font-mono text-xs text-white/55">/ {(limit / 1000).toFixed(0)}K</span>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-brand to-violet"
             animate={{ width: `${pct}%` }}
@@ -192,7 +192,7 @@ export default function RightPanel() {
               <div
                 key={a.key}
                 className={`flex items-center gap-3 rounded-xl border p-2.5 transition-colors ${
-                  on ? "border-brand/20 bg-brand/[0.04]" : "border-line bg-white"
+                  on ? "border-brand/30 bg-brand/[0.10]" : "border-white/[0.08] bg-white/[0.03]"
                 }`}
               >
                 <span
@@ -202,8 +202,8 @@ export default function RightPanel() {
                   {a.icon}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-medium text-ink">{a.name}</p>
-                  <p className="text-[11px] text-muted">{a.role}</p>
+                  <p className="text-[13px] font-medium text-white">{a.name}</p>
+                  <p className="text-[11px] text-white/55">{a.role}</p>
                 </div>
                 <span className="relative flex h-2 w-2">
                   {on && (
@@ -214,7 +214,7 @@ export default function RightPanel() {
                   )}
                   <span
                     className="relative inline-flex h-2 w-2 rounded-full"
-                    style={{ background: on ? a.color : "#cbd5e1" }}
+                    style={{ background: on ? a.color : "#3a4252" }}
                   />
                 </span>
               </div>
@@ -241,18 +241,18 @@ export default function RightPanel() {
                         ? "bg-brand text-white"
                         : activeStep
                           ? "border-2 border-brand bg-brand/10 text-brand"
-                          : "border border-line bg-white text-muted"
+                          : "border border-white/15 bg-white/[0.04] text-white/55"
                     }`}
                   >
                     {done ? "✓" : i + 1}
                   </motion.span>
                   {i < workflow.length - 1 && (
-                    <span className={`mt-1 w-px flex-1 ${done ? "bg-brand/30" : "bg-line"}`} />
+                    <span className={`mt-1 w-px flex-1 ${done ? "bg-brand/30" : "bg-white/10"}`} />
                   )}
                 </div>
                 <span
                   className={`pt-0.5 text-[13px] ${
-                    step.state === "pending" ? "text-muted" : "font-medium text-ink"
+                    step.state === "pending" ? "text-white/55" : "font-medium text-white"
                   }`}
                 >
                   {step.label}

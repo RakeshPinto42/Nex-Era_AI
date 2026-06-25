@@ -76,7 +76,7 @@ export default function Sidebar({
 
   return (
     <aside
-      className={`h-full w-[256px] flex-none flex-col border-r border-black/[0.06] bg-white/75 backdrop-blur-xl ${
+      className={`h-full w-[256px] flex-none flex-col border-r border-white/[0.08] bg-obsidian-100/80 backdrop-blur-xl ${
         variant === "desktop" ? "hidden lg:flex" : "flex"
       }`}
     >
@@ -96,7 +96,7 @@ export default function Sidebar({
           if (!visible.length) return null;
           return (
             <div key={section.label} className="mt-2 first:mt-0">
-              <p className="px-3 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-black/30">
+              <p className="px-3 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
                 {section.label}
               </p>
               {visible.map((it) => {
@@ -109,7 +109,7 @@ export default function Sidebar({
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
                     className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                      active ? "text-brand" : "text-muted hover:bg-slate-50 hover:text-ink"
+                      active ? "text-brand" : "text-white/55 hover:bg-white/[0.06] hover:text-white"
                     }`}
                   >
                     {active && (
@@ -142,16 +142,16 @@ export default function Sidebar({
         }}
       />
 
-      <div className="border-t border-black/[0.06] p-3">
+      <div className="border-t border-white/[0.08] p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           <div className="grid h-8 w-8 flex-none place-items-center rounded-full bg-gradient-to-br from-navy to-ice text-xs font-bold uppercase text-white">
             {me ? me.username.slice(0, 2) : "··"}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-ink">
+            <p className="truncate text-sm font-medium text-white">
               {me?.username ?? "…"}
             </p>
-            <p className="truncate text-xs capitalize text-black/40">
+            <p className="truncate text-xs capitalize text-white/40">
               {me?.role ?? ""} {me?.role === "admin" ? "· full access" : me ? "· no keys" : ""}
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function Sidebar({
             onClick={logout}
             title="Sign out"
             aria-label="Sign out"
-            className="grid h-8 w-8 flex-none place-items-center rounded-lg text-black/40 transition-colors hover:bg-black/5 hover:text-ink"
+            className="grid h-8 w-8 flex-none place-items-center rounded-lg text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
@@ -203,7 +203,7 @@ function ChatHistory({
   if (conversations.length === 0) {
     return (
       <div className="flex-1 px-5 py-3">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-black/25">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-white/30">
           No chats yet
         </p>
       </div>
@@ -214,7 +214,7 @@ function ChatHistory({
     <div className="flex-1 overflow-y-auto px-3 py-1">
       {groupByDate(conversations).map((g) => (
         <div key={g.label} className="mb-2">
-          <p className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-wider text-black/30">
+          <p className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-wider text-white/35">
             {g.label}
           </p>
           <div className="flex flex-col gap-0.5">
@@ -224,7 +224,7 @@ function ChatHistory({
                 <div
                   key={c.id}
                   className={`group/item relative flex items-center rounded-lg transition-colors ${
-                    isActive ? "bg-brand/[0.07]" : "hover:bg-slate-50"
+                    isActive ? "bg-brand/[0.12]" : "hover:bg-white/[0.06]"
                   }`}
                 >
                   {isActive && (
@@ -238,7 +238,7 @@ function ChatHistory({
                     }}
                     title={c.title}
                     className={`min-w-0 flex-1 truncate px-2.5 py-1.5 text-left text-sm ${
-                      isActive ? "font-medium text-ink" : "text-muted hover:text-ink"
+                      isActive ? "font-medium text-white" : "text-white/55 hover:text-white"
                     }`}
                   >
                     {c.title}
@@ -247,7 +247,7 @@ function ChatHistory({
                     type="button"
                     onClick={() => deleteConversation(c.id)}
                     aria-label="Delete chat"
-                    className="mr-1 grid h-6 w-6 flex-none place-items-center rounded text-black/30 opacity-0 transition-opacity hover:text-ink group-hover/item:opacity-100"
+                    className="mr-1 grid h-6 w-6 flex-none place-items-center rounded text-white/30 opacity-0 transition-opacity hover:text-white group-hover/item:opacity-100"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
