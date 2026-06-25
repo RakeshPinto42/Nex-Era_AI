@@ -63,13 +63,13 @@ export default function ImagesPage() {
 
   return (
     <PageShell title="Images" subtitle="Text-to-image on free cloud models.">
-      <div className="mb-3 flex flex-col gap-2 rounded-2xl border border-black/10 bg-black/[0.04] p-2 sm:flex-row">
+      <div className="mb-3 flex flex-col gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-2 sm:flex-row">
         <input
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && generate(prompt)}
           placeholder="Describe an image… e.g. obsidian trading terminal, navy glow"
-          className="flex-1 bg-transparent px-3 py-2 text-sm text-ink placeholder:text-black/35 outline-none"
+          className="flex-1 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none"
         />
         <button
           onClick={() => generate(prompt)}
@@ -90,7 +90,7 @@ export default function ImagesPage() {
             key={s}
             onClick={() => generate(s)}
             disabled={busy}
-            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/55 transition-colors hover:text-ink disabled:opacity-40"
+            className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-white/55 transition-colors hover:text-white disabled:opacity-40"
           >
             {s.split(",")[0]}
           </button>
@@ -98,11 +98,11 @@ export default function ImagesPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="grid place-items-center rounded-2xl border border-dashed border-black/15 py-20 text-center">
-          <p className="text-sm text-black/45">
+        <div className="grid place-items-center rounded-2xl border border-dashed border-white/15 py-20 text-center">
+          <p className="text-sm text-white/45">
             No images yet. Describe one above — runs keyless on Pollinations,
-            or set <code className="font-mono text-black/70">TOGETHER_API_KEY</code> /{" "}
-            <code className="font-mono text-black/70">HF_TOKEN</code> for FLUX.
+            or set <code className="font-mono text-white/70">TOGETHER_API_KEY</code> /{" "}
+            <code className="font-mono text-white/70">HF_TOKEN</code> for FLUX.
           </p>
         </div>
       ) : (
@@ -114,13 +114,13 @@ export default function ImagesPage() {
                 layout
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="group relative aspect-square overflow-hidden rounded-2xl border border-black/10 bg-neutral-100/60"
+                className="group relative aspect-square overflow-hidden rounded-2xl border border-white/[0.08] bg-black/40"
               >
                 {it.status === "loading" && (
                   <div className="grid h-full place-items-center">
                     <div className="flex flex-col items-center gap-2">
                       <span className="h-6 w-6 animate-spin rounded-full border-2 border-navy border-t-transparent" />
-                      <span className="font-mono text-[11px] text-black/40">
+                      <span className="font-mono text-[11px] text-white/40">
                         rendering…
                       </span>
                     </div>
@@ -141,7 +141,7 @@ export default function ImagesPage() {
                 )}
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 to-transparent p-3 opacity-0 transition-opacity group-hover:opacity-100">
                   <div>
-                    <p className="line-clamp-2 text-xs text-black/85">{it.prompt}</p>
+                    <p className="line-clamp-2 text-xs text-white/85">{it.prompt}</p>
                     {it.provider && (
                       <p className="mt-1 font-mono text-[10px] text-navy">
                         {it.provider}

@@ -16,7 +16,7 @@ function Toggle({
     <button
       onClick={() => onChange(!on)}
       className={`relative h-6 w-11 flex-none rounded-full transition-colors ${
-        on ? "bg-navy" : "bg-black/15"
+        on ? "bg-navy" : "bg-white/15"
       }`}
     >
       <span
@@ -36,8 +36,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <Reveal className="rounded-2xl border border-black/10 bg-black/[0.03] p-5">
-      <h2 className="mb-4 text-sm font-semibold text-ink">{title}</h2>
+    <Reveal className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
+      <h2 className="mb-4 text-sm font-semibold text-white">{title}</h2>
       <div className="space-y-4">{children}</div>
     </Reveal>
   );
@@ -55,8 +55,8 @@ function Row({
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
-        <p className="text-sm text-black/85">{label}</p>
-        {desc && <p className="text-xs text-black/40">{desc}</p>}
+        <p className="text-sm text-white/85">{label}</p>
+        {desc && <p className="text-xs text-white/40">{desc}</p>}
       </div>
       {children}
     </div>
@@ -79,13 +79,13 @@ export default function SettingsPage() {
             <Row label="Name">
               <input
                 defaultValue="Rakesh Pinto"
-                className="w-48 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
+                className="w-48 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-navy/40"
               />
             </Row>
             <Row label="Email">
               <input
                 defaultValue="rakesh.pinto42@gmail.com"
-                className="w-48 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
+                className="w-48 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-navy/40"
               />
             </Row>
             <Row label="Plan" desc="Pro · renews monthly">
@@ -108,13 +108,13 @@ export default function SettingsPage() {
                 <select
                   value={activeModel ? modelKey(activeModel) : ""}
                   onChange={(e) => setActiveModel(e.target.value)}
-                  className="w-56 cursor-pointer rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
+                  className="w-56 cursor-pointer rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-navy/40"
                 >
                   {availableModels.map((m) => (
                     <option
                       key={modelKey(m)}
                       value={modelKey(m)}
-                      className="bg-white"
+                      className="bg-obsidian-100 text-white"
                     >
                       {m.label} · {m.providerName}
                     </option>
@@ -135,7 +135,7 @@ export default function SettingsPage() {
 
           <Section title="Appearance">
             <Row label="Theme" desc="Obsidian dark is optimized for NEXERA">
-              <span className="rounded-lg border border-black/10 bg-black/[0.04] px-3 py-1.5 text-sm text-ink">
+              <span className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white">
                 Obsidian
               </span>
             </Row>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
               <Toggle on={telemetry} onChange={setTelemetry} />
             </Row>
             <Row label="API key" desc="rak_live_••••••••4f2a">
-              <button className="rounded-lg border border-black/10 px-3 py-1.5 text-sm text-black/70 transition-colors hover:bg-black/5">
+              <button className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-sm text-white/70 transition-colors hover:bg-white/[0.06]">
                 Rotate
               </button>
             </Row>
@@ -162,7 +162,7 @@ export default function SettingsPage() {
         <Reveal className="mt-4 flex items-center justify-between rounded-2xl border border-[#ff8a8a]/20 bg-[#ff8a8a]/[0.04] p-5">
           <div>
             <p className="text-sm font-medium text-[#ff8a8a]">Delete workspace</p>
-            <p className="text-xs text-black/40">
+            <p className="text-xs text-white/40">
               Permanently removes all chats, files and agents.
             </p>
           </div>

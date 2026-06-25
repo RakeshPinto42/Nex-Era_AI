@@ -105,7 +105,7 @@ export default function RouterPage() {
       )}
 
       {/* prompt */}
-      <div className="rounded-2xl border border-black/10 bg-black/[0.04] p-2">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-2">
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -114,10 +114,10 @@ export default function RouterPage() {
           }}
           rows={2}
           placeholder="Describe your task… ⌘↵ to route"
-          className="w-full resize-none bg-transparent px-3 py-2 text-sm text-ink placeholder:text-black/35 outline-none"
+          className="w-full resize-none bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none"
         />
         <div className="flex items-center justify-between px-1 pt-1">
-          <span className="font-mono text-[11px] text-black/30">
+          <span className="font-mono text-[11px] text-white/30">
             {hasModels ? `${models.length} live models` : "no models"}
           </span>
           <button
@@ -139,7 +139,7 @@ export default function RouterPage() {
               setPrompt(e);
               route(e);
             }}
-            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs text-black/60 transition-colors hover:border-navy/30 hover:text-ink disabled:opacity-30"
+            className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-white/60 transition-colors hover:border-navy/30 hover:text-white disabled:opacity-30"
           >
             {e}
           </button>
@@ -154,7 +154,7 @@ export default function RouterPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid place-items-center rounded-2xl border border-black/10 bg-black/[0.03] py-14"
+              className="grid place-items-center rounded-2xl border border-white/[0.08] bg-white/[0.03] py-14"
             >
               <div className="relative grid place-items-center">
                 <motion.div
@@ -162,13 +162,13 @@ export default function RouterPage() {
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
                 />
-                <div className="relative grid h-14 w-14 place-items-center rounded-2xl glass-strong shadow-glow">
+                <div className="relative grid h-14 w-14 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] shadow-glow">
                   <span className="font-mono text-[10px] font-bold text-gradient-emerald">
                     ROUTE
                   </span>
                 </div>
               </div>
-              <p className="mt-4 font-mono text-xs text-black/50">
+              <p className="mt-4 font-mono text-xs text-white/50">
                 classifying intent · scoring models…
               </p>
             </motion.div>
@@ -187,7 +187,7 @@ export default function RouterPage() {
                   <span className="text-lg font-semibold text-gradient-emerald">
                     {result.selected?.label ?? "—"}
                   </span>
-                  <span className="block text-xs text-black/40">
+                  <span className="block text-xs text-white/40">
                     {result.selected?.providerName ?? "no provider"}
                   </span>
                 </Metric>
@@ -195,15 +195,15 @@ export default function RouterPage() {
                   <ConfidenceMeter value={result.confidence} />
                 </Metric>
                 <Metric label="Intent">
-                  <span className="text-lg font-semibold text-ink">
+                  <span className="text-lg font-semibold text-white">
                     {result.intentLabel}
                   </span>
-                  <span className="block text-xs text-black/40">
+                  <span className="block text-xs text-white/40">
                     {(result.intentConfidence * 100).toFixed(0)}% sure
                   </span>
                 </Metric>
                 <Metric label="Routing">
-                  <span className="text-lg font-semibold text-ink">
+                  <span className="text-lg font-semibold text-white">
                     {result.usedFallback ? "Fallback" : "Primary"}
                   </span>
                   <span className="block text-xs text-navy">
@@ -213,17 +213,17 @@ export default function RouterPage() {
               </div>
 
               {/* reason */}
-              <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
-                <p className="mb-1 font-mono text-[11px] uppercase tracking-widest text-black/40">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                <p className="mb-1 font-mono text-[11px] uppercase tracking-widest text-white/40">
                   Reason
                 </p>
-                <p className="text-sm text-black/80">{result.reason}</p>
+                <p className="text-sm text-white/80">{result.reason}</p>
               </div>
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {/* intent distribution */}
-                <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
-                  <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-black/40">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                  <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
                     Intent Distribution
                   </p>
                   <div className="space-y-2.5">
@@ -239,8 +239,8 @@ export default function RouterPage() {
                 </div>
 
                 {/* model scores */}
-                <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
-                  <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-black/40">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                  <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
                     Model Scores
                   </p>
                   <div className="space-y-2.5">
@@ -260,21 +260,21 @@ export default function RouterPage() {
                             <span
                               className={
                                 r.m === result.selected
-                                  ? "font-medium text-ink"
-                                  : "text-black/60"
+                                  ? "font-medium text-white"
+                                  : "text-white/60"
                               }
                             >
                               {r.m.label}
                             </span>
-                            <span className="font-mono text-[10px] text-black/30">
+                            <span className="font-mono text-[10px] text-white/30">
                               {r.m.providerName}
                             </span>
                           </span>
-                          <span className="font-mono text-xs text-black/45">
+                          <span className="font-mono text-xs text-white/45">
                             {(r.score * 100).toFixed(0)}
                           </span>
                         </div>
-                        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-black/10">
+                        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/10">
                           <div
                             className="h-full rounded-full"
                             style={{
@@ -293,9 +293,9 @@ export default function RouterPage() {
               </div>
 
               {/* run on selected */}
-              <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-black/40">
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-white/40">
                     Live Output
                   </p>
                   <button
@@ -307,16 +307,16 @@ export default function RouterPage() {
                   </button>
                 </div>
                 {runMeta.provider && (
-                  <p className="mb-2 font-mono text-[11px] text-black/40">
+                  <p className="mb-2 font-mono text-[11px] text-white/40">
                     {runMeta.provider} · {runMeta.model}
                   </p>
                 )}
                 <div
                   ref={outRef}
-                  className="max-h-72 overflow-y-auto whitespace-pre-wrap rounded-lg bg-neutral-100/60 p-3 font-mono text-[13px] leading-relaxed text-black/80"
+                  className="max-h-72 overflow-y-auto whitespace-pre-wrap rounded-lg bg-black/40 p-3 font-mono text-[13px] leading-relaxed text-white/80"
                 >
                   {output || (
-                    <span className="text-black/30">
+                    <span className="text-white/30">
                       Route a prompt, then run it on the selected model.
                     </span>
                   )}
@@ -332,8 +332,8 @@ export default function RouterPage() {
 
       {/* availability toggles */}
       {hasModels && (
-        <div className="mt-8 rounded-2xl border border-black/10 bg-black/[0.03] p-4">
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-black/40">
+        <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
             Model Availability · toggle to test fallback
           </p>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -342,11 +342,11 @@ export default function RouterPage() {
               return (
                 <div
                   key={k}
-                  className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-black/[0.03]"
+                  className="flex items-center justify-between rounded-lg px-2 py-1.5 hover:bg-white/[0.03]"
                 >
-                  <span className="text-sm text-black/70">
+                  <span className="text-sm text-white/70">
                     {m.label}{" "}
-                    <span className="font-mono text-[10px] text-black/30">
+                    <span className="font-mono text-[10px] text-white/30">
                       {m.providerName}
                     </span>
                   </span>
@@ -387,10 +387,10 @@ function Metric({
       className={`rounded-2xl border p-4 ${
         highlight
           ? "border-navy/30 bg-navy/[0.06]"
-          : "border-black/10 bg-black/[0.03]"
+          : "border-white/[0.08] bg-white/[0.03]"
       }`}
     >
-      <p className="mb-1.5 font-mono text-[11px] uppercase tracking-widest text-black/40">
+      <p className="mb-1.5 font-mono text-[11px] uppercase tracking-widest text-white/40">
         {label}
       </p>
       {children}
@@ -402,8 +402,8 @@ function ConfidenceMeter({ value }: { value: number }) {
   const pct = Math.round(value * 100);
   return (
     <div>
-      <span className="text-lg font-semibold text-ink">{pct}%</span>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/10">
+      <span className="text-lg font-semibold text-white">{pct}%</span>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
@@ -427,10 +427,10 @@ function Bar({
   return (
     <div>
       <div className="flex justify-between text-xs">
-        <span className={active ? "text-ink" : "text-black/55"}>{label}</span>
-        <span className="font-mono text-black/40">{pct.toFixed(0)}%</span>
+        <span className={active ? "text-white" : "text-white/55"}>{label}</span>
+        <span className="font-mono text-white/40">{pct.toFixed(0)}%</span>
       </div>
-      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-black/10">
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/10">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}

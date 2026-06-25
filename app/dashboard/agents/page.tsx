@@ -63,7 +63,7 @@ export default function AgentsPage() {
           {agents.map((a) => (
             <Reveal
               key={a.name}
-              className="group relative overflow-hidden rounded-2xl border border-black/10 bg-black/[0.03] p-5 transition-colors hover:bg-black/[0.06]"
+              className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 transition-colors hover:bg-white/[0.06]"
             >
               <div
                 className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-0 blur-3xl transition-opacity group-hover:opacity-100 ${
@@ -83,7 +83,7 @@ export default function AgentsPage() {
                 <span
                   className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs ${
                     a.status === "Idle"
-                      ? "border-black/15 text-black/50"
+                      ? "border-white/15 text-white/50"
                       : "border-navy/40 text-navy"
                   }`}
                 >
@@ -91,9 +91,9 @@ export default function AgentsPage() {
                   {a.status}
                 </span>
               </div>
-              <h3 className="mt-4 font-semibold text-ink">{a.name}</h3>
-              <p className="mt-1 text-sm text-black/50">{a.desc}</p>
-              <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-3 text-xs text-black/40">
+              <h3 className="mt-4 font-semibold text-white">{a.name}</h3>
+              <p className="mt-1 text-sm text-white/50">{a.desc}</p>
+              <div className="mt-4 flex items-center justify-between border-t border-white/[0.08] pt-3 text-xs text-white/40">
                 <span className="font-mono">{a.runs} runs</span>
                 <button className="text-navy hover:underline">
                   Configure →

@@ -34,11 +34,11 @@ export default function FinancePage() {
             className={`rounded-xl border px-4 py-2.5 text-left transition-colors ${
               tool === t.key
                 ? "border-navy/30 bg-navy/[0.05]"
-                : "border-black/10 hover:bg-black/[0.03]"
+                : "border-white/[0.08] hover:bg-white/[0.03]"
             }`}
           >
-            <span className="block text-sm font-semibold text-ink">{t.label}</span>
-            <span className="block text-xs text-black/45">{t.desc}</span>
+            <span className="block text-sm font-semibold text-white">{t.label}</span>
+            <span className="block text-xs text-white/45">{t.desc}</span>
           </button>
         ))}
       </div>
