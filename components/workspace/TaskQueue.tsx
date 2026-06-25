@@ -20,19 +20,19 @@ export default function TaskQueue() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex flex-none items-center justify-between border-b border-black/10 px-3 py-2.5">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-black/40">
+      <div className="flex flex-none items-center justify-between border-b border-white/[0.08] px-3 py-2.5">
+        <span className="font-mono text-[11px] uppercase tracking-widest text-white/40">
           Task Queue
         </span>
         {tasks.length > 0 && (
-          <span className="font-mono text-[11px] text-black/45">
+          <span className="font-mono text-[11px] text-white/45">
             {done}/{tasks.length}
           </span>
         )}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {tasks.length === 0 ? (
-          <p className="px-1 text-xs text-black/35">
+          <p className="px-1 text-xs text-white/35">
             Idle. Give the agent a command below.
           </p>
         ) : (
@@ -58,7 +58,7 @@ function TaskRow({ task }: { task: Task }) {
           : "rgba(255,255,255,0.2)";
 
   return (
-    <li className="rounded-lg border border-black/10 bg-black/[0.03] p-2.5">
+    <li className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-2.5">
       <div className="flex items-center gap-2.5">
         <span
           className="grid h-6 w-6 flex-none place-items-center rounded-md text-xs"
@@ -77,17 +77,17 @@ function TaskRow({ task }: { task: Task }) {
         </span>
         <span
           className={`min-w-0 flex-1 truncate text-[13px] ${
-            task.status === "pending" ? "text-black/40" : "text-black/85"
+            task.status === "pending" ? "text-white/40" : "text-white/85"
           }`}
         >
           {task.title}
         </span>
-        <span className="font-mono text-[10px] uppercase text-black/35">
+        <span className="font-mono text-[10px] uppercase text-white/35">
           {task.kind}
         </span>
       </div>
       {task.status !== "pending" && (
-        <div className="mt-2 h-1 overflow-hidden rounded-full bg-black/10">
+        <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
           <motion.div
             className="h-full rounded-full"
             style={{ background: color }}

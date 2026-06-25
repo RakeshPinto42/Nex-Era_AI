@@ -24,18 +24,18 @@ export default function AgentBar() {
   };
 
   return (
-    <div className="flex-none border-t border-black/10 bg-white/60 px-3 py-3 backdrop-blur-xl">
+    <div className="flex-none border-t border-white/[0.08] bg-obsidian-100/70 px-3 py-3 backdrop-blur-xl">
       <div className="mb-2 flex flex-wrap gap-1.5">
         {CAPS.map((c) => (
           <span
             key={c}
-            className="rounded-full border border-black/10 bg-black/[0.03] px-2 py-0.5 font-mono text-[10px] text-black/45"
+            className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-white/45"
           >
             {c}
           </span>
         ))}
       </div>
-      <div className="flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.04] p-1.5 focus-within:border-navy/40">
+      <div className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] p-1.5 focus-within:border-navy/40">
         <span className="pl-2 font-mono text-sm text-navy">▸</span>
         <input
           value={cmd}
@@ -43,7 +43,7 @@ export default function AgentBar() {
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder="Tell the agent what to do…"
           disabled={running}
-          className="flex-1 bg-transparent py-1.5 text-sm text-ink placeholder:text-black/35 outline-none disabled:opacity-50"
+          className="flex-1 bg-transparent py-1.5 text-sm text-white placeholder:text-white/35 outline-none disabled:opacity-50"
         />
         <button
           onClick={submit}

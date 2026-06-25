@@ -116,34 +116,34 @@ export default function CodeWorkspace() {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-[#f6f7f9] text-ink">
-      <header className="flex h-14 flex-none items-center justify-between border-b border-black/10 px-5">
+    <div className="flex h-screen flex-col bg-obsidian text-white">
+      <header className="flex h-14 flex-none items-center justify-between border-b border-white/[0.08] px-5">
         <div className="flex items-center gap-3">
           <Logo size={26} variant="terminal" />
-          <span className="text-black/30">/</span>
+          <span className="text-white/30">/</span>
           <span className="text-sm font-medium">Code Workspace</span>
           {root && (
-            <span className="ml-2 truncate font-mono text-[11px] text-black/40">
+            <span className="ml-2 truncate font-mono text-[11px] text-white/40">
               {root}
             </span>
           )}
         </div>
         <Link
           href="/dashboard"
-          className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/65 hover:text-ink"
+          className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs text-white/65 hover:text-white"
         >
           ← Dashboard
         </Link>
       </header>
 
       {/* folder bar */}
-      <div className="flex flex-none flex-wrap items-center gap-2 border-b border-black/10 px-5 py-3">
+      <div className="flex flex-none flex-wrap items-center gap-2 border-b border-white/[0.08] px-5 py-3">
         <input
           value={pathInput}
           onChange={(e) => setPathInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && openFolder()}
           placeholder="Paste a folder path  (e.g. D:\\Projects\\my-app)"
-          className="min-w-[280px] flex-1 rounded-lg border border-black/10 bg-black/[0.04] px-3 py-2 font-mono text-sm outline-none focus:border-navy/40"
+          className="min-w-[280px] flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 font-mono text-sm outline-none focus:border-navy/40"
         />
         <button
           onClick={openFolder}
@@ -156,9 +156,9 @@ export default function CodeWorkspace() {
 
       <div className="flex min-h-0 flex-1">
         {/* tree */}
-        <aside className="w-64 flex-none overflow-auto border-r border-black/10 p-2">
+        <aside className="w-64 flex-none overflow-auto border-r border-white/[0.08] p-2">
           {tree.length === 0 ? (
-            <p className="p-3 text-xs text-black/35">
+            <p className="p-3 text-xs text-white/35">
               {root ? "Empty folder" : "Open a folder to start"}
             </p>
           ) : (
@@ -168,25 +168,25 @@ export default function CodeWorkspace() {
 
         {/* editor */}
         <main className="flex min-w-0 flex-1 flex-col">
-          <div className="flex-none border-b border-black/10 px-4 py-2 font-mono text-[11px] text-black/40">
+          <div className="flex-none border-b border-white/[0.08] px-4 py-2 font-mono text-[11px] text-white/40">
             {openPath ?? "No file open"}
           </div>
-          <pre className="flex-1 overflow-auto whitespace-pre-wrap p-4 font-mono text-[12.5px] leading-relaxed text-black/85">
+          <pre className="flex-1 overflow-auto whitespace-pre-wrap p-4 font-mono text-[12.5px] leading-relaxed text-white/85">
             {fileContent || (root ? "Select a file to view it." : "")}
           </pre>
         </main>
 
         {/* agent */}
-        <aside className="flex w-[380px] flex-none flex-col border-l border-black/10">
-          <div className="flex-none space-y-2 border-b border-black/10 p-3">
+        <aside className="flex w-[380px] flex-none flex-col border-l border-white/[0.08]">
+          <div className="flex-none space-y-2 border-b border-white/[0.08] p-3">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-black/35">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-white/35">
                 Model
               </span>
               <select
                 value={sel}
                 onChange={(e) => setSel(e.target.value)}
-                className="flex-1 rounded-lg border border-black/10 bg-black/[0.04] px-2 py-1.5 text-xs outline-none focus:border-navy/40"
+                className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2 py-1.5 text-xs outline-none focus:border-navy/40"
               >
                 {models.length === 0 && <option value="">No models</option>}
                 {models.map((m) => (
@@ -201,7 +201,7 @@ export default function CodeWorkspace() {
               onChange={(e) => setInstruction(e.target.value)}
               placeholder="Tell the agent what to build or change in this folder…"
               rows={4}
-              className="w-full resize-none rounded-lg border border-black/10 bg-black/[0.04] px-3 py-2 text-sm outline-none focus:border-navy/40"
+              className="w-full resize-none rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm outline-none focus:border-navy/40"
             />
             <button
               onClick={run}
@@ -220,9 +220,9 @@ export default function CodeWorkspace() {
             )}
             {result && (
               <div className="space-y-3">
-                <p className="text-black/85">{result.summary}</p>
+                <p className="text-white/85">{result.summary}</p>
                 <div>
-                  <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-black/35">
+                  <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-white/35">
                     Changed {result.applied.length} files · {result.model}
                   </p>
                   <ul className="space-y-1">
@@ -244,7 +244,7 @@ export default function CodeWorkspace() {
                         </span>
                         <button
                           onClick={() => openFile(a.path)}
-                          className="truncate text-black/70 hover:text-ink"
+                          className="truncate text-white/70 hover:text-white"
                         >
                           {a.path}
                         </button>
@@ -258,7 +258,7 @@ export default function CodeWorkspace() {
                   </p>
                 )}
                 {result.notes && (
-                  <p className="rounded-lg border border-black/10 bg-black/[0.03] p-2.5 text-xs text-black/60">
+                  <p className="rounded-lg border border-white/[0.08] bg-white/[0.03] p-2.5 text-xs text-white/60">
                     {result.notes}
                   </p>
                 )}
@@ -310,9 +310,9 @@ function TreeItem({
         <button
           onClick={() => setOpen((v) => !v)}
           style={pad}
-          className="flex w-full items-center gap-1.5 rounded py-1 text-left text-xs text-black/70 hover:bg-black/5"
+          className="flex w-full items-center gap-1.5 rounded py-1 text-left text-xs text-white/70 hover:bg-white/[0.06]"
         >
-          <span className="text-black/30">{open ? "▾" : "▸"}</span>
+          <span className="text-white/30">{open ? "▾" : "▸"}</span>
           {node.name}
         </button>
         {open && node.children && (
@@ -326,8 +326,8 @@ function TreeItem({
       <button
         onClick={() => onOpen(node.path)}
         style={pad}
-        className={`flex w-full items-center rounded py-1 text-left text-xs hover:bg-black/5 ${
-          openPath === node.path ? "bg-black/[0.06] text-navy" : "text-black/60"
+        className={`flex w-full items-center rounded py-1 text-left text-xs hover:bg-white/[0.06] ${
+          openPath === node.path ? "bg-white/[0.06] text-navy" : "text-white/60"
         }`}
       >
         {node.name}

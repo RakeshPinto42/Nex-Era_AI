@@ -45,14 +45,14 @@ export function Dropzone({
           if (f) handle(f);
         }}
         className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-colors ${
-          over ? "border-navy/50 bg-navy/[0.04]" : "border-black/15 hover:border-black/30 hover:bg-black/[0.02]"
+          over ? "border-navy/50 bg-navy/[0.04]" : "border-white/15 hover:border-black/30 hover:bg-white/[0.02]"
         }`}
       >
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="text-black/40" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="text-white/40" aria-hidden="true">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
         </svg>
-        <span className="text-sm font-medium text-ink">{hint}</span>
-        <span className="font-mono text-[11px] text-black/40">.csv — parsed in your browser</span>
+        <span className="text-sm font-medium text-white">{hint}</span>
+        <span className="font-mono text-[11px] text-white/40">.csv — parsed in your browser</span>
         <input
           type="file"
           accept=".csv,text/csv"
@@ -80,11 +80,11 @@ export function ColumnSelect({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium text-black/55">{label}</span>
+      <span className="mb-1 block text-xs font-medium text-white/55">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full cursor-pointer rounded-lg border border-black/10 bg-black/[0.02] px-2.5 py-2 text-sm text-ink outline-none focus:border-navy/40"
+        className="w-full cursor-pointer rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-sm text-white outline-none focus:border-navy/40"
       >
         {table.columns.map((c, i) => (
           <option key={i} value={i}>
@@ -114,14 +114,14 @@ export function StatCard({
       ? "text-emerald-600"
       : tone === "bad"
         ? "text-rose-600"
-        : "text-ink";
+        : "text-white";
   return (
-    <div className="rounded-xl border border-black/10 bg-white p-4">
-      <p className="font-mono text-[10px] uppercase tracking-wider text-black/40">
+    <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+      <p className="font-mono text-[10px] uppercase tracking-wider text-white/40">
         {label}
       </p>
       <p className={`mt-1 text-2xl font-semibold ${toneCls}`}>{value}</p>
-      {sub && <p className="mt-0.5 text-xs text-black/45">{sub}</p>}
+      {sub && <p className="mt-0.5 text-xs text-white/45">{sub}</p>}
     </div>
   );
 }
@@ -138,10 +138,10 @@ export function BarList({
     <div className="space-y-2">
       {items.map((it, i) => (
         <div key={i} className="flex items-center gap-3">
-          <span className="w-40 flex-none truncate text-sm text-black/70" title={it.label}>
+          <span className="w-40 flex-none truncate text-sm text-white/70" title={it.label}>
             {it.label}
           </span>
-          <div className="relative h-5 flex-1 overflow-hidden rounded bg-black/[0.04]">
+          <div className="relative h-5 flex-1 overflow-hidden rounded bg-white/[0.04]">
             <div
               className="absolute inset-y-0 left-0 rounded"
               style={{
@@ -150,7 +150,7 @@ export function BarList({
               }}
             />
           </div>
-          <span className="w-24 flex-none text-right font-mono text-xs text-ink">
+          <span className="w-24 flex-none text-right font-mono text-xs text-white">
             {it.display}
           </span>
         </div>
@@ -161,7 +161,7 @@ export function BarList({
 
 export function PrivacyNote() {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-emerald-600/20 bg-emerald-600/[0.05] px-3 py-2 text-xs text-emerald-700">
+    <div className="flex items-center gap-2 rounded-lg border border-emerald-600/20 bg-emerald-600/[0.05] px-3 py-2 text-xs text-emerald-glow">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
       </svg>
@@ -172,6 +172,6 @@ export function PrivacyNote() {
 
 export function Panel({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-5">{children}</div>
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">{children}</div>
   );
 }

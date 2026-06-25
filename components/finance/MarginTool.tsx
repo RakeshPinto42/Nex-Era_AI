@@ -65,7 +65,7 @@ export default function MarginTool() {
       <div className="space-y-4">
         <PrivacyNote />
         <Dropzone onTable={onTable} hint="Upload revenue + cost by segment (CSV)" />
-        <p className="text-center text-xs text-black/45">
+        <p className="text-center text-xs text-white/45">
           Need a segment/product column, a revenue column, and a cost column.{" "}
           <button onClick={() => onTable(parseCsv(SAMPLE))} className="font-medium text-navy hover:underline">
             Load sample data
@@ -95,24 +95,24 @@ export default function MarginTool() {
           </div>
 
           <Panel>
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-black/40">
+            <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
               Gross margin % by segment
             </p>
             <BarList items={bars} />
           </Panel>
 
-          <div className="overflow-hidden rounded-2xl border border-black/10">
-            <div className="flex items-center justify-between border-b border-black/10 bg-black/[0.02] px-4 py-2.5">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-black/45">Segment detail</span>
+          <div className="overflow-hidden rounded-2xl border border-white/[0.08]">
+            <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-4 py-2.5">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-white/45">Segment detail</span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">Export CSV</button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-black/60 hover:bg-black/5 hover:text-ink">New file</button>
+                <button onClick={exportCsv} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">Export CSV</button>
+                <button onClick={() => setTable(null)} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">New file</button>
               </div>
             </div>
             <div className="max-h-[420px] overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-white">
-                  <tr className="border-b border-black/10 text-left font-mono text-[10px] uppercase tracking-wider text-black/40">
+                <thead className="sticky top-0 bg-white/[0.04]">
+                  <tr className="border-b border-white/[0.08] text-left font-mono text-[10px] uppercase tracking-wider text-white/40">
                     <th className="px-4 py-2 font-medium">Segment</th>
                     <th className="px-4 py-2 text-right font-medium">Revenue</th>
                     <th className="px-4 py-2 text-right font-medium">Cost</th>
@@ -122,11 +122,11 @@ export default function MarginTool() {
                 </thead>
                 <tbody>
                   {result.rows.map((r, i) => (
-                    <tr key={i} className="border-b border-black/5 last:border-0">
-                      <td className="px-4 py-2 text-ink">{r.segment}</td>
-                      <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.revenue)}</td>
-                      <td className="px-4 py-2 text-right font-mono text-black/70">{fmtMoney(r.cost)}</td>
-                      <td className="px-4 py-2 text-right font-mono text-ink">{fmtMoney(r.profit)}</td>
+                    <tr key={i} className="border-b border-white/[0.06] last:border-0">
+                      <td className="px-4 py-2 text-white">{r.segment}</td>
+                      <td className="px-4 py-2 text-right font-mono text-white/70">{fmtMoney(r.revenue)}</td>
+                      <td className="px-4 py-2 text-right font-mono text-white/70">{fmtMoney(r.cost)}</td>
+                      <td className="px-4 py-2 text-right font-mono text-white">{fmtMoney(r.profit)}</td>
                       <td className={`px-4 py-2 text-right font-mono ${r.margin >= 25 ? "text-emerald-600" : "text-rose-600"}`}>
                         {r.margin.toFixed(1)}%
                       </td>
