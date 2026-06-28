@@ -7,7 +7,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
   if (process.env.NODE_ENV !== "production") return;
 
-  const { credentialConfigError } = await import("@/lib/auth/users");
+  const { credentialConfigError } = await import("@/lib/auth/policy");
   const credErr = credentialConfigError();
   if (credErr) {
     console.error(`[FATAL] NEX·ERA refusing to start: ${credErr}`);
