@@ -23,6 +23,15 @@ import {
   VISIBILITY_META,
   isActiveState,
 } from "@/lib/agents/runtime";
+import { getTool } from "@/lib/tools/registry";
+import { planGoal } from "@/lib/hermes/engine";
+import {
+  EXECUTION_META,
+  COMPLEXITY_META,
+  type ExecutionPlan,
+  type PlanStep,
+} from "@/lib/hermes/plan";
+import { AI_CAPABILITY_META } from "@/lib/hermes/capabilities";
 
 type Filter = "all" | AgentCategory;
 
@@ -54,6 +63,9 @@ export default function MissionControlPage() {
       title="Mission Control"
       subtitle="Central dashboard for the Agent Platform — every registered agent, at a glance."
     >
+      {/* ---- Hermes orchestration console ---- */}
+      <HermesConsole />
+
       {/* ---- Summary ribbon ---- */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Registered" value={total} />
@@ -91,6 +103,161 @@ export default function MissionControlPage() {
       {/* ---- Runtime legend ---- */}
       <RuntimeLegend />
     </PageShell>
+  );
+}
+
+/* -------------------------- Hermes orchestration ------------------------- */
+
+function HermesConsole() {
+  const [goal, setGoal] = useState("");
+  const [plan, setPlan] = useState<ExecutionPlan | null>(null);
+
+  const submit = () => {
+    if (!goal.trim()) return;
+    setPlan(planGoal(goal.trim()));
+  };
+
+  return (
+    <section className="mb-6 rounded-2xl border border-line bg-gradient-to-br from-brand/[0.06] to-violet/[0.05] p-5">
+      <div className="mb-3 flex items-center gap-2">
+        <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand/15 text-sm">🪽</span>
+        <div>
+          <p className="text-sm font-semibold text-ink">Hermes</p>
+          <p className="text-[11px] text-muted">
+            OS scheduler — give a goal, Hermes plans it across agents + tools. No execution yet.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <input
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && submit()}
+          placeholder="Describe a goal… e.g. Forecast Q3 revenue and explain the variance"
+          className="min-w-0 flex-1 rounded-lg border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-faint outline-none focus:border-brand/50"
+        />
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!goal.trim()}
+          className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.03] disabled:opacity-50"
+        >
+          Plan
+        </button>
+      </div>
+
+      {plan && <PlanView plan={plan} />}
+    </section>
+  );
+}
+
+function PlanView({ plan }: { plan: ExecutionPlan }) {
+  const cx = COMPLEXITY_META[plan.complexity];
+  const st = EXECUTION_META[plan.status];
+  return (
+    <div className="mt-4 space-y-4">
+      {/* plan header */}
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface p-3">
+        <span className="text-sm font-medium text-ink">{plan.intent}</span>
+        <Pill color={st.color}>{st.label}</Pill>
+        <Pill color={cx.color}>Complexity: {cx.label}</Pill>
+        <span className="text-[11px] text-muted">{plan.summary}</span>
+      </div>
+
+      {/* requested capabilities */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="text-[11px] font-medium text-muted">Requested capabilities:</span>
+        {plan.capabilities.map((c) => (
+          <span
+            key={c}
+            title={AI_CAPABILITY_META[c]?.desc}
+            className="rounded-md bg-surface-3 px-1.5 py-0.5 font-mono text-[10px] text-muted"
+          >
+            {AI_CAPABILITY_META[c]?.label ?? c}
+          </span>
+        ))}
+        <span className="ml-1 text-[10px] text-faint">(Router selects the model)</span>
+      </div>
+
+      {/* steps */}
+      <ol className="space-y-2">
+        {plan.steps.map((s, i) => (
+          <StepRow key={s.id} step={s} index={i} />
+        ))}
+      </ol>
+
+      {/* timeline */}
+      <div className="rounded-xl border border-line bg-surface p-3">
+        <p className="mb-2 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
+          Execution timeline
+        </p>
+        <ol className="flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-muted">
+          {plan.timeline.map((e, i) => (
+            <li key={e.id} className="inline-flex items-center gap-1.5">
+              {i > 0 && <span className="text-faint">→</span>}
+              <span className="text-ink">{e.label}</span>
+              {e.detail && <span className="text-faint">({e.detail})</span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  );
+}
+
+function StepRow({ step, index }: { step: PlanStep; index: number }) {
+  const st = EXECUTION_META[step.status];
+  return (
+    <li className="rounded-xl border border-line bg-surface p-3">
+      <div className="flex items-start gap-3">
+        <span className="grid h-6 w-6 flex-none place-items-center rounded-full border border-line text-[11px] font-semibold text-muted">
+          {index + 1}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-medium text-ink">{step.title}</span>
+            <Pill color={st.color}>{st.label}</Pill>
+            {step.assignedAgentName ? (
+              <span className="text-[11px] text-muted">→ {step.assignedAgentName}</span>
+            ) : (
+              <span className="text-[11px] text-faint">→ no agent matched</span>
+            )}
+          </div>
+          <p className="mt-0.5 text-[12px] text-faint">{step.description}</p>
+
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {step.requiredCapabilities.map((c) => (
+              <span key={c} className="rounded-md bg-brand/[0.08] px-1.5 py-0.5 font-mono text-[10px] text-brand">
+                {AI_CAPABILITY_META[c]?.label ?? c}
+              </span>
+            ))}
+            {step.requiredTools.map((t) => (
+              <span key={t} className="rounded-md bg-surface-3 px-1.5 py-0.5 font-mono text-[10px] text-muted">
+                🔧 {getTool(t)?.name ?? t}
+              </span>
+            ))}
+            {step.outputs.map((o) => (
+              <span key={o} className="rounded-md border border-line px-1.5 py-0.5 font-mono text-[10px] text-faint">
+                ⤷ {o}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+function Pill({ color, children }: { color: string; children: React.ReactNode }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium"
+      style={{ borderColor: `${color}55`, color }}
+    >
+      <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+      {children}
+    </span>
   );
 }
 
