@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, RefreshCw, ExternalLink, Trash2, ArrowUp, ArrowDown, Sparkles, Building2, Settings, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { safeHref } from "@/lib/security/url";
 import { useCi } from "../context";
 import { researchCompetitor, discoverCompetitors, getSearchKeyStatus, setTavilyKey, ResearchError, type DiscoveredCompetitor, type SearchKeyStatus } from "@/lib/finance-os/ci/agent/client";
 import { listRecords, saveSnapshot, getRecord, deleteRecord, diffLatest } from "@/lib/finance-os/ci/agent/store";
@@ -323,7 +324,7 @@ export function CompetitorIntelligence() {
                         <td className="py-2.5"><ChangeTag ch={ch} /></td>
                         <td className="py-2.5 text-right">
                           {p.sourceUrl ? (
-                            <a href={p.sourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-300 hover:underline" title={p.sourceUrl}><ExternalLink size={12} /> link</a>
+                            <a href={safeHref(p.sourceUrl)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-300 hover:underline" title={p.sourceUrl}><ExternalLink size={12} /> link</a>
                           ) : <span className="text-fos-faint">—</span>}
                         </td>
                       </tr>
@@ -352,7 +353,7 @@ export function CompetitorIntelligence() {
               <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-fos-muted">Sources</p>
               <div className="space-y-1">
                 {latest.sources.map((s, i) => (
-                  <a key={i} href={s.url} target="_blank" rel="noreferrer" className="block truncate text-[11px] text-blue-300/80 hover:underline" title={s.url}>{i + 1}. {s.title}</a>
+                  <a key={i} href={safeHref(s.url)} target="_blank" rel="noreferrer" className="block truncate text-[11px] text-blue-300/80 hover:underline" title={s.url}>{i + 1}. {s.title}</a>
                 ))}
               </div>
             </div>

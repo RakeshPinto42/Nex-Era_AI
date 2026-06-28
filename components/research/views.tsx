@@ -8,6 +8,7 @@
 import { useState } from "react";
 import { useDashboard } from "@/components/dashboard/store";
 import { useResearch, type Research, type Source, type View } from "./store";
+import { safeHref } from "@/lib/security/url";
 
 const MODE_LABEL: Record<string, string> = { web: "Web", pdf: "PDF", youtube: "YouTube", website: "Website" };
 
@@ -47,7 +48,7 @@ function inline(text: string, sources: Source[]) {
     if (c) {
       const src = sources[Number(c[1]) - 1];
       return src ? (
-        <a key={i} href={src.url} target="_blank" rel="noopener noreferrer" title={src.title} className="mx-0.5 rounded bg-brand/20 px-1 align-super text-[10px] font-semibold text-brand hover:bg-brand/30">{c[1]}</a>
+        <a key={i} href={safeHref(src.url)} target="_blank" rel="noopener noreferrer" title={src.title} className="mx-0.5 rounded bg-brand/20 px-1 align-super text-[10px] font-semibold text-brand hover:bg-brand/30">{c[1]}</a>
       ) : <span key={i}>{seg}</span>;
     }
     return <span key={i}>{seg}</span>;
@@ -167,7 +168,7 @@ function CanvasView({ r, compareSel, toggleCompare }: { r: Research; compareSel:
             <div key={s.id} className="group flex gap-3 rounded-xl border border-line bg-surface-2 p-3">
               <span className="grid h-6 w-6 flex-none place-items-center rounded-md bg-brand/15 font-mono text-[11px] font-bold text-brand">{s.id}</span>
               <div className="min-w-0 flex-1">
-                <a href={s.url} target="_blank" rel="noopener noreferrer" className="block truncate text-[14px] font-medium text-ink hover:text-brand">{s.title}</a>
+                <a href={safeHref(s.url)} target="_blank" rel="noopener noreferrer" className="block truncate text-[14px] font-medium text-ink hover:text-brand">{s.title}</a>
                 <p className="truncate font-mono text-[10px] text-faint">{s.url}</p>
                 <p className="mt-1 line-clamp-2 text-[12px] leading-relaxed text-muted">{s.content}</p>
               </div>
@@ -239,7 +240,7 @@ export function Compare({ r, sel }: { r: Research; sel: number[] }) {
     <div className="grid grid-cols-2 gap-3">
       {picked.map((s) => (
         <div key={s.id} className="rounded-xl border border-line bg-surface-2 p-3">
-          <a href={s.url} target="_blank" rel="noopener noreferrer" className="block truncate text-[13px] font-medium text-ink hover:text-brand">[{s.id}] {s.title}</a>
+          <a href={safeHref(s.url)} target="_blank" rel="noopener noreferrer" className="block truncate text-[13px] font-medium text-ink hover:text-brand">[{s.id}] {s.title}</a>
           <div className="mt-1 mb-2"><QualityPill q={s.quality} /></div>
           <p className="max-h-72 overflow-y-auto text-[12px] leading-relaxed text-muted">{s.content.slice(0, 1500)}</p>
         </div>

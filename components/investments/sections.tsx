@@ -6,6 +6,7 @@
    (`.nex` scope) to match the Investments page. */
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { safeHref } from "@/lib/security/url";
 import { useDashboard } from "@/components/dashboard/store";
 
 /* ----------------------------------------------------------------- shared */
@@ -313,7 +314,7 @@ function NewsSnapshot({ item, onClose }: { item: NewsItem; onClose: () => void }
         </div>
         <div className="flex flex-none items-center justify-between border-t border-[var(--nex-border)] p-3">
           <span className="font-mono text-[10px] text-[var(--nex-text-faint)]">Snapshot — verify before acting.</span>
-          <a href={item.url} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-[var(--nex-border)] px-3 py-1.5 text-[12px] text-[var(--nex-text-muted)] hover:text-[var(--nex-text)]">Open original ↗</a>
+          <a href={safeHref(item.url)} target="_blank" rel="noopener noreferrer" className="rounded-lg border border-[var(--nex-border)] px-3 py-1.5 text-[12px] text-[var(--nex-text-muted)] hover:text-[var(--nex-text)]">Open original ↗</a>
         </div>
       </div>
     </div>

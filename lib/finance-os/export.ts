@@ -4,14 +4,15 @@
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { toCsv, download } from "@/lib/finance/csv";
+import { toCsv, download, neutralizeFormula } from "@/lib/finance/csv";
 
 export type Column = { header: string; key: string };
 export type Row = Record<string, string | number>;
 
 /** Download rows as a single-sheet .xlsx. */
 export function exportExcel(filename: string, columns: Column[], rows: Row[], sheet = "Sheet1"): void {
-  const aoa = [columns.map((c) => c.header), ...rows.map((r) => columns.map((c) => r[c.key] ?? ""))];
+  // Neutralize formula injection in data cells (shared with CSV export).
+  const aoa = [columns.map((c) => c.header), ...rows.map((r) => columns.map((c) => neutralizeFormula(r[c.key] ?? "")))];
   const ws = XLSX.utils.aoa_to_sheet(aoa);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, sheet);

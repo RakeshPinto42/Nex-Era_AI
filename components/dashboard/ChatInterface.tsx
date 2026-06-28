@@ -10,6 +10,7 @@ import {
   type ChangeEvent,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { safeHref } from "@/lib/security/url";
 import CodeBlock from "./CodeBlock";
 import { NexeraMark } from "@/components/Logo";
 import { INTENTS, intentEmoji, type Intent } from "@/lib/brand/intent";
@@ -1010,7 +1011,7 @@ function renderInline(text: string) {
           return (
             <a
               key={i}
-              href={url}
+              href={safeHref(url)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand underline underline-offset-2 hover:text-brand-600"

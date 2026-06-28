@@ -8,6 +8,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { RefreshCw, ExternalLink, AlertTriangle, TrendingUp, Minus, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { safeHref } from "@/lib/security/url";
 import { useCi } from "../context";
 import { fetchCompetitorNews, ResearchError, type NewsItem } from "@/lib/finance-os/ci/agent/client";
 import { COMPETITORS } from "@/lib/finance-os/ci/sonnys";
@@ -153,7 +154,7 @@ function NewsRow({ n }: { n: FeedRow }) {
       {n.impactRationale && <p className="mt-1.5 text-[12px] text-fos-faint"><span className="font-medium text-fos-muted">Impact:</span> {n.impactRationale}</p>}
       {n.response && <p className="mt-2 border-t border-fos-border pt-2 text-[13px] text-blue-200">→ {n.response}</p>}
       {n.url && (
-        <a href={n.url} target="_blank" rel="noreferrer" className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-blue-300 hover:underline"><ExternalLink size={11} /> source</a>
+        <a href={safeHref(n.url)} target="_blank" rel="noreferrer" className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-blue-300 hover:underline"><ExternalLink size={11} /> source</a>
       )}
     </div>
   );
@@ -183,7 +184,7 @@ function Sources({ results }: { results: Record<string, Result> }) {
     <div className="mt-4 border-t border-fos-border pt-3">
       <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-fos-muted">Sources</p>
       {sources.map((s, i) => (
-        <a key={i} href={s.url} target="_blank" rel="noreferrer" className="block truncate text-[11px] text-blue-300/80 hover:underline" title={s.url}>{i + 1}. {s.title}</a>
+        <a key={i} href={safeHref(s.url)} target="_blank" rel="noreferrer" className="block truncate text-[11px] text-blue-300/80 hover:underline" title={s.url}>{i + 1}. {s.title}</a>
       ))}
     </div>
   );

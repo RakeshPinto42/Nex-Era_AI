@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import type { ProviderPreset } from "@/lib/llm/providers";
+import { safeHref } from "@/lib/security/url";
 
 type Masked = {
   providerId: string;
@@ -294,7 +295,7 @@ export default function AdminPage() {
                       )}
                     </div>
                     <a
-                      href={preset.docsUrl}
+                      href={safeHref(preset.docsUrl)}
                       target="_blank"
                       rel="noreferrer"
                       className="font-mono text-[11px] text-black/35 hover:text-muted"

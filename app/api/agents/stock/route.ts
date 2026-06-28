@@ -1,6 +1,7 @@
 import { marketIntelligenceTool } from "@/lib/investments/market-intelligence";
 import { analyzeStock } from "@/lib/agents/stock-agent/analyze";
 import { withGuard } from "@/lib/security/throttle";
+import { upsertKnowledge } from "@/lib/knowledge/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,6 +13,26 @@ export const maxDuration = 60;
 async function run(ticker: string) {
   const data = await marketIntelligenceTool.getNormalized(ticker);
   const insights = await analyzeStock(data);
+
+  // Authorized write to the Knowledge Layer (Investment Intelligence Agent).
+  // Best-effort — never break the response on a knowledge write.
+  try {
+    upsertKnowledge("market", {
+      id: `company:${data.ticker}`,
+      type: "company",
+      title: `${data.company} (${data.ticker})`,
+      summary: insights.companySummary,
+      tags: [data.sector, data.industry, data.exchange].filter(Boolean),
+      sources: data.news.map((n) => ({ title: n.title, kind: "news" })),
+      confidence: insights.confidence,
+      owner: "market",
+      aiInsights: [{ text: insights.investmentThesis, by: "market", confidence: insights.confidence, at: new Date().toISOString() }],
+      event: { kind: "thesis_updated", detail: "Investment Intelligence updated the thesis" },
+    });
+  } catch {
+    /* knowledge write is best-effort */
+  }
+
   return { data, insights };
 }
 

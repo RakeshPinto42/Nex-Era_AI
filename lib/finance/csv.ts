@@ -80,10 +80,21 @@ export function firstNumericCol(table: Table, from = 0): number {
   return -1;
 }
 
+/**
+ * Neutralize CSV/Excel formula injection: a cell starting with = + - @ (or a
+ * leading tab/CR that shifts the first visible char) is treated as a formula by
+ * spreadsheet apps. Prefix such cells with a single quote so they render as text.
+ * Shared by every export (CSV + xlsx) — do not duplicate this logic.
+ */
+export function neutralizeFormula(value: string | number): string {
+  const s = String(value);
+  return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+}
+
 /** Build CSV text from a header + rows (for export). */
 export function toCsv(columns: string[], rows: (string | number)[][]): string {
   const esc = (v: string | number) => {
-    const s = String(v);
+    const s = neutralizeFormula(v);
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   return [columns, ...rows].map((r) => r.map(esc).join(",")).join("\n");

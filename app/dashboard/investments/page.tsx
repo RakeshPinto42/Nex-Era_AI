@@ -6,6 +6,7 @@ import PageShell, { Reveal } from "@/components/dashboard/PageShell";
 import { fmtPct, type Rating } from "@/lib/investments/signals";
 import { loadAlerts, saveAlerts, evaluate, type Alert, type AlertDir } from "@/lib/investments/alerts";
 import { MarketOverview, Portfolio, NewsFeed, EconomicCalendar, type Idx, type Mover } from "@/components/investments/sections";
+import { safeHref } from "@/lib/security/url";
 
 type Horizon = { rating: Rating; reason: string };
 type TradePlan = { entry: number; stop: number; target: number; rr: number | null };
@@ -1184,7 +1185,7 @@ function Group({
                 <ul className="space-y-1.5">
                   {news.map((n, i) => (
                     <li key={i} className="text-[12.5px] leading-snug">
-                      <a href={n.url} target="_blank" rel="noopener noreferrer" className="text-[var(--nex-accent-3)] hover:underline">
+                      <a href={safeHref(n.url)} target="_blank" rel="noopener noreferrer" className="text-[var(--nex-accent-3)] hover:underline">
                         {n.title}
                       </a>
                       <span className="ml-1.5 text-[11px] text-[var(--nex-text-faint)]">{n.source}{n.time ? ` · ${ago(n.time)}` : ""}</span>
