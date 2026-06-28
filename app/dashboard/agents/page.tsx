@@ -33,6 +33,12 @@ import {
   type PlanStep,
 } from "@/lib/hermes/plan";
 import { AI_CAPABILITY_META } from "@/lib/hermes/capabilities";
+import {
+  executeRun,
+  type ExecutionRun,
+  type StepRun,
+  type StepRunStatus,
+} from "@/lib/hermes/execution";
 
 type Filter = "all" | AgentCategory;
 
@@ -112,10 +118,25 @@ export default function MissionControlPage() {
 function HermesConsole() {
   const [goal, setGoal] = useState("");
   const [plan, setPlan] = useState<ExecutionPlan | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [run, setRun] = useState<ExecutionRun | null>(null);
+  const [executing, setExecuting] = useState(false);
 
   const submit = () => {
     if (!goal.trim()) return;
+    setRun(null);
     setPlan(planGoal(goal.trim()));
+  };
+
+  const execute = async () => {
+    if (!plan) return;
+    setExecuting(true);
+    setRun(null);
+    try {
+      await executeRun(plan, { files }, setRun);
+    } finally {
+      setExecuting(false);
+    }
   };
 
   return (
@@ -149,7 +170,146 @@ function HermesConsole() {
       </div>
 
       {plan && <PlanView plan={plan} />}
+
+      {plan && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+          <label className="cursor-pointer rounded-lg border border-line bg-surface px-3 py-2 text-xs font-medium text-muted hover:text-ink">
+            {files.length ? `${files.length} file(s) attached` : "Attach files (optional)"}
+            <input
+              type="file"
+              multiple
+              hidden
+              onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={execute}
+            disabled={executing}
+            className="rounded-lg bg-ink px-5 py-2 text-sm font-semibold text-canvas transition-transform hover:scale-[1.03] disabled:opacity-50"
+          >
+            {executing ? "Executing…" : "▶ Execute Plan"}
+          </button>
+          <span className="text-[11px] text-faint">Hermes runs implemented agents; others are skipped.</span>
+        </div>
+      )}
+
+      {run && <ExecutionView run={run} />}
     </section>
+  );
+}
+
+const RUN_COLOR: Record<StepRunStatus, string> = {
+  pending: "#94a3b8",
+  running: "#0ea5e9",
+  waiting: "#f59e0b",
+  completed: "#10b981",
+  failed: "#ef4444",
+  skipped: "#6b7280",
+  cancelled: "#6b7280",
+};
+
+function ExecutionView({ run }: { run: ExecutionRun }) {
+  const total = run.steps.length;
+  const done = run.steps.filter((s) => s.status === "completed").length;
+  const failed = run.steps.filter((s) => s.status === "failed").length;
+  const skipped = run.steps.filter((s) => s.status === "skipped").length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const current = run.steps.find((s) => s.status === "running" || s.status === "waiting");
+  const elapsed =
+    run.startedAt != null
+      ? Math.max(0, +new Date(run.endedAt ?? new Date().toISOString()) - +new Date(run.startedAt))
+      : 0;
+
+  const runColor =
+    run.status === "completed" ? "#10b981" : run.status === "failed" ? "#ef4444" : "#0ea5e9";
+
+  return (
+    <div className="mt-4 space-y-4 border-t border-line pt-4">
+      {/* run header */}
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-surface p-3">
+        <Pill color={runColor}>{run.status}</Pill>
+        <span className="text-[12px] text-muted">
+          {done}/{total} done{failed ? ` · ${failed} failed` : ""}{skipped ? ` · ${skipped} skipped` : ""}
+        </span>
+        <span className="font-mono text-[11px] text-faint">{(elapsed / 1000).toFixed(1)}s</span>
+        <div className="ml-auto h-1.5 w-32 overflow-hidden rounded-full bg-surface-3">
+          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: runColor }} />
+        </div>
+      </div>
+
+      {/* current execution */}
+      <div className="rounded-xl border border-line bg-surface p-3">
+        <p className="mb-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
+          Current Execution
+        </p>
+        {current ? (
+          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+            <span className="inline-flex h-2 w-2 rounded-full pulse-dot" style={{ background: RUN_COLOR[current.status] }} />
+            <span className="font-medium text-ink">{current.title}</span>
+            {current.agentName && <span className="text-muted">→ {current.agentName}</span>}
+            {current.runningTool && <span className="font-mono text-[11px] text-faint">🔧 {current.runningTool}</span>}
+            <span className="font-mono text-[11px] text-muted">{EXEC_LABEL[current.status]}</span>
+          </div>
+        ) : (
+          <p className="text-[13px] text-muted">{run.status === "running" ? "Starting…" : "No step running."}</p>
+        )}
+      </div>
+
+      {/* steps */}
+      <ol className="space-y-1.5">
+        {run.steps.map((s, i) => (
+          <RunStepRow key={s.stepId} step={s} index={i} />
+        ))}
+      </ol>
+
+      {/* execution log */}
+      <div className="rounded-xl border border-line bg-surface p-3">
+        <p className="mb-2 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-muted">
+          Execution Log
+        </p>
+        <ul className="max-h-48 space-y-1 overflow-y-auto">
+          {run.events.map((e) => (
+            <li key={e.id} className="flex items-start gap-2 text-[12px]">
+              <span className="flex-none font-mono text-[10px] text-faint">
+                {new Date(e.at).toLocaleTimeString()}
+              </span>
+              <span className="text-ink">{e.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+const EXEC_LABEL: Record<StepRunStatus, string> = {
+  pending: "Pending",
+  running: "Running",
+  waiting: "Waiting",
+  completed: "Completed",
+  failed: "Failed",
+  skipped: "Skipped",
+  cancelled: "Cancelled",
+};
+
+function RunStepRow({ step, index }: { step: StepRun; index: number }) {
+  const color = RUN_COLOR[step.status];
+  return (
+    <li className="flex items-center gap-3 rounded-lg border border-line bg-surface px-3 py-2">
+      <span className="grid h-5 w-5 flex-none place-items-center rounded-full border border-line text-[10px] font-semibold text-muted">
+        {index + 1}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-[13px] text-ink">{step.title}</span>
+      {step.agentName && <span className="hidden text-[11px] text-muted sm:inline">{step.agentName}</span>}
+      {step.durationMs != null && (
+        <span className="font-mono text-[10px] text-faint">{(step.durationMs / 1000).toFixed(1)}s</span>
+      )}
+      <span className="inline-flex items-center gap-1 text-[11px] font-medium" style={{ color }}>
+        <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+        {EXEC_LABEL[step.status]}
+      </span>
+    </li>
   );
 }
 
