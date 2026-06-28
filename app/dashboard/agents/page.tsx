@@ -42,6 +42,12 @@ import {
 
 type Filter = "all" | AgentCategory;
 
+/** Implemented agents with a dedicated console. */
+const AGENT_CONSOLES: Record<string, string> = {
+  file: "/dashboard/agents/file",
+  finance: "/dashboard/agents/finance",
+};
+
 export default function MissionControlPage() {
   const categories = useMemo(() => populatedCategories(), []);
   const [filter, setFilter] = useState<Filter>("all");
@@ -524,12 +530,12 @@ function AgentCard({
       </div>
 
       {/* implemented agents expose a console link */}
-      {agent.id === "file" && (
+      {AGENT_CONSOLES[agent.id] && (
         <Link
-          href="/dashboard/agents/file"
+          href={AGENT_CONSOLES[agent.id]}
           className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
         >
-          Open File Agent →
+          Open {agent.name} →
         </Link>
       )}
 
