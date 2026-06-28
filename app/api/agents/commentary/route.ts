@@ -8,6 +8,7 @@ import {
   type OutputFormat,
 } from "@/lib/agents/commentary-agent/types";
 import type { FinanceInsights } from "@/lib/agents/finance-agent/types";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,7 +16,9 @@ export const maxDuration = 60;
 
 // Commentary Agent — consumes FinanceInsights JSON and writes narrative.
 // Never re-reads files. Reuses the AI Router.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "commentary", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: {
     insights?: FinanceInsights;
     audience?: AudienceProfile;

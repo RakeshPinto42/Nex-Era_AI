@@ -1,4 +1,5 @@
 import { runConsensus } from "@/lib/investments/consensus/consensus";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -6,7 +7,9 @@ export const maxDuration = 90;
 
 // Multi-Agent Consensus — Hermes orchestrates private specialists above a
 // confidence threshold. Reuses Market Intelligence Tool + AI Router. No advice.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "consensus", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: { ticker?: string; threshold?: number; holdings?: string[] };
   try {
     body = await req.json();

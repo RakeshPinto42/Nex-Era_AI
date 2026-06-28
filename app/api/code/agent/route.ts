@@ -7,6 +7,7 @@ import {
   buildFolderContext,
   type AgentPlan,
 } from "@/lib/llm/codeAgent";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,7 +16,9 @@ export const dynamic = "force-dynamic";
 // API) owns the folder: it sends the file list + contents here, gets back a
 // JSON plan, and applies the create/edit/delete operations to disk itself.
 // Nothing is read from or written to the server's filesystem.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "llm", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   // Any signed-in user may run it (middleware already requires a session for
   // /api/*; this is a belt-and-braces guard).
   const session = await sessionFromRequest(req);

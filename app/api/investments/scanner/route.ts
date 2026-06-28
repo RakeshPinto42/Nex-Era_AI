@@ -1,5 +1,6 @@
 import { runScan } from "@/lib/investments/scanner/scan";
 import { MARKET_LABELS, type MarketKey } from "@/lib/investments/scanner/types";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +10,9 @@ const VALID = Object.keys(MARKET_LABELS) as MarketKey[];
 
 // AI Market Scanner — discovers candidates and shortlists for the Investment
 // Intelligence Agent. Reuses the Market Intelligence Tool + IIA. No advice.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "scanner", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: { markets?: string[]; holdings?: string[] };
   try {
     body = await req.json();

@@ -1,5 +1,6 @@
 import { rankOpportunities } from "@/lib/investments/opportunity/rank";
 import { MARKET_LABELS, type MarketKey } from "@/lib/investments/scanner/types";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +10,9 @@ const VALID = Object.keys(MARKET_LABELS) as MarketKey[];
 
 // Opportunity Ranking Engine — ranks by conviction (multi-factor), not price.
 // Reuses the Market Intelligence Tool. No advice.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "opportunities", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: { markets?: string[] };
   try {
     body = await req.json();

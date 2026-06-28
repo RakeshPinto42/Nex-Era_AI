@@ -5,6 +5,7 @@ import { getDataset, datasetContext } from "@/lib/fpa/dataStore";
 import { sessionFromRequest } from "@/lib/auth/session";
 import { consumeQuota } from "@/lib/auth/quota";
 import { profileFor } from "@/lib/auth/profiles";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,7 +25,9 @@ type IncomingMsg = { role: "user" | "ai" | "assistant"; text?: string; content?:
 
 // Generic inference by explicit provider+model (router / model selector / chat).
 // Falls back to the configured default, then a stub, so it never hard-fails.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "llm", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: {
     providerId?: string;
     model?: string;

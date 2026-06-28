@@ -1,4 +1,6 @@
 import { analyzeBatch } from "@/lib/agents/file-agent/analyze";
+import { validateUploadFiles } from "@/lib/upload/validate";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -6,7 +8,9 @@ export const dynamic = "force-dynamic";
 // File Agent — read-only understanding. Accepts multipart/form-data `file`
 // fields (same upload contract as /api/extract), returns structural context.
 // No editing, no business reasoning.
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "upload", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let form: FormData;
   try {
     form = await req.formData();
@@ -15,9 +19,8 @@ export async function POST(req: Request) {
   }
 
   const files = form.getAll("file").filter((f): f is File => f instanceof File);
-  if (files.length === 0) {
-    return Response.json({ error: "No files uploaded" }, { status: 400 });
-  }
+  const check = validateUploadFiles(files);
+  if (!check.ok) return Response.json({ error: check.error }, { status: check.status });
 
   try {
     const context = await analyzeBatch(files);

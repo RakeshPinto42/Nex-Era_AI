@@ -4,6 +4,7 @@
 
 import "server-only";
 import * as XLSX from "xlsx";
+import { UPLOAD_LIMITS, withTimeout, isZip, limitSheets } from "@/lib/upload/validate";
 
 const MAX_CHARS = 24_000;
 
@@ -33,13 +34,19 @@ function cap(text: string): { text: string; truncated: boolean } {
 
 export async function extractFile(file: File): Promise<ExtractResult> {
   const e = ext(file.name);
+
+  // Defense-in-depth size guard (routes also validate up front).
+  if (file.size > UPLOAD_LIMITS.maxFileBytes) {
+    return { kind: "error", text: `[file too large: ${(file.size / 1024 / 1024).toFixed(1)} MB]`, truncated: false };
+  }
+
   const buf = Buffer.from(await file.arrayBuffer());
 
   if (e === "pdf" || file.type === "application/pdf") {
     try {
       const { PDFParse } = await import("pdf-parse");
       const parser = new PDFParse({ data: new Uint8Array(buf) });
-      const out = await parser.getText();
+      const out = await withTimeout(parser.getText(), UPLOAD_LIMITS.parseTimeoutMs, "PDF parse");
       await parser.destroy();
       const clean = tidy(out.text || "");
       if (!clean) {
@@ -57,9 +64,10 @@ export async function extractFile(file: File): Promise<ExtractResult> {
   }
 
   if (e === "docx") {
+    if (!isZip(buf)) return { kind: "docx", text: "[Malformed Word file (not a valid archive).]", truncated: false };
     try {
       const mammoth = (await import("mammoth")).default;
-      const out = await mammoth.extractRawText({ buffer: buf });
+      const out = await withTimeout(mammoth.extractRawText({ buffer: buf }), UPLOAD_LIMITS.parseTimeoutMs, "DOCX parse");
       const { text, truncated } = cap(tidy(out.value || ""));
       return { kind: "docx", text, truncated };
     } catch (err) {
@@ -68,11 +76,21 @@ export async function extractFile(file: File): Promise<ExtractResult> {
   }
 
   if (e === "xlsx" || e === "xls") {
+    if (e === "xlsx" && !isZip(buf)) {
+      return { kind: "spreadsheet", text: "[Malformed spreadsheet (not a valid archive).]", truncated: false };
+    }
     try {
-      const wb = XLSX.read(buf, { type: "buffer" });
-      const parts = wb.SheetNames.map((name) => {
+      // sheetRows caps parsed rows (memory + decompression-bomb guard); sheets
+      // are capped below. Wrapped in a parse timeout.
+      const wb = await withTimeout(
+        Promise.resolve().then(() => XLSX.read(buf, { type: "buffer", sheetRows: UPLOAD_LIMITS.maxRows })),
+        UPLOAD_LIMITS.parseTimeoutMs,
+        "Spreadsheet parse",
+      );
+      const names = limitSheets(wb.SheetNames);
+      const parts = names.map((name) => {
         const csv = XLSX.utils.sheet_to_csv(wb.Sheets[name]);
-        return wb.SheetNames.length > 1 ? `# Sheet: ${name}\n${csv}` : csv;
+        return names.length > 1 ? `# Sheet: ${name}\n${csv}` : csv;
       });
       const { text, truncated } = cap(tidy(parts.join("\n\n")));
       return { kind: "spreadsheet", text, truncated };

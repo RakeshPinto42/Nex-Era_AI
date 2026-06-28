@@ -3,6 +3,7 @@ import { streamChatWithFallback, type ChatMsg } from "@/lib/llm/infer";
 import { getDataset, datasetContext } from "@/lib/fpa/dataStore";
 import { sessionFromRequest } from "@/lib/auth/session";
 import { consumeQuota } from "@/lib/auth/quota";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +12,9 @@ type IncomingMsg = { role: "user" | "ai"; text: string };
 
 const encoder = new TextEncoder();
 
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "llm", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: { messages?: IncomingMsg[]; moduleSlug?: string | null };
   try {
     body = await req.json();

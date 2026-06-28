@@ -1,11 +1,16 @@
 import { extractFile } from "@/lib/llm/extract";
+import { validateUploadFiles } from "@/lib/upload/validate";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
+export const POST = (req: Request) => withGuard(req, "upload", () => handlePOST(req));
 
 // Accepts multipart/form-data with one or more `file` fields; returns extracted
 // plain text per file so the client can fold it into a chat or code payload.
-export async function POST(req: Request) {
+async function handlePOST(req: Request) {
   let form: FormData;
   try {
     form = await req.formData();
@@ -14,9 +19,8 @@ export async function POST(req: Request) {
   }
 
   const files = form.getAll("file").filter((f): f is File => f instanceof File);
-  if (files.length === 0) {
-    return Response.json({ error: "No files uploaded" }, { status: 400 });
-  }
+  const check = validateUploadFiles(files);
+  if (!check.ok) return Response.json({ error: check.error }, { status: check.status });
 
   const results = await Promise.all(
     files.map(async (file) => {

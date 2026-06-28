@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import { generateVideo } from "@/lib/gen/generate";
 import { sessionFromRequest } from "@/lib/auth/session";
 import { consumeQuota } from "@/lib/auth/quota";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "media", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: { prompt?: string };
   try {
     body = await req.json();

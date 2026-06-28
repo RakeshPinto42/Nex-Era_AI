@@ -1,5 +1,6 @@
 import { marketIntelligenceTool } from "@/lib/investments/market-intelligence";
 import { analyzeStock } from "@/lib/agents/stock-agent/analyze";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,7 +15,9 @@ async function run(ticker: string) {
   return { data, insights };
 }
 
-export async function GET(req: Request) {
+export const GET = (req: Request) => withGuard(req, "investment", () => handleGET(req));
+
+async function handleGET(req: Request) {
   const ticker = new URL(req.url).searchParams.get("ticker")?.trim();
   if (!ticker) return Response.json({ error: "ticker required" }, { status: 400 });
   try {
@@ -24,7 +27,9 @@ export async function GET(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "investment", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   let body: { ticker?: string };
   try {
     body = await req.json();

@@ -1,5 +1,6 @@
 import { sessionFromRequest } from "@/lib/auth/session";
 import { tavilySearch } from "@/lib/finance-os/ci/agent/tavily";
+import { withGuard } from "@/lib/security/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -66,7 +67,9 @@ async function fetchTranscript(input: string): Promise<Source[]> {
   return [{ id: 1, title: `Transcript · ${title}`, url: `https://youtu.be/${id}`, content: text, kind: "youtube" }];
 }
 
-export async function POST(req: Request) {
+export const POST = (req: Request) => withGuard(req, "research", () => handlePOST(req));
+
+async function handlePOST(req: Request) {
   const session = await sessionFromRequest(req);
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
