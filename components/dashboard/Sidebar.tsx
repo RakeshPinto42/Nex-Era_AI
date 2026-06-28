@@ -65,7 +65,9 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     label: "System",
     items: [
       { label: "Providers", href: "/admin", icon: IconKey, adminOnly: true },
+      { label: "Admin Intelligence", href: "/dashboard/admin-intel", icon: IconKey, adminOnly: true },
       { label: "Event Monitor", href: "/dashboard/events", icon: IconSettings },
+      { label: "Evolution", href: "/dashboard/evolution", icon: IconSettings },
       { label: "Settings", href: "/dashboard/settings", icon: IconSettings },
     ],
   },

@@ -11,6 +11,8 @@ import {
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { safeHref } from "@/lib/security/url";
+import ProcessingIndicator from "@/components/processing/ProcessingIndicator";
+import { categoryForIntent } from "@/lib/processing/engine";
 import CodeBlock from "./CodeBlock";
 import { NexeraMark } from "@/components/Logo";
 import { INTENTS, intentEmoji, type Intent } from "@/lib/brand/intent";
@@ -716,21 +718,13 @@ function MessageRow({ message }: { message: Message }) {
 }
 
 // Shown in the assistant bubble before the first token lands — never a blank
-// gap. Pulsing dots + label, the ChatGPT/Claude "thinking" affordance.
+// gap. Uses the Processing Personality Engine (context-aware, premium) instead
+// of a generic "Thinking…".
 function ThinkingDots() {
+  const { routedIntent } = useDashboard();
   return (
-    <div className="flex items-center gap-2 py-0.5 text-muted">
-      <span className="flex gap-1">
-        {[0, 1, 2].map((i) => (
-          <motion.span
-            key={i}
-            className="h-1.5 w-1.5 rounded-full bg-muted"
-            animate={{ opacity: [0.25, 1, 0.25], y: [0, -2.5, 0] }}
-            transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: i * 0.16 }}
-          />
-        ))}
-      </span>
-      <span className="text-[13px]">Thinking…</span>
+    <div className="py-0.5">
+      <ProcessingIndicator category={categoryForIntent(routedIntent)} />
     </div>
   );
 }

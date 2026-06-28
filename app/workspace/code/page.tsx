@@ -1,7 +1,9 @@
-import Workspace from "@/components/workspace/Workspace";
+import NexCode from "@/components/code/NexCode";
 
-// NEXERA Code uses the same File System Access IDE as /workspace — real folder
-// read/write in the browser with a live LLM coding agent.
+// NEX Code — local AI coding runtime (Cursor / Claude Code style). Native folder
+// picker via the File System Access API; real permission validation, indexing,
+// project overview, search and AI edits (diff preview → apply). Reuses the
+// /api/code/agent route (AI Router) + Event Bus. No pasted paths.
 export default function CodeWorkspacePage() {
-  return <Workspace />;
+  return <NexCode />;
 }
