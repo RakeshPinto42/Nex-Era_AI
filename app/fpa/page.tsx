@@ -8,10 +8,10 @@ export default function FpaHome() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-white">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">
           FP&amp;A Tools
         </h1>
-        <p className="mt-1 max-w-2xl text-sm text-white/50">
+        <p className="mt-1 max-w-2xl text-sm text-faint">
           Real tools that compute on your own data — variance, commissions, forecasting and
           margin. Everything runs locally in your browser; your numbers never leave this device.
         </p>
@@ -21,7 +21,7 @@ export default function FpaHome() {
         <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/25 bg-emerald-600/[0.06] px-3 py-1 text-emerald-700">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" /> 4 live tools
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] px-3 py-1 text-white/45">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-faint">
           more coming soon
         </span>
       </div>
@@ -29,7 +29,7 @@ export default function FpaHome() {
       <div className="space-y-6">
         {GROUPS.map((g) => (
           <div key={g.key}>
-            <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/35">
+            <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-faint">
               {g.label}
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -46,12 +46,12 @@ export default function FpaHome() {
                       href={`/fpa/${m.slug}`}
                       className={`group flex h-full flex-col rounded-2xl border p-4 transition-colors ${
                         live
-                          ? "border-white/[0.08] bg-obsidian-100 hover:border-navy/30 hover:bg-navy/[0.02]"
-                          : "border-dashed border-white/15 bg-white/[0.02]"
+                          ? "border-line bg-surface hover:border-navy/30 hover:bg-navy/[0.02]"
+                          : "border-dashed border-line bg-surface-2/60"
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-white">
+                        <span className="text-sm font-semibold text-ink">
                           {m.name}
                         </span>
                         {live ? (
@@ -59,12 +59,12 @@ export default function FpaHome() {
                             Live
                           </span>
                         ) : (
-                          <span className="rounded-full bg-white/[0.06] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white/40">
+                          <span className="rounded-full bg-surface-2 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-faint">
                             Soon
                           </span>
                         )}
                       </div>
-                      <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">
+                      <p className="mt-1.5 text-[13px] leading-relaxed text-faint">
                         {m.blurb}
                       </p>
                       {live && (

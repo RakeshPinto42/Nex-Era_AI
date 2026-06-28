@@ -80,7 +80,7 @@ export default function VarianceTool() {
       <div className="space-y-4">
         <PrivacyNote />
         <Dropzone onTable={onTable} hint="Upload Actuals vs Budget (CSV)" />
-        <p className="text-center text-xs text-white/45">
+        <p className="text-center text-xs text-faint">
           Need columns for a line-item label, an actual amount, and a budget/plan amount.{" "}
           <button onClick={() => onTable(parseCsv(SAMPLE))} className="font-medium text-navy hover:underline">
             Load sample data
@@ -99,11 +99,11 @@ export default function VarianceTool() {
           <ColumnSelect table={table} value={actual} onChange={setActual} label="Actual" />
           <ColumnSelect table={table} value={budget} onChange={setBudget} label="Budget / Plan" />
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-white/55">These are</span>
+            <span className="mb-1 block text-xs font-medium text-muted">These are</span>
             <select
               value={kind}
               onChange={(e) => setKind(e.target.value as MetricKind)}
-              className="w-full cursor-pointer rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-sm text-white outline-none focus:border-navy/40"
+              className="w-full cursor-pointer rounded-lg border border-line bg-surface-2/60 px-2.5 py-2 text-sm text-ink outline-none focus:border-navy/40"
             >
               <option value="revenue">Revenue (higher = good)</option>
               <option value="cost">Cost / Expense (lower = good)</option>
@@ -135,31 +135,31 @@ export default function VarianceTool() {
 
           {/* bridge */}
           <Panel>
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
+            <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-faint">
               Largest variances
             </p>
             <BarList items={top} />
           </Panel>
 
           {/* table */}
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08]">
-            <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-4 py-2.5">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-white/45">
+          <div className="overflow-hidden rounded-2xl border border-line">
+            <div className="flex items-center justify-between border-b border-line bg-surface-2/60 px-4 py-2.5">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-faint">
                 Line-item detail
               </span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">
+                <button onClick={exportCsv} className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-ink">
                   Export CSV
                 </button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">
+                <button onClick={() => setTable(null)} className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-ink">
                   New file
                 </button>
               </div>
             </div>
             <div className="max-h-[420px] overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-white/[0.04]">
-                  <tr className="border-b border-white/[0.08] text-left font-mono text-[10px] uppercase tracking-wider text-white/40">
+                <thead className="sticky top-0 bg-surface-2">
+                  <tr className="border-b border-line text-left font-mono text-[10px] uppercase tracking-wider text-faint">
                     <th className="px-4 py-2 font-medium">Line item</th>
                     <th className="px-4 py-2 text-right font-medium">Actual</th>
                     <th className="px-4 py-2 text-right font-medium">Budget</th>
@@ -169,14 +169,14 @@ export default function VarianceTool() {
                 </thead>
                 <tbody>
                   {result.rows.map((r, i) => (
-                    <tr key={i} className="border-b border-white/[0.06] last:border-0">
-                      <td className="px-4 py-2 text-white">{r.label}</td>
-                      <td className="px-4 py-2 text-right font-mono text-white/70">{fmtMoney(r.actual)}</td>
-                      <td className="px-4 py-2 text-right font-mono text-white/70">{fmtMoney(r.budget)}</td>
-                      <td className={`px-4 py-2 text-right font-mono ${r.favorable ? "text-emerald-600" : "text-rose-600"}`}>
+                    <tr key={i} className="border-b border-line last:border-0">
+                      <td className="px-4 py-2 text-ink">{r.label}</td>
+                      <td className="px-4 py-2 text-right font-mono text-muted">{fmtMoney(r.actual)}</td>
+                      <td className="px-4 py-2 text-right font-mono text-muted">{fmtMoney(r.budget)}</td>
+                      <td className={`px-4 py-2 text-right font-mono ${r.favorable ? "text-emerald-600" : "text-danger"}`}>
                         {fmtMoney(r.variance)}
                       </td>
-                      <td className={`px-4 py-2 text-right font-mono ${r.favorable ? "text-emerald-600" : "text-rose-600"}`}>
+                      <td className={`px-4 py-2 text-right font-mono ${r.favorable ? "text-emerald-600" : "text-danger"}`}>
                         {fmtPct(r.pct)}
                       </td>
                     </tr>

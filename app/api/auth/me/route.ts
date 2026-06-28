@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyToken, readCookie, SESSION_COOKIE } from "@/lib/auth/session";
 import { peekQuota } from "@/lib/auth/quota";
+import { profileFor } from "@/lib/auth/profile";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,8 +20,9 @@ export async function GET(req: Request) {
         }
       : null;
 
+  const profile = profileFor(session.u, session.r);
   return NextResponse.json({
-    user: { username: session.u, role: session.r },
+    user: { username: session.u, role: session.r, ...profile },
     quota,
   });
 }

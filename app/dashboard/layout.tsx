@@ -1,5 +1,6 @@
 import { DashboardProvider } from "@/components/dashboard/store";
 import Chrome from "@/components/dashboard/Chrome";
+import BootGate from "@/components/boot/BootGate";
 
 export default function DashboardLayout({
   children,
@@ -8,7 +9,9 @@ export default function DashboardLayout({
 }) {
   return (
     <DashboardProvider>
-      <Chrome>{children}</Chrome>
+      <BootGate>
+        <Chrome>{children}</Chrome>
+      </BootGate>
     </DashboardProvider>
   );
 }

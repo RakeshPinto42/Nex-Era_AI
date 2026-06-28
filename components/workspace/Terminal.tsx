@@ -12,8 +12,8 @@ export default function Terminal() {
   }, [term]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-black/30">
-      <div className="flex flex-none items-center gap-2 border-b border-white/[0.08] px-3 py-2 font-mono text-[11px] uppercase tracking-widest text-white/40">
+    <div className="flex h-full min-h-0 flex-col bg-surface-3">
+      <div className="flex flex-none items-center gap-2 border-b border-line px-3 py-2 font-mono text-[11px] uppercase tracking-widest text-faint">
         <span className="h-2 w-2 rounded-full bg-navy" />
         Terminal
       </div>
@@ -25,13 +25,13 @@ export default function Terminal() {
                 <span className="text-navy">
                   rak@{folderName}
                 </span>
-                <span className="text-white/40">:~$ </span>
-                <span className="text-white">{l.text}</span>
+                <span className="text-faint">:~$ </span>
+                <span className="text-ink">{l.text}</span>
               </span>
             ) : l.kind === "err" ? (
               <span className="text-[#ff8a8a]">{l.text}</span>
             ) : (
-              <span className="text-white/65">{l.text}</span>
+              <span className="text-muted">{l.text}</span>
             )}
           </div>
         ))}

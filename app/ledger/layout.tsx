@@ -1,7 +1,7 @@
-import { Shell } from "@/components/finance-os/Shell";
+import { FinanceShell } from "@/components/finance/FinanceShell";
 
-export const metadata = { title: "NEXERA — Ledger" };
+export const metadata = { title: "Finance OS — NEXERA" };
 
 export default function FinanceOsLayout({ children }: { children: React.ReactNode }) {
-  return <Shell>{children}</Shell>;
+  return <FinanceShell>{children}</FinanceShell>;
 }

@@ -31,14 +31,14 @@ export default function FinancePage() {
           <button
             key={t.key}
             onClick={() => setTool(t.key)}
-            className={`rounded-xl border px-4 py-2.5 text-left transition-colors ${
+            className={`rounded-xl border px-4 py-2.5 text-left transition-all duration-200 active:scale-[0.98] ${
               tool === t.key
-                ? "border-navy/30 bg-navy/[0.05]"
-                : "border-white/[0.08] hover:bg-white/[0.03]"
+                ? "border-brand/30 bg-accent-tint shadow-soft"
+                : "border-line hover:bg-surface-2 hover:border-line-strong"
             }`}
           >
-            <span className="block text-sm font-semibold text-white">{t.label}</span>
-            <span className="block text-xs text-white/45">{t.desc}</span>
+            <span className={`block text-sm font-semibold ${tool === t.key ? "text-brand" : "text-ink"}`}>{t.label}</span>
+            <span className="block text-xs text-faint">{t.desc}</span>
           </button>
         ))}
       </div>

@@ -64,8 +64,8 @@ export function NexeraMark({ size = 48 }: { size?: number }) {
       <circle cx="24" cy="24" r="2.1" fill="#ffffff" />
       <defs>
         <linearGradient id="nexFill" x1="11" y1="11" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#2563eb" />
-          <stop offset="1" stopColor="#7c3aed" />
+          <stop offset="0" stopColor="#f2761c" />
+          <stop offset="1" stopColor="#fb8c6a" />
         </linearGradient>
       </defs>
     </svg>

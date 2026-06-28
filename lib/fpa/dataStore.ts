@@ -1,10 +1,15 @@
-// Server-side store for user-uploaded finance data (CSV / JSON). Persists to a
-// gitignored JSON file so the copilot can ground answers on real numbers the
-// user uploads instead of the static demo dataset.
+// Server-side TEMPORARY store for user-uploaded finance data (CSV / JSON).
+// Privacy-first (see FINANCE_OS_PRIVACY.md): the dataset is scoped to the
+// current SESSION (not a single global file) so one user's financials are never
+// readable by another, and it auto-expires after a TTL — "Analyze-Only" is the
+// default. Nothing is durably stored unless the user explicitly Saves.
 
 import "server-only";
 import { promises as fs } from "fs";
 import path from "path";
+import { cookies } from "next/headers";
+import { createHash } from "crypto";
+import { SESSION_COOKIE } from "@/lib/auth/session";
 
 export type FinanceDataset = {
   name: string;
@@ -14,16 +19,34 @@ export type FinanceDataset = {
   rowCount: number;
 };
 
-const DIR = path.join(process.cwd(), ".rak");
-const FILE = path.join(DIR, "finance-data.json");
+const DIR = path.join(process.cwd(), ".rak", "fos-session");
+const TTL_MS = 4 * 60 * 60 * 1000; // 4h — temporary by default
 
 // Keep stored/previewed rows bounded so a huge upload can't bloat memory/context.
 const MAX_ROWS = 2000;
 
-export async function getDataset(): Promise<FinanceDataset | null> {
+// Per-session file path, derived from the (hashed) session cookie → per-user
+// isolation by construction. Outside a request scope it falls back to "anon".
+function sessionFile(): string {
+  let token = "anon";
   try {
-    const raw = await fs.readFile(FILE, "utf8");
-    return JSON.parse(raw) as FinanceDataset;
+    token = cookies().get(SESSION_COOKIE)?.value || "anon";
+  } catch {
+    /* no request scope */
+  }
+  const id = createHash("sha256").update(token).digest("hex").slice(0, 24);
+  return path.join(DIR, `${id}.json`);
+}
+
+export async function getDataset(): Promise<FinanceDataset | null> {
+  const file = sessionFile();
+  try {
+    const stat = await fs.stat(file);
+    if (Date.now() - stat.mtimeMs > TTL_MS) {
+      await fs.rm(file, { force: true });
+      return null;
+    }
+    return JSON.parse(await fs.readFile(file, "utf8")) as FinanceDataset;
   } catch {
     return null;
   }
@@ -31,11 +54,11 @@ export async function getDataset(): Promise<FinanceDataset | null> {
 
 export async function saveDataset(ds: FinanceDataset): Promise<void> {
   await fs.mkdir(DIR, { recursive: true });
-  await fs.writeFile(FILE, JSON.stringify(ds, null, 2), "utf8");
+  await fs.writeFile(sessionFile(), JSON.stringify(ds, null, 2), "utf8");
 }
 
 export async function clearDataset(): Promise<void> {
-  await fs.rm(FILE, { force: true });
+  await fs.rm(sessionFile(), { force: true });
 }
 
 // ---- parsing ----

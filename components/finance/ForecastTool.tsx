@@ -68,7 +68,7 @@ export default function ForecastTool() {
       <div className="space-y-4">
         <PrivacyNote />
         <Dropzone onTable={onTable} hint="Upload a historical series (CSV)" />
-        <p className="text-center text-xs text-white/45">
+        <p className="text-center text-xs text-faint">
           Need a period column (month/quarter) and a value column (revenue, bookings…).{" "}
           <button onClick={() => onTable(parseCsv(SAMPLE))} className="font-medium text-navy hover:underline">
             Load sample data
@@ -87,22 +87,22 @@ export default function ForecastTool() {
           <ColumnSelect table={table} value={period} onChange={setPeriod} label="Period" />
           <ColumnSelect table={table} value={value} onChange={setValue} label="Value" />
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-white/55">Periods ahead</span>
+            <span className="mb-1 block text-xs font-medium text-muted">Periods ahead</span>
             <input
               type="number"
               min={1}
               max={36}
               value={periods}
               onChange={(e) => setPeriods(Math.max(1, Number(e.target.value)))}
-              className="w-full rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-sm outline-none focus:border-navy/40"
+              className="w-full rounded-lg border border-line bg-surface-2/60 px-2.5 py-2 text-sm outline-none focus:border-navy/40"
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-white/55">Method</span>
+            <span className="mb-1 block text-xs font-medium text-muted">Method</span>
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value as Method)}
-              className="w-full cursor-pointer rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-sm outline-none focus:border-navy/40"
+              className="w-full cursor-pointer rounded-lg border border-line bg-surface-2/60 px-2.5 py-2 text-sm outline-none focus:border-navy/40"
             >
               <option value="trend">Linear trend</option>
               <option value="growth">Compound growth</option>
@@ -122,10 +122,10 @@ export default function ForecastTool() {
 
           <Panel>
             <div className="mb-3 flex items-center justify-between">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-white/40">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-faint">
                 Actual + forecast
               </p>
-              <span className="flex items-center gap-3 text-[11px] text-white/45">
+              <span className="flex items-center gap-3 text-[11px] text-faint">
                 <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-sm" style={{ background: "#3b82f6" }} /> actual</span>
                 <span className="flex items-center gap-1"><i className="h-2 w-2 rounded-sm" style={{ background: "#5e9dff" }} /> forecast</span>
               </span>
@@ -133,18 +133,18 @@ export default function ForecastTool() {
             <BarList items={bars} />
           </Panel>
 
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08]">
-            <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-4 py-2.5">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-white/45">Projection detail</span>
+          <div className="overflow-hidden rounded-2xl border border-line">
+            <div className="flex items-center justify-between border-b border-line bg-surface-2/60 px-4 py-2.5">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-faint">Projection detail</span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">Export CSV</button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">New file</button>
+                <button onClick={exportCsv} className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-ink">Export CSV</button>
+                <button onClick={() => setTable(null)} className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-ink">New file</button>
               </div>
             </div>
             <div className="max-h-[360px] overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-white/[0.04]">
-                  <tr className="border-b border-white/[0.08] text-left font-mono text-[10px] uppercase tracking-wider text-white/40">
+                <thead className="sticky top-0 bg-surface-2">
+                  <tr className="border-b border-line text-left font-mono text-[10px] uppercase tracking-wider text-faint">
                     <th className="px-4 py-2 font-medium">Period</th>
                     <th className="px-4 py-2 text-right font-medium">Value</th>
                     <th className="px-4 py-2 text-right font-medium">Type</th>
@@ -152,10 +152,10 @@ export default function ForecastTool() {
                 </thead>
                 <tbody>
                   {result.points.map((p, i) => (
-                    <tr key={i} className="border-b border-white/[0.06] last:border-0">
-                      <td className="px-4 py-2 text-white">{p.label}</td>
-                      <td className="px-4 py-2 text-right font-mono text-white/70">{fmtMoney(p.value)}</td>
-                      <td className={`px-4 py-2 text-right font-mono text-[11px] uppercase ${p.projected ? "text-ice" : "text-white/40"}`}>
+                    <tr key={i} className="border-b border-line last:border-0">
+                      <td className="px-4 py-2 text-ink">{p.label}</td>
+                      <td className="px-4 py-2 text-right font-mono text-muted">{fmtMoney(p.value)}</td>
+                      <td className={`px-4 py-2 text-right font-mono text-[11px] uppercase ${p.projected ? "text-ice" : "text-faint"}`}>
                         {p.projected ? "Forecast" : "Actual"}
                       </td>
                     </tr>

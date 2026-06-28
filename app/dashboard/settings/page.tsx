@@ -36,8 +36,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <Reveal className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
-      <h2 className="mb-4 text-sm font-semibold text-white">{title}</h2>
+    <Reveal className="rounded-2xl border border-line bg-surface-2 p-5">
+      <h2 className="mb-4 text-sm font-semibold text-ink">{title}</h2>
       <div className="space-y-4">{children}</div>
     </Reveal>
   );
@@ -55,8 +55,8 @@ function Row({
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
-        <p className="text-sm text-white/85">{label}</p>
-        {desc && <p className="text-xs text-white/40">{desc}</p>}
+        <p className="text-sm text-ink">{label}</p>
+        {desc && <p className="text-xs text-faint">{desc}</p>}
       </div>
       {children}
     </div>
@@ -79,13 +79,13 @@ export default function SettingsPage() {
             <Row label="Name">
               <input
                 defaultValue="Rakesh Pinto"
-                className="w-48 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-navy/40"
+                className="w-48 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
               />
             </Row>
             <Row label="Email">
               <input
                 defaultValue="rakesh.pinto42@gmail.com"
-                className="w-48 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-navy/40"
+                className="w-48 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
               />
             </Row>
             <Row label="Plan" desc="Pro · renews monthly">
@@ -108,13 +108,13 @@ export default function SettingsPage() {
                 <select
                   value={activeModel ? modelKey(activeModel) : ""}
                   onChange={(e) => setActiveModel(e.target.value)}
-                  className="w-56 cursor-pointer rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white outline-none focus:border-navy/40"
+                  className="w-56 cursor-pointer rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-ink outline-none focus:border-navy/40"
                 >
                   {availableModels.map((m) => (
                     <option
                       key={modelKey(m)}
                       value={modelKey(m)}
-                      className="bg-obsidian-100 text-white"
+                      className="bg-surface text-ink"
                     >
                       {m.label} · {m.providerName}
                     </option>
@@ -134,12 +134,13 @@ export default function SettingsPage() {
           </Section>
 
           <Section title="Appearance">
-            <Row label="Theme" desc="Obsidian dark is optimized for NEXERA">
-              <span className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-sm text-white">
-                Obsidian
+            <Row label="Theme" desc="Warm white is tuned for NEXERA">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-ink">
+                <span className="h-3 w-3 rounded-full bg-gradient-to-br from-brand to-accent-soft" />
+                Warm White
               </span>
             </Row>
-            <Row label="Glassmorphism" desc="Translucent panels and blur">
+            <Row label="Soft shadows" desc="Floating cards and depth">
               <Toggle on={glass} onChange={setGlass} />
             </Row>
           </Section>
@@ -152,7 +153,7 @@ export default function SettingsPage() {
               <Toggle on={telemetry} onChange={setTelemetry} />
             </Row>
             <Row label="API key" desc="rak_live_••••••••4f2a">
-              <button className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-sm text-white/70 transition-colors hover:bg-white/[0.06]">
+              <button className="rounded-lg border border-line px-3 py-1.5 text-sm text-muted transition-colors hover:bg-surface-2">
                 Rotate
               </button>
             </Row>
@@ -162,7 +163,7 @@ export default function SettingsPage() {
         <Reveal className="mt-4 flex items-center justify-between rounded-2xl border border-[#ff8a8a]/20 bg-[#ff8a8a]/[0.04] p-5">
           <div>
             <p className="text-sm font-medium text-[#ff8a8a]">Delete workspace</p>
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-faint">
               Permanently removes all chats, files and agents.
             </p>
           </div>

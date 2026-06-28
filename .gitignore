@@ -11,3 +11,8 @@ npm-debug.log*
 next-env.d.ts
 .vercel
 *.tsbuildinfo
+
+# local secret scratch (raw API keys) — never commit
+Nex-AP.txt
+nex-ap.txt
+*Nex-AP*.txt

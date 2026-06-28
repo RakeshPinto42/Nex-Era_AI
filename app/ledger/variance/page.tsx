@@ -1,7 +1,7 @@
-import { VarianceExplorer } from "@/components/finance-os/variance/VarianceExplorer";
+import { VarianceStudio } from "@/components/finance/variance/VarianceStudio";
 
-export const metadata = { title: "NEXERA — Variance Explorer" };
+export const metadata = { title: "Finance OS — Variance Studio" };
 
-export default function VariancePage() {
-  return <VarianceExplorer />;
+export default function VarianceStudioPage() {
+  return <VarianceStudio />;
 }

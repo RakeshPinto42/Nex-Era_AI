@@ -24,11 +24,11 @@ export default function Editor() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-obsidian-100/[0.03]">
+    <div className="flex h-full min-h-0 flex-col bg-surface">
       {/* tabs */}
-      <div className="flex flex-none items-center overflow-x-auto border-b border-white/[0.08] bg-black/25">
+      <div className="flex flex-none items-center overflow-x-auto border-b border-line bg-surface-2">
         {tabs.length === 0 && (
-          <span className="px-4 py-2.5 text-xs text-white/35">No open files</span>
+          <span className="px-4 py-2.5 text-xs text-faint">No open files</span>
         )}
         {tabs.map((path) => {
           const f = vfs[path];
@@ -37,10 +37,10 @@ export default function Editor() {
             <button
               key={path}
               onClick={() => setActive(path)}
-              className={`group flex flex-none items-center gap-2 border-r border-white/[0.08] px-3 py-2.5 text-xs ${
+              className={`group flex flex-none items-center gap-2 border-r border-line px-3 py-2.5 text-xs ${
                 isActive
-                  ? "bg-obsidian-100/70 text-white"
-                  : "text-white/45 hover:bg-white/[0.03] hover:text-white/70"
+                  ? "bg-surface text-ink"
+                  : "text-faint hover:bg-surface-2 hover:text-muted"
               }`}
             >
               <FileDot path={path} />
@@ -51,7 +51,7 @@ export default function Editor() {
                   e.stopPropagation();
                   closeTab(path);
                 }}
-                className="ml-1 rounded px-1 text-white/30 opacity-0 hover:bg-white/10 hover:text-white group-hover:opacity-100"
+                className="ml-1 rounded px-1 text-faint opacity-0 hover:bg-surface-3 hover:text-ink group-hover:opacity-100"
               >
                 ×
               </span>
@@ -62,7 +62,7 @@ export default function Editor() {
 
       {/* code area */}
       {!file ? (
-        <div className="grid flex-1 place-items-center text-sm text-white/35">
+        <div className="grid flex-1 place-items-center text-sm text-faint">
           Select a file from the explorer.
         </div>
       ) : (
@@ -70,7 +70,7 @@ export default function Editor() {
           {/* gutter */}
           <div
             ref={gutterRef}
-            className="select-none overflow-hidden border-r border-white/[0.06] bg-black/20 px-3 py-3 text-right font-mono text-xs leading-[1.6] text-white/30"
+            className="select-none overflow-hidden border-r border-line bg-surface-2 px-3 py-3 text-right font-mono text-xs leading-[1.6] text-faint"
           >
             {Array.from({ length: lineCount }, (_, i) => (
               <div key={i}>{i + 1}</div>
@@ -104,7 +104,7 @@ export default function Editor() {
       )}
 
       {/* status bar */}
-      <div className="flex flex-none items-center justify-between border-t border-white/[0.08] bg-black/25 px-3 py-1.5 font-mono text-[11px] text-white/40">
+      <div className="flex flex-none items-center justify-between border-t border-line bg-surface-2 px-3 py-1.5 font-mono text-[11px] text-faint">
         <span>{file ? file.path : "—"}</span>
         <span className="flex items-center gap-3">
           {file && <span className="uppercase">{file.language}</span>}

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useDashboard, type Conversation } from "./store";
 
-type Me = { username: string; role: "admin" | "guest" } | null;
+type Me = { username: string; role: "admin" | "guest"; displayName?: string; title?: string; avatar?: string } | null;
 
 type NavItem = { label: string; href: string; icon: () => JSX.Element; adminOnly?: boolean };
 
@@ -14,15 +14,25 @@ type NavItem = { label: string; href: string; icon: () => JSX.Element; adminOnly
 // Router / Workspace / Code — not a secondary feature.
 const SECTIONS: { label: string; items: NavItem[] }[] = [
   {
+    label: "Home",
+    items: [
+      { label: "Command Center", href: "/dashboard/home", icon: IconHome },
+      { label: "Worlds", href: "/dashboard/worlds", icon: IconWorlds },
+    ],
+  },
+  {
     label: "Workspaces",
     items: [
+      { label: "AI Studio", href: "/dashboard/studio", icon: IconStudio },
       { label: "Router", href: "/dashboard/router", icon: IconRouter },
       { label: "Workspace", href: "/workspace", icon: IconWorkspace },
       { label: "Code Folder", href: "/workspace/code", icon: IconCode },
-      { label: "Ledger", href: "/ledger", icon: IconFinance },
+      { label: "Finance OS", href: "/ledger", icon: IconFinance },
     ],
   },
+  { label: "Knowledge", items: [{ label: "Research", href: "/dashboard/research", icon: IconResearch }] },
   { label: "Automation", items: [{ label: "Agents", href: "/dashboard/agents", icon: IconAgents }] },
+  { label: "Markets", items: [{ label: "Investments", href: "/dashboard/investments", icon: IconInvest }] },
   {
     label: "Data",
     items: [
@@ -76,7 +86,7 @@ export default function Sidebar({
 
   return (
     <aside
-      className={`h-full w-[256px] flex-none flex-col border-r border-white/[0.08] bg-obsidian-100/80 backdrop-blur-xl ${
+      className={`h-full w-[256px] flex-none flex-col border-r border-line bg-surface/80 backdrop-blur-xl ${
         variant === "desktop" ? "hidden lg:flex" : "flex"
       }`}
     >
@@ -85,7 +95,7 @@ export default function Sidebar({
         <button
           type="button"
           onClick={newChat}
-          className="group mb-3 flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-brand to-violet px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand/20 transition-all hover:shadow-md hover:shadow-brand/30 hover:brightness-[1.04]"
+          className="group mb-3 flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-brand to-violet px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand/20 transition-all duration-200 hover:shadow-md hover:shadow-brand/30 hover:brightness-[1.04] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
         >
           <IconPlus />
           New Chat
@@ -96,7 +106,7 @@ export default function Sidebar({
           if (!visible.length) return null;
           return (
             <div key={section.label} className="mt-2 first:mt-0">
-              <p className="px-3 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+              <p className="px-3 pb-1 pt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
                 {section.label}
               </p>
               {visible.map((it) => {
@@ -108,19 +118,18 @@ export default function Sidebar({
                     href={it.href}
                     onClick={onNavigate}
                     aria-current={active ? "page" : undefined}
-                    className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                      active ? "text-brand" : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+                    className={`group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-all ${
+                      active
+                        ? "text-white"
+                        : "text-muted hover:bg-surface-2 hover:text-ink"
                     }`}
                   >
                     {active && (
                       <motion.span
                         layoutId={`sidebar-active-${variant}`}
-                        className="absolute inset-0 rounded-lg border border-brand/15 bg-brand/[0.08]"
+                        className="absolute inset-0 rounded-xl bg-brand shadow-sm shadow-brand/30"
                         transition={{ type: "spring", stiffness: 400, damping: 32 }}
                       />
-                    )}
-                    {active && (
-                      <span className="absolute left-0 top-1/2 z-10 h-4 w-[3px] -translate-y-1/2 rounded-full bg-brand" />
                     )}
                     <span className="relative z-10 flex items-center gap-2.5 transition-transform group-hover:translate-x-0.5">
                       <Icon />
@@ -142,17 +151,17 @@ export default function Sidebar({
         }}
       />
 
-      <div className="border-t border-white/[0.08] p-3">
+      <div className="border-t border-line p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           <div className="grid h-8 w-8 flex-none place-items-center rounded-full bg-gradient-to-br from-navy to-ice text-xs font-bold uppercase text-white">
-            {me ? me.username.slice(0, 2) : "··"}
+            {me?.avatar ?? (me ? me.username.slice(0, 2) : "··")}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-white">
-              {me?.username ?? "…"}
+            <p className="truncate text-sm font-medium text-ink">
+              {me?.displayName ?? me?.username ?? "…"}
             </p>
-            <p className="truncate text-xs capitalize text-white/40">
-              {me?.role ?? ""} {me?.role === "admin" ? "· full access" : me ? "· no keys" : ""}
+            <p className="truncate text-xs text-faint">
+              {me?.title ?? me?.role ?? ""}
             </p>
           </div>
           <button
@@ -160,7 +169,7 @@ export default function Sidebar({
             onClick={logout}
             title="Sign out"
             aria-label="Sign out"
-            className="grid h-8 w-8 flex-none place-items-center rounded-lg text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="grid h-8 w-8 flex-none place-items-center rounded-lg text-faint transition-colors hover:bg-surface-2 hover:text-ink"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
@@ -203,7 +212,7 @@ function ChatHistory({
   if (conversations.length === 0) {
     return (
       <div className="flex-1 px-5 py-3">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-white/30">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-faint">
           No chats yet
         </p>
       </div>
@@ -214,7 +223,7 @@ function ChatHistory({
     <div className="flex-1 overflow-y-auto px-3 py-1">
       {groupByDate(conversations).map((g) => (
         <div key={g.label} className="mb-2">
-          <p className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-wider text-white/35">
+          <p className="px-2 pb-1 pt-1 font-mono text-[10px] uppercase tracking-wider text-faint">
             {g.label}
           </p>
           <div className="flex flex-col gap-0.5">
@@ -224,7 +233,7 @@ function ChatHistory({
                 <div
                   key={c.id}
                   className={`group/item relative flex items-center rounded-lg transition-colors ${
-                    isActive ? "bg-brand/[0.12]" : "hover:bg-white/[0.06]"
+                    isActive ? "bg-brand/10" : "hover:bg-surface-2"
                   }`}
                 >
                   {isActive && (
@@ -238,7 +247,7 @@ function ChatHistory({
                     }}
                     title={c.title}
                     className={`min-w-0 flex-1 truncate px-2.5 py-1.5 text-left text-sm ${
-                      isActive ? "font-medium text-white" : "text-white/55 hover:text-white"
+                      isActive ? "font-medium text-ink" : "text-muted hover:text-ink"
                     }`}
                   >
                     {c.title}
@@ -247,7 +256,7 @@ function ChatHistory({
                     type="button"
                     onClick={() => deleteConversation(c.id)}
                     aria-label="Delete chat"
-                    className="mr-1 grid h-6 w-6 flex-none place-items-center rounded text-white/30 opacity-0 transition-opacity hover:text-white group-hover/item:opacity-100"
+                    className="mr-1 grid h-6 w-6 flex-none place-items-center rounded text-faint opacity-0 transition-opacity hover:text-danger group-hover/item:opacity-100"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
@@ -279,6 +288,31 @@ function IconPlus() {
     </svg>
   );
 }
+function IconWorlds() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
+      <circle cx="12" cy="12" r="9" />
+      <ellipse cx="12" cy="12" rx="9" ry="3.6" />
+      <path d="M12 3v18" />
+    </svg>
+  );
+}
+function IconHome() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
+      <path d="M3 11.5 12 4l9 7.5M5 10v10h14V10" />
+      <path d="M9 20v-6h6v6" />
+    </svg>
+  );
+}
+function IconStudio() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
+      <path d="M12 2 4 7v10l8 5 8-5V7z" />
+      <path d="m4 7 8 5 8-5M12 22V12" />
+    </svg>
+  );
+}
 function IconRouter() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
@@ -307,6 +341,14 @@ function IconCode() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
       <path d="m8 9-3 3 3 3M16 9l3 3-3 3M13 6l-2 12" />
+    </svg>
+  );
+}
+function IconResearch() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.3-4.3M11 8v6M8 11h6" />
     </svg>
   );
 }
@@ -346,6 +388,13 @@ function IconFinance() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
       <path d="M3 3v18h18M7 14l3-3 3 3 5-6" />
+    </svg>
+  );
+}
+function IconInvest() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...sw}>
+      <path d="M3 17l5-5 4 4 8-8M21 8v5h-5" />
     </svg>
   );
 }

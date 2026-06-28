@@ -8,7 +8,7 @@ const links = [
   { label: "Workspaces", href: "#workspaces" },
   { label: "Router", href: "#router" },
   { label: "Capabilities", href: "#features" },
-  { label: "Ledger", href: "#finance" },
+  { label: "Finance OS", href: "#finance" },
   { label: "Console", href: "#terminal" },
 ];
 

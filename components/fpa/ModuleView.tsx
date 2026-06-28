@@ -21,14 +21,14 @@ export default function ModuleView({ module }: { module: ModuleConfig }) {
 
 function ComingSoon({ module }: { module: ModuleConfig }) {
   return (
-    <div className="grid min-h-[320px] place-items-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-10 text-center">
+    <div className="grid min-h-[320px] place-items-center rounded-2xl border border-dashed border-line bg-surface-2/60 p-10 text-center">
       <div className="max-w-sm">
         <span className="inline-flex rounded-full border border-navy/25 bg-navy/[0.06] px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-navy">
           Coming soon
         </span>
-        <h3 className="mt-4 text-lg font-semibold text-white">{module.name}</h3>
-        <p className="mt-2 text-sm text-white/50">{module.blurb}</p>
-        <p className="mt-4 text-xs text-white/40">
+        <h3 className="mt-4 text-lg font-semibold text-ink">{module.name}</h3>
+        <p className="mt-2 text-sm text-faint">{module.blurb}</p>
+        <p className="mt-4 text-xs text-faint">
           This tool isn&apos;t built yet. The live tools — Variance, Commission, Forecasting and
           Margin — compute on your own CSV, entirely in your browser.
         </p>

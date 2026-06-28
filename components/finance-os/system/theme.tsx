@@ -10,7 +10,7 @@ type Theme = "dark" | "light";
 const ThemeCtx = createContext<{ theme: Theme; toggle: () => void } | null>(null);
 
 export function FosThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
     const saved = localStorage.getItem("fos-theme");

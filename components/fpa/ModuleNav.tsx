@@ -10,11 +10,11 @@ export default function ModuleNav() {
   const path = usePathname();
 
   return (
-    <aside className="flex h-full w-[244px] flex-none flex-col border-r border-white/[0.08] bg-obsidian-100/70 backdrop-blur-xl">
+    <aside className="flex h-full w-[244px] flex-none flex-col border-r border-line bg-surface backdrop-blur-xl">
       <div className="flex items-center justify-between px-4 py-3.5">
         <span className="flex items-center gap-2">
           <NexeraMark size={26} />
-          <span className="font-display text-[15px] font-semibold tracking-tight text-white">nexera</span>
+          <span className="font-display text-[15px] font-semibold tracking-tight text-ink">nexera</span>
         </span>
         <span className="rounded-md border border-navy/30 bg-navy/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-navy">
           FP&A OS
@@ -31,7 +31,7 @@ export default function ModuleNav() {
 
         {GROUPS.map((g) => (
           <div key={g.key} className="mt-5">
-            <p className="px-2 pb-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
+            <p className="px-2 pb-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
               {g.label}
             </p>
             {modulesByGroup(g.key).map((m) => (
@@ -47,17 +47,17 @@ export default function ModuleNav() {
         ))}
       </div>
 
-      <div className="border-t border-white/[0.08] p-3">
+      <div className="border-t border-line p-3">
         <Link
           href="/admin"
-          className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-white/55 transition-colors hover:text-white"
+          className="mb-1 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted transition-colors hover:text-ink"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-ice/60" />
           Admin · Model Providers
         </Link>
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-white/45 transition-colors hover:text-white"
+          className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-faint transition-colors hover:text-ink"
         >
           ← Back to NEXERA
         </Link>
@@ -84,10 +84,10 @@ function NavLink({
       href={href}
       className={`relative my-0.5 flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors ${
         active
-          ? "text-white"
+          ? "text-ink"
           : soon
-            ? "text-white/35 hover:bg-white/[0.03] hover:text-white/60"
-            : "text-white/55 hover:bg-white/[0.04] hover:text-white"
+            ? "text-faint hover:bg-surface-2 hover:text-muted"
+            : "text-muted hover:bg-surface-2 hover:text-ink"
       }`}
     >
       {active && (
@@ -104,7 +104,7 @@ function NavLink({
       />
       <span className="relative z-10 flex-1 truncate">{label}</span>
       {soon && (
-        <span className="relative z-10 font-mono text-[8px] uppercase tracking-wider text-white/30">
+        <span className="relative z-10 font-mono text-[8px] uppercase tracking-wider text-faint">
           soon
         </span>
       )}

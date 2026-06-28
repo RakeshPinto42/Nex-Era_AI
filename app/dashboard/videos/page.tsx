@@ -63,13 +63,13 @@ export default function VideosPage() {
       title="Videos"
       subtitle="Text-to-video on free cloud models (Replicate / Wan)."
     >
-      <div className="mb-2 flex flex-col gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-2 sm:flex-row">
+      <div className="mb-2 flex flex-col gap-2 rounded-2xl border border-line bg-surface-2 p-2 sm:flex-row">
         <input
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && generate()}
           placeholder="Describe a clip… e.g. drone shot over a neon city at night"
-          className="flex-1 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none"
+          className="flex-1 bg-transparent px-3 py-2 text-sm text-ink placeholder:text-faint outline-none"
         />
         <button
           onClick={generate}
@@ -82,14 +82,14 @@ export default function VideosPage() {
       <div className="mb-2 px-1">
         <GuestQuota action="video" />
       </div>
-      <p className="mb-6 px-1 font-mono text-[11px] text-white/35">
-        Needs <code className="text-white/60">REPLICATE_API_TOKEN</code> (free-tier
+      <p className="mb-6 px-1 font-mono text-[11px] text-faint">
+        Needs <code className="text-muted">REPLICATE_API_TOKEN</code> (free-tier
         credits). Renders can take 30–90s.
       </p>
 
       {jobs.length === 0 ? (
-        <div className="grid place-items-center rounded-2xl border border-dashed border-white/15 py-20 text-center">
-          <p className="text-sm text-white/45">
+        <div className="grid place-items-center rounded-2xl border border-dashed border-line py-20 text-center">
+          <p className="text-sm text-faint">
             No clips yet. Describe one above to render a real video.
           </p>
         </div>
@@ -101,13 +101,13 @@ export default function VideosPage() {
               layout
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]"
+              className="overflow-hidden rounded-2xl border border-line bg-surface-2"
             >
-              <div className="relative grid aspect-video place-items-center bg-black/40">
+              <div className="relative grid aspect-video place-items-center bg-surface-3">
                 {j.status === "rendering" && (
                   <div className="flex flex-col items-center gap-2">
                     <span className="h-6 w-6 animate-spin rounded-full border-2 border-ice border-t-transparent" />
-                    <span className="font-mono text-[11px] text-white/40">
+                    <span className="font-mono text-[11px] text-faint">
                       rendering…
                     </span>
                   </div>
@@ -131,7 +131,7 @@ export default function VideosPage() {
                 )}
               </div>
               <div className="flex items-center justify-between p-3">
-                <p className="line-clamp-1 text-sm text-white/80">{j.prompt}</p>
+                <p className="line-clamp-1 text-sm text-ink">{j.prompt}</p>
                 {j.provider && (
                   <span className="flex-none font-mono text-[10px] text-navy">
                     {j.provider}

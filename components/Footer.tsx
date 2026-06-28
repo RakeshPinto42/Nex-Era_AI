@@ -8,13 +8,13 @@ const PRODUCT_INTENT: Record<string, Intent> = {
   Chat: "general",
   "Coding Agent": "coding",
   Research: "research",
-  Ledger: "reasoning",
+  "Finance OS": "reasoning",
 };
 
 const cols = [
   {
     title: "Product",
-    links: ["Chat", "Coding Agent", "Research", "Ledger", "AI Router"],
+    links: ["Chat", "Coding Agent", "Research", "Finance OS", "AI Router"],
   },
   {
     title: "Company",

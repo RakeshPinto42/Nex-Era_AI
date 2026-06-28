@@ -22,10 +22,10 @@ export default function ModulePage({
   return (
     <div className="mx-auto max-w-6xl">
       <div className="mb-5">
-        <h1 className="text-2xl font-semibold tracking-tight text-white">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">
           {mod.name}
         </h1>
-        <p className="mt-1 text-sm text-white/45">{mod.blurb}</p>
+        <p className="mt-1 text-sm text-faint">{mod.blurb}</p>
       </div>
       <ModuleView module={mod} />
     </div>

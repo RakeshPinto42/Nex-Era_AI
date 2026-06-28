@@ -28,12 +28,12 @@ export default function GuestQuota({ action }: { action: "image" | "video" | "te
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] ${
         low
-          ? "border-rose-500/30 bg-rose-500/[0.06] text-rose-600"
-          : "border-white/10 bg-white/[0.04] text-white/60"
+          ? "border-danger/30 bg-danger/[0.06] text-danger"
+          : "border-line bg-surface-2 text-muted"
       }`}
       title="Guest accounts have a daily limit"
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${low ? "bg-rose-500" : "bg-navy"}`} />
+      <span className={`h-1.5 w-1.5 rounded-full ${low ? "bg-danger" : "bg-navy"}`} />
       Guest · {q.remaining}/{q.limit} {action === "text" ? "messages" : `${action}s`} left today
     </span>
   );

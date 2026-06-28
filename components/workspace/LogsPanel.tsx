@@ -22,14 +22,14 @@ export default function LogsPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex flex-none items-center justify-between border-b border-white/[0.08] px-3 py-2.5">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-white/40">
+      <div className="flex flex-none items-center justify-between border-b border-line px-3 py-2.5">
+        <span className="font-mono text-[11px] uppercase tracking-widest text-faint">
           Logs
         </span>
         {logs.length > 0 && (
           <button
             onClick={clearLogs}
-            className="font-mono text-[11px] text-white/40 hover:text-white"
+            className="font-mono text-[11px] text-faint hover:text-ink"
           >
             clear
           </button>
@@ -37,18 +37,18 @@ export default function LogsPanel() {
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3 font-mono text-[12px] leading-relaxed">
         {logs.length === 0 ? (
-          <p className="text-white/30">No logs yet.</p>
+          <p className="text-faint">No logs yet.</p>
         ) : (
           logs.map((l) => (
             <div key={l.id} className="flex gap-2">
-              <span className="flex-none text-white/30">{l.ts}</span>
+              <span className="flex-none text-faint">{l.ts}</span>
               <span
                 className="flex-none uppercase"
                 style={{ color: LEVEL_COLOR[l.level], width: 56 }}
               >
                 {l.level}
               </span>
-              <span className="text-white/70">{l.msg}</span>
+              <span className="text-muted">{l.msg}</span>
             </div>
           ))
         )}

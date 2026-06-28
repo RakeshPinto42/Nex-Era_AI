@@ -18,30 +18,53 @@ const config: Config = {
           glow: "#34f5a0",
           DEFAULT: "#10b981",
         },
-        // Brand primary = blue, secondary = violet. `navy` is kept as an alias
-        // of the blue brand so existing bg-navy/text-navy classes inherit it.
+        // Brand primary = warm orange, secondary = coral. `navy`/`ice` are kept as
+        // aliases so existing bg-navy/from-navy decorative gradients warm up too.
         brand: {
-          DEFAULT: "#3b82f6",
-          600: "#2563eb",
-          50: "#eff6ff",
+          DEFAULT: "#f2761c",
+          600: "#e0670f",
+          50: "#fff3ea",
         },
         violet: {
-          DEFAULT: "#8b5cf6",
-          600: "#7c3aed",
+          DEFAULT: "#fb8c6a",
+          600: "#f2761c",
         },
         navy: {
-          DEFAULT: "#3b82f6",
-          light: "#8b5cf6",
+          DEFAULT: "#f2761c",
+          light: "#fb8c6a",
         },
         ice: {
-          DEFAULT: "#5e9dff",
-          soft: "#8fc1ff",
+          DEFAULT: "#fb8c6a",
+          soft: "#ffb59a",
         },
-        // Semantic neutrals (spec).
-        ink: "#0f172a",
-        muted: "#64748b",
-        line: "#e5e7eb",
-        canvas: "#f8fafc",
+        // Warm-white semantic neutrals. Literal hex (single light theme) so Tailwind
+        // opacity modifiers (text-ink/70, border-line/50, …) work natively. The
+        // matching :root CSS vars mirror these for raw-CSS consumers.
+        ink: "#2b2118",
+        muted: "#8a7e72",
+        faint: "#b4a99b",
+        line: "#ebe3d8",
+        "line-strong": "#ddd2c4",
+        canvas: "#fbf8f4",
+        surface: {
+          DEFAULT: "#ffffff",
+          raised: "#fffdfb",
+          2: "#f6f1ea",
+          3: "#efe7dd",
+        },
+        accent: {
+          DEFAULT: "#f2761c",
+          hover: "#e0670f",
+          soft: "#fb8c6a",
+          tint: "#fff3ea",
+        },
+        // Warm decorative ramp + functional status.
+        cream: "#fffdfb",
+        peach: "#ffe9d6",
+        sun: "#ffb866",
+        success: "#16a34a",
+        warning: "#f59e0b",
+        danger: "#ef4444",
         // Finance OS theme tokens — read CSS vars set by [data-fos-theme].
         fos: {
           bg: "var(--fos-bg)",
@@ -61,6 +84,32 @@ const config: Config = {
           research: "#f59e0b",
           vision: "#ec4899",
         },
+        // ---- Nex-Era design system tokens (read CSS vars from .nex scope) ----
+        // Opt-in: only resolve inside a `.nex` container. Keeps the light app
+        // untouched while giving DS components first-class Tailwind utilities.
+        nex: {
+          bg: "var(--nex-bg)",
+          raised: "var(--nex-bg-raised)",
+          sunken: "var(--nex-bg-sunken)",
+          glass: "var(--nex-glass)",
+          "glass-strong": "var(--nex-glass-strong)",
+          "glass-hover": "var(--nex-glass-hover)",
+          border: "var(--nex-border)",
+          "border-strong": "var(--nex-border-strong)",
+          text: "var(--nex-text)",
+          muted: "var(--nex-text-muted)",
+          faint: "var(--nex-text-faint)",
+          accent: "var(--nex-accent)",
+          "accent-2": "var(--nex-accent-2)",
+          "accent-3": "var(--nex-accent-3)",
+          purple: "var(--nex-purple-500)",
+          blue: "var(--nex-blue-500)",
+          cyan: "var(--nex-cyan-400)",
+          success: "var(--nex-success)",
+          warning: "var(--nex-warning)",
+          danger: "var(--nex-danger)",
+          info: "var(--nex-info)",
+        },
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
@@ -69,16 +118,39 @@ const config: Config = {
       },
       backgroundImage: {
         "grid-fade":
-          "linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)",
+          "linear-gradient(to right, rgba(70,50,30,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(70,50,30,0.04) 1px, transparent 1px)",
+        sunrise: "var(--sunrise)",
+        "accent-gradient": "var(--accent-gradient)",
+      },
+      borderRadius: {
+        "nex-sm": "var(--nex-radius-sm)",
+        "nex-md": "var(--nex-radius-md)",
+        "nex-lg": "var(--nex-radius-lg)",
+        "nex-xl": "var(--nex-radius-xl)",
+        "nex-2xl": "var(--nex-radius-2xl)",
+      },
+      backdropBlur: {
+        "nex-sm": "var(--nex-blur-sm)",
+        "nex-md": "var(--nex-blur-md)",
+        "nex-lg": "var(--nex-blur-lg)",
+        "nex-xl": "var(--nex-blur-xl)",
       },
       boxShadow: {
-        glow: "0 0 50px -12px rgba(59,130,246,0.45)",
-        "glow-blue": "0 0 60px -15px rgba(139,92,246,0.4)",
-        // Light-theme elevation scale — cool ink-tinted shadows, never raw black.
+        "nex-sm": "var(--nex-shadow-sm)",
+        "nex-md": "var(--nex-shadow-md)",
+        "nex-lg": "var(--nex-shadow-lg)",
+        "nex-float": "var(--nex-shadow-float)",
+        "nex-glow-purple": "var(--nex-glow-purple)",
+        "nex-glow-blue": "var(--nex-glow-blue)",
+        "nex-glow-cyan": "var(--nex-glow-cyan)",
+        glow: "0 0 40px -10px rgba(242,118,28,0.45)",
+        "glow-blue": "0 0 60px -15px rgba(251,140,106,0.4)",
+        "glow-accent": "0 0 40px -8px rgba(242,118,28,0.5)",
+        // Warm-white elevation scale — soft floating, warm-ink tinted, never raw black.
         // soft = resting card, lift = hover / showpiece panel, pop = popover/menu.
-        soft: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.10)",
-        lift: "0 2px 6px rgba(15,23,42,0.05), 0 18px 44px -16px rgba(15,23,42,0.20)",
-        pop: "0 4px 12px rgba(15,23,42,0.08), 0 22px 52px -18px rgba(15,23,42,0.26)",
+        soft: "var(--shadow-soft)",
+        lift: "var(--shadow-lift)",
+        pop: "var(--shadow-pop)",
       },
       keyframes: {
         float: {

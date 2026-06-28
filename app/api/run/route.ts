@@ -4,6 +4,7 @@ import { guardStream } from "@/lib/llm/guardrail";
 import { getDataset, datasetContext } from "@/lib/fpa/dataStore";
 import { sessionFromRequest } from "@/lib/auth/session";
 import { consumeQuota } from "@/lib/auth/quota";
+import { profileFor } from "@/lib/auth/profiles";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,8 +62,18 @@ export async function POST(req: Request) {
   // applied so every open model inherits the same persona and safety posture,
   // regardless of any client-supplied prompt.
   const dataset = await getDataset();
+  const profile = session ? profileFor(session.u) : null;
   const system = buildSystemPrompt({
     datasetContext: dataset ? datasetContext(dataset) : undefined,
+    user: profile
+      ? {
+          name: profile.name,
+          firstName: profile.firstName,
+          title: profile.title,
+          focus: profile.focus,
+          bio: profile.bio,
+        }
+      : undefined,
   });
 
   // Try the explicitly-picked model first, then auto-fall back across other

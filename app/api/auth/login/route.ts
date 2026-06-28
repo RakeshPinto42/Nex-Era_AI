@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { authenticate } from "@/lib/auth/users";
-import { createToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/auth/session";
+import {
+  createToken,
+  SESSION_COOKIE,
+  SESSION_MAX_AGE,
+  secretInsecure,
+} from "@/lib/auth/session";
 import { checkRate, recordFail, recordSuccess } from "@/lib/auth/rate-limit";
 
 export const runtime = "nodejs";
@@ -45,7 +50,26 @@ export async function POST(req: Request) {
   }
 
   recordSuccess(rateKey);
-  const token = await createToken({ u: acct.username, r: acct.role });
+
+  // Fail closed in production when no real AUTH_SECRET is set — but return a
+  // proper JSON error so the UI can show a useful message instead of a raw
+  // network error when the function aborts the connection.
+  if (secretInsecure()) {
+    return NextResponse.json(
+      { error: "Server misconfiguration: AUTH_SECRET is not set." },
+      { status: 500 },
+    );
+  }
+
+  let token: string;
+  try {
+    token = await createToken({ u: acct.username, r: acct.role });
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Unable to create session.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+
   const res = NextResponse.json({
     ok: true,
     user: { username: acct.username, role: acct.role },

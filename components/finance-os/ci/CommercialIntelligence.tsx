@@ -40,7 +40,7 @@ function Workspace() {
         <span className="h-9 w-1.5 flex-none rounded-full bg-white/55" />
         <div className="min-w-0">
           <h1 className="text-lg font-semibold tracking-tight">Commercial Intelligence</h1>
-          <p className="text-sm text-white/75">Compare products, optimize pricing, maximize margins and improve commercial performance.</p>
+          <p className="text-sm text-ink">Compare products, optimize pricing, maximize margins and improve commercial performance.</p>
         </div>
       </header>
 
@@ -56,7 +56,7 @@ function Workspace() {
                 onClick={() => setActive(m.slug)}
                 className={cn(
                   "flex-none rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
-                  active === m.slug ? "text-white" : "text-fos-muted hover:bg-fos-surface2 hover:text-fos-text",
+                  active === m.slug ? "text-ink" : "text-fos-muted hover:bg-fos-surface2 hover:text-fos-text",
                 )}
                 style={active === m.slug ? { backgroundColor: BLUE } : undefined}
               >

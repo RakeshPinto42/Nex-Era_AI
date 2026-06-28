@@ -5,8 +5,59 @@
 :root {
   --font-geist-sans: "Geist", system-ui, sans-serif;
   --font-geist-mono: "Geist Mono", ui-monospace, monospace;
-  /* Display = Space Grotesk (geometric, heavy), falling back to Geist. */
-  --font-display: var(--font-space-grotesk), "Geist", system-ui, sans-serif;
+  /* --font-display is supplied by next/font (Poppins) on <html>. Don't redefine
+     it here or it would shadow the loaded face. */
+
+  /* ======================================================================
+     WARM-WHITE DESIGN LANGUAGE — "Command Center" (Dashboard_white)
+     The single global light theme. Cream/warm-white canvas, off-white cards,
+     orange/coral accent, soft floating shadows. Components read these vars
+     (directly or via the Tailwind semantic colors that alias them).
+     ====================================================================== */
+
+  /* Surfaces */
+  --bg: #fbf8f4;              /* warm-white page canvas */
+  --bg-raised: #fffdfb;       /* faint lift */
+  --surface: #ffffff;         /* card body */
+  --surface-2: #f6f1ea;       /* sunken: inputs, tracks, tabs */
+  --surface-3: #efe7dd;       /* deeper sunken / hover */
+
+  /* Borders / hairlines — very subtle, warm */
+  --border: rgba(70, 50, 30, 0.08);
+  --border-strong: rgba(70, 50, 30, 0.14);
+
+  /* Text — warm near-black → warm greys */
+  --text: #2b2118;
+  --text-muted: #8a7e72;
+  --text-faint: #b4a99b;
+
+  /* Accent — orange / coral */
+  --accent: #f2761c;
+  --accent-hover: #e0670f;
+  --accent-tint: #fff3ea;
+  --accent-soft: #fb8c6a;     /* coral gradient partner */
+  --accent-contrast: #ffffff;
+  --accent-gradient: linear-gradient(120deg, #f2761c 0%, #fb8c6a 100%);
+
+  /* Sunrise wash — the warm peach header glow on Home/Login */
+  --sunrise: radial-gradient(620px 320px at 88% -40%, rgba(255, 196, 140, 0.55), transparent 70%),
+             radial-gradient(900px 360px at 30% -60%, rgba(255, 224, 198, 0.45), transparent 72%);
+
+  /* Status */
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* Soft floating elevation — warm-tinted, never raw black */
+  --shadow-soft: 0 1px 2px rgba(60, 40, 20, 0.04), 0 12px 32px -16px rgba(60, 40, 20, 0.12);
+  --shadow-lift: 0 2px 6px rgba(60, 40, 20, 0.05), 0 22px 48px -18px rgba(60, 40, 20, 0.18);
+  --shadow-pop: 0 4px 14px rgba(60, 40, 20, 0.08), 0 26px 56px -20px rgba(60, 40, 20, 0.24);
+
+  /* Radii */
+  --radius-tile: 16px;
+  --radius-card: 20px;
+  --radius-lg: 24px;
 }
 
 /* Headings carry the display face + tighter tracking, app-wide. */
@@ -31,14 +82,14 @@ h1, h2, h3, h4 {
   color-scheme: dark;
 }
 [data-fos-theme="light"] {
-  --fos-bg: #f8fafc;
+  --fos-bg: #fbf8f4;
   --fos-surface: #ffffff;
-  --fos-surface-2: #f1f5f9;
-  --fos-border: #e5e7eb;
-  --fos-text: #0f172a;
-  --fos-muted: #64748b;
-  --fos-faint: #94a3b8;
-  --fos-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+  --fos-surface-2: #f6f1ea;
+  --fos-border: #ebe3d8;
+  --fos-text: #2b2118;
+  --fos-muted: #8a7e72;
+  --fos-faint: #b4a99b;
+  --fos-shadow: 0 1px 2px rgba(60, 40, 20, 0.04), 0 12px 32px -16px rgba(60, 40, 20, 0.12);
   color-scheme: light;
 }
 [data-fos-theme] ::-webkit-scrollbar-thumb {
@@ -55,8 +106,8 @@ html {
 }
 
 body {
-  background-color: #f8fafc; /* canvas */
-  color: #0f172a; /* ink */
+  background-color: var(--bg); /* warm-white canvas */
+  color: var(--text); /* warm ink */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -64,13 +115,13 @@ body {
 }
 
 ::selection {
-  background: rgba(59, 130, 246, 0.18);
-  color: #0f172a;
+  background: rgba(242, 118, 28, 0.18);
+  color: var(--text);
 }
 
 /* Keyboard focus ring — visible for keyboard users, not on mouse click. */
 :focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -78,7 +129,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  box-shadow: 0 0 0 3px rgba(242, 118, 28, 0.18);
 }
 
 /* Respect reduced-motion preferences. */
@@ -93,39 +144,115 @@ select:focus-visible {
   }
 }
 
-/* Thin custom scrollbar */
+/* Thin custom scrollbar — slim, warm, unobtrusive until hover. */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #e4d8c9;
   border-radius: 999px;
-  border: 2px solid #f8fafc;
+  border: 2.5px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #d2c0a8;
+  background-clip: padding-box;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e4d8c9 transparent;
+}
+
+/* ============================================================================
+   PREMIUM POLISH PRIMITIVES — shared interaction + loading utilities so every
+   surface feels handcrafted. Subtle (150–250ms, ease-out), reduced-motion safe.
+   ========================================================================== */
+
+/* Soft elevation lift on hover — wrap any card/tile. */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+  border-color: rgba(242, 118, 28, 0.28);
+}
+
+/* Skeleton loader — warm shimmer sweep. Apply to placeholder blocks. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-radius: 10px;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+@keyframes skeleton-sweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Soft entrance for content blocks (used sparingly, complements PageTransition). */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise-in {
+  animation: rise-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Consistent interactive transition default for buttons/links/inputs. */
+button,
+a,
+input,
+textarea,
+select,
+[role="button"] {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer components {
-  /* Card / panel surfaces — white cards on canvas, hairline border, soft shadow. */
+  /* Card / panel surfaces — off-white cards on warm canvas, hairline, soft float. */
   .glass {
-    @apply border border-line bg-white;
+    @apply border border-line bg-surface;
   }
   .glass-strong {
-    @apply border border-line bg-white shadow-sm;
+    @apply border border-line bg-surface shadow-soft;
   }
   .card {
-    @apply rounded-2xl border border-line bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)];
+    @apply rounded-2xl border border-line bg-surface shadow-soft;
   }
   .text-gradient {
     @apply bg-gradient-to-br from-ink via-ink to-ink/70 bg-clip-text text-transparent;
   }
+  /* Orange→coral accent gradient text (classname kept for callers). */
   .text-gradient-emerald {
-    background: linear-gradient(120deg, #3b82f6 0%, #8b5cf6 100%);
+    background: var(--accent-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -266,3 +393,50 @@ select:focus-visible {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* ============================================================================
+   PREMIUM FX — global polish primitives (motion-safe; the reduced-motion block
+   above neutralizes the keyframes, and JS-mounted effects also gate themselves).
+   ========================================================================== */
+
+/* Cursor glow — a soft pointer-following bloom. The <CursorGlow/> component sets
+   --mx/--my (px). pointer-events-none so it never blocks interaction. */
+.fx-cursor-glow {
+  position: fixed; inset: 0; z-index: 5; pointer-events: none;
+  background: radial-gradient(220px circle at var(--mx, -100px) var(--my, -100px),
+    rgba(99,102,241,0.10), rgba(139,92,246,0.06) 40%, transparent 65%);
+  transition: background 0.12s ease-out;
+}
+
+/* Loading shimmer sweep — apply to skeleton blocks. */
+@keyframes fx-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.fx-shimmer {
+  background: linear-gradient(110deg, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 70%);
+  background-size: 200% 100%;
+  animation: fx-shimmer 1.6s linear infinite;
+}
+
+/* Animated gradient hairline on hover — wrap a card; the conic ring rotates. */
+@keyframes fx-border-spin { to { transform: rotate(1turn); } }
+.fx-ring { position: relative; }
+.fx-ring::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+  background: conic-gradient(from 0deg, transparent, rgba(99,102,241,0.7), rgba(34,211,238,0.6), transparent 40%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.fx-ring:hover::before { opacity: 1; animation: fx-border-spin 4s linear infinite; }
+
+/* Ambient drifting orbs (behind content). */
+@keyframes fx-drift-a { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px,-30px); } }
+@keyframes fx-drift-b { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-50px,40px); } }
+.fx-orb { position: absolute; border-radius: 9999px; filter: blur(120px); will-change: transform; }
+
+/* Press feedback — subtle scale on active. */
+.fx-press { transition: transform 0.12s cubic-bezier(0.22,1,0.36,1); }
+.fx-press:active { transform: scale(0.96); }
+
+/* Live pulse halo (status dots / "running"). */
+@keyframes fx-pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(52,245,160,0.5); } 100% { box-shadow: 0 0 0 8px rgba(52,245,160,0); } }
+.fx-live { animation: fx-pulse-ring 1.8s ease-out infinite; }

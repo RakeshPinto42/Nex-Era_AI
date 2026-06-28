@@ -28,7 +28,7 @@ export default function FinanceOS() {
               className="font-mono text-xs uppercase tracking-[0.25em]"
               style={{ color: it.hex }}
             >
-              Ledger · Reasoning
+              Finance OS · Reasoning
             </p>
             <h2 className="heading-lift-gradient mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
               <span className="text-gradient">Your finance team,</span>{" "}

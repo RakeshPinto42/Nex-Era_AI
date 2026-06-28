@@ -52,7 +52,7 @@ const features: Feature[] = [
     icon: <IconFolder />,
   },
   {
-    title: "Ledger",
+    title: "Finance OS",
     desc: "Pricing, forecasting, commissions and reporting on your real data.",
     intent: "reasoning",
     icon: <IconFinance />,

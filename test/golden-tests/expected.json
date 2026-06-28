@@ -1,0 +1,95 @@
+{
+  "01-empty": {
+    "runId": "run_2026-Q2_d84042ee",
+    "status": "done",
+    "inputHash": "d84042ee",
+    "resultHash": "8f8e67b9",
+    "stageDigests": {
+      "ingest": "8f8e67b9",
+      "eligibility": "8f8e67b9",
+      "validate": "8f8e67b9",
+      "credit": "8f8e67b9",
+      "attainment": "8f8e67b9",
+      "rules": "8f8e67b9",
+      "rate": "8f8e67b9",
+      "accelerator": "8f8e67b9",
+      "cap": "8f8e67b9",
+      "guarantee": "8f8e67b9",
+      "draw": "8f8e67b9",
+      "clawback": "8f8e67b9",
+      "adjustment": "8f8e67b9",
+      "payout": "8f8e67b9",
+      "statement": "8f8e67b9"
+    },
+    "exceptions": 0,
+    "working": {
+      "transactionIds": [],
+      "eligiblePayeeIds": [],
+      "credits": [],
+      "payoutLines": [],
+      "statements": []
+    }
+  },
+  "02-basic-percent-plan": {
+    "runId": "run_2026-Q2_415a82be",
+    "status": "done",
+    "inputHash": "415a82be",
+    "resultHash": "8f8e67b9",
+    "stageDigests": {
+      "ingest": "8f8e67b9",
+      "eligibility": "8f8e67b9",
+      "validate": "8f8e67b9",
+      "credit": "8f8e67b9",
+      "attainment": "8f8e67b9",
+      "rules": "8f8e67b9",
+      "rate": "8f8e67b9",
+      "accelerator": "8f8e67b9",
+      "cap": "8f8e67b9",
+      "guarantee": "8f8e67b9",
+      "draw": "8f8e67b9",
+      "clawback": "8f8e67b9",
+      "adjustment": "8f8e67b9",
+      "payout": "8f8e67b9",
+      "statement": "8f8e67b9"
+    },
+    "exceptions": 0,
+    "working": {
+      "transactionIds": [],
+      "eligiblePayeeIds": [],
+      "credits": [],
+      "payoutLines": [],
+      "statements": []
+    }
+  },
+  "03-multi-currency": {
+    "runId": "run_2026-Q2_47838dc3",
+    "status": "done",
+    "inputHash": "47838dc3",
+    "resultHash": "8f8e67b9",
+    "stageDigests": {
+      "ingest": "8f8e67b9",
+      "eligibility": "8f8e67b9",
+      "validate": "8f8e67b9",
+      "credit": "8f8e67b9",
+      "attainment": "8f8e67b9",
+      "rules": "8f8e67b9",
+      "rate": "8f8e67b9",
+      "accelerator": "8f8e67b9",
+      "cap": "8f8e67b9",
+      "guarantee": "8f8e67b9",
+      "draw": "8f8e67b9",
+      "clawback": "8f8e67b9",
+      "adjustment": "8f8e67b9",
+      "payout": "8f8e67b9",
+      "statement": "8f8e67b9"
+    },
+    "exceptions": 0,
+    "working": {
+      "transactionIds": [],
+      "eligiblePayeeIds": [],
+      "credits": [],
+      "payoutLines": [],
+      "statements": []
+    }
+  }
+}

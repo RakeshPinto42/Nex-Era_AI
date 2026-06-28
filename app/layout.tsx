@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-import { Space_Grotesk } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
-// Geist (Vercel) drives body + mono (clean, technical, AI-native). Space Grotesk
-// is the display face — geometric, heavy, with real character at large sizes; it
-// extrudes cleanly for the dimensional headings. CSS vars keep the --font-* tokens.
-const spaceGrotesk = Space_Grotesk({
+// Geist (Vercel) drives body + mono (clean, technical, AI-native). Poppins is the
+// display face — a friendly geometric-rounded sans that gives headings the warm,
+// approachable character of the Command Center design language. CSS vars keep the
+// --font-* tokens so callers using `font-display` pick it up app-wide.
+const poppins = Poppins({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
-  variable: "--font-space-grotesk",
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -32,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${poppins.variable}`} style={{ colorScheme: "light" }}>
       <body className="font-sans antialiased">{children}</body>
     </html>
   );

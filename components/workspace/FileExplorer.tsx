@@ -16,34 +16,34 @@ export default function FileExplorer() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-obsidian-100/[0.03]">
-      <div className="flex flex-none items-center justify-between border-b border-white/[0.08] px-3 py-2.5">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-white/40">
+    <div className="flex h-full min-h-0 flex-col bg-surface">
+      <div className="flex flex-none items-center justify-between border-b border-line px-3 py-2.5">
+        <span className="font-mono text-[11px] uppercase tracking-widest text-faint">
           Explorer
         </span>
         <div className="flex items-center gap-1.5">
           <button
             onClick={newFile}
             title="New file"
-            className="grid h-6 w-6 place-items-center rounded-md border border-white/[0.08] bg-white/[0.04] text-[13px] text-white/70 transition-colors hover:border-navy/40 hover:text-white"
+            className="grid h-6 w-6 place-items-center rounded-md border border-line bg-surface-2 text-[13px] text-muted transition-colors hover:border-navy/40 hover:text-ink"
           >
             +
           </button>
           <button
             onClick={selectFolder}
-            className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[11px] text-white/70 transition-colors hover:border-navy/40 hover:text-white"
+            className="rounded-md border border-line bg-surface-2 px-2 py-1 text-[11px] text-muted transition-colors hover:border-navy/40 hover:text-ink"
           >
             Open Folder
           </button>
         </div>
       </div>
 
-      <div className="flex flex-none items-center gap-2 px-3 py-2 text-xs text-white/60">
+      <div className="flex flex-none items-center gap-2 px-3 py-2 text-xs text-muted">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z" />
         </svg>
-        <span className="truncate font-medium text-white/80">{folderName}</span>
-        <span className="ml-auto font-mono text-[10px] text-white/30">
+        <span className="truncate font-medium text-ink">{folderName}</span>
+        <span className="ml-auto font-mono text-[10px] text-faint">
           {fileCount}
         </span>
       </div>
@@ -81,12 +81,12 @@ function Node({
       <div>
         <button
           onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-left text-[13px] text-white/70 hover:bg-white/[0.04]"
+          className="flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-left text-[13px] text-muted hover:bg-surface-2"
           style={{ paddingLeft: depth * 12 + 6 }}
         >
           <motion.span
             animate={{ rotate: open ? 90 : 0 }}
-            className="text-white/40"
+            className="text-faint"
           >
             ▸
           </motion.span>
@@ -123,7 +123,7 @@ function Node({
       className={`flex w-full items-center gap-2 rounded-md py-1 pr-2 text-left text-[13px] ${
         isActive
           ? "bg-navy/12 text-white"
-          : "text-white/55 hover:bg-white/[0.04] hover:text-white/80"
+          : "text-muted hover:bg-surface-2 hover:text-ink"
       }`}
       style={{ paddingLeft: depth * 12 + 18 }}
     >

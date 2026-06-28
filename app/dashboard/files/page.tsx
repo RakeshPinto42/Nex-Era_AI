@@ -64,12 +64,12 @@ export default function FilesPage() {
   return (
     <PageShell
       title="Data Upload"
-      subtitle="Upload a CSV or JSON dataset — Ledger reads it live."
+      subtitle="Upload a CSV or JSON dataset — Finance OS reads it live."
       action={
         dataset ? (
           <button
             onClick={clear}
-            className="rounded-lg border border-white/15 px-4 py-2 text-sm text-white/70 hover:border-[#ff8a8a]/40 hover:text-[#ff8a8a]"
+            className="rounded-lg border border-line px-4 py-2 text-sm text-muted hover:border-[#ff8a8a]/40 hover:text-[#ff8a8a]"
           >
             Clear dataset
           </button>
@@ -107,10 +107,10 @@ export default function FilesPage() {
         className={`mb-6 grid cursor-pointer place-items-center rounded-2xl border-2 border-dashed py-10 text-center transition-colors ${
           dragOver
             ? "border-navy/60 bg-navy/[0.06]"
-            : "border-white/15 bg-white/[0.02] hover:border-navy/40"
+            : "border-line bg-surface-2/60 hover:border-navy/40"
         }`}
       >
-        <p className="text-sm text-white/60">
+        <p className="text-sm text-muted">
           {busy ? (
             "Parsing…"
           ) : (
@@ -120,7 +120,7 @@ export default function FilesPage() {
             </>
           )}
         </p>
-        <p className="mt-1 text-xs text-white/35">
+        <p className="mt-1 text-xs text-faint">
           CSV or JSON (array of objects, or {"{columns, rows}"})
         </p>
       </div>
@@ -136,22 +136,22 @@ export default function FilesPage() {
           <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-navy/30 bg-navy/[0.06] px-4 py-3 text-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-navy" />
             <span className="font-medium text-navy">{dataset.name}</span>
-            <span className="text-white/55">
+            <span className="text-muted">
               {dataset.rowCount.toLocaleString()} rows · {dataset.columns.length} columns
             </span>
-            <span className="ml-auto text-xs text-white/40">
-              Ledger is grounded on this dataset. Ask it about “my data”.
+            <span className="ml-auto text-xs text-faint">
+              Finance OS is grounded on this dataset. Ask it about “my data”.
             </span>
           </div>
 
-          <div className="overflow-auto rounded-2xl border border-white/[0.08]">
+          <div className="overflow-auto rounded-2xl border border-line">
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="bg-white/[0.03] text-left">
+                <tr className="bg-surface-2 text-left">
                   {dataset.columns.map((c) => (
                     <th
                       key={c}
-                      className="whitespace-nowrap border-b border-white/[0.08] px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-white/50"
+                      className="whitespace-nowrap border-b border-line px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-faint"
                     >
                       {c}
                     </th>
@@ -160,9 +160,9 @@ export default function FilesPage() {
               </thead>
               <tbody>
                 {dataset.rows.map((r, ri) => (
-                  <tr key={ri} className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.03]">
+                  <tr key={ri} className="border-b border-line last:border-0 hover:bg-surface-2">
                     {dataset.columns.map((_, ci) => (
-                      <td key={ci} className="whitespace-nowrap px-3 py-1.5 text-white/75">
+                      <td key={ci} className="whitespace-nowrap px-3 py-1.5 text-ink">
                         {r[ci] ?? ""}
                       </td>
                     ))}
@@ -172,14 +172,14 @@ export default function FilesPage() {
             </table>
           </div>
           {dataset.rowCount > dataset.rows.length && (
-            <p className="mt-2 text-center text-xs text-white/35">
+            <p className="mt-2 text-center text-xs text-faint">
               Showing first {dataset.rows.length} of {dataset.rowCount.toLocaleString()} rows.
             </p>
           )}
         </GridReveal>
       ) : (
-        <p className="text-center text-sm text-white/35">
-          No dataset loaded. Upload one to ground Ledger on your own numbers.
+        <p className="text-center text-sm text-faint">
+          No dataset loaded. Upload one to ground Finance OS on your own numbers.
         </p>
       )}
     </PageShell>

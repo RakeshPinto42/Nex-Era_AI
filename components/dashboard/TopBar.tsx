@@ -10,7 +10,7 @@ import { NexeraMark } from "@/components/Logo";
 export default function TopBar({ onMenu }: { onMenu?: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
-  const [me, setMe] = useState<{ username: string; role: string } | null>(null);
+  const [me, setMe] = useState<{ username: string; role: string; displayName?: string; title?: string; avatar?: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -26,13 +26,13 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
   };
 
   return (
-    <header className="flex h-14 flex-none items-center gap-3 border-b border-white/[0.08] bg-obsidian-100/70 px-4 backdrop-blur-xl">
+    <header className="flex h-14 flex-none items-center gap-3 border-b border-line bg-surface/70 px-4 backdrop-blur-xl">
       {/* mobile menu */}
       <button
         type="button"
         onClick={onMenu}
         aria-label="Open navigation menu"
-        className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 text-white/70 hover:bg-white/[0.06] hover:text-white lg:hidden"
+        className="grid h-9 w-9 place-items-center rounded-lg border border-line text-muted hover:bg-surface-2 hover:text-ink lg:hidden"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
           <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
@@ -42,7 +42,7 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
       {/* brand mark — always in the bar */}
       <div className="flex items-center gap-2">
         <NexeraMark size={26} />
-        <span className="font-display text-[15px] font-semibold tracking-tight text-white">nexera</span>
+        <span className="font-display text-[15px] font-semibold tracking-tight text-ink">nexera</span>
       </div>
 
       {/* model picker — ChatGPT-style, top-left */}
@@ -51,7 +51,7 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
       {/* search */}
       <div className="relative flex max-w-md flex-1 items-center">
         <svg
-          className="pointer-events-none absolute left-3 text-white/35"
+          className="pointer-events-none absolute left-3 text-faint"
           width="16"
           height="16"
           viewBox="0 0 24 24"
@@ -67,9 +67,9 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
           type="search"
           aria-label="Search chats, files and agents"
           placeholder="Search chats, files, agents…"
-          className="w-full rounded-lg border border-white/10 bg-white/[0.04] py-2 pl-9 pr-16 text-sm text-white placeholder:text-white/35 outline-none transition-colors focus:border-brand/40 focus:bg-white/[0.07]"
+          className="w-full rounded-lg border border-line bg-surface-2 py-2 pl-9 pr-16 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-brand/50 focus:bg-surface"
         />
-        <kbd className="absolute right-2.5 hidden rounded border border-white/10 bg-white/[0.06] px-1.5 py-0.5 font-mono text-[10px] text-white/45 sm:block">
+        <kbd className="absolute right-2.5 hidden rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[10px] text-faint sm:block">
           ⌘K
         </kbd>
       </div>
@@ -77,8 +77,8 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
       <div className="flex-1" />
 
       {/* status pill */}
-      <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-white/60 sm:flex">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-glow shadow-glow" />
+      <div className="hidden items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted sm:flex">
+        <span className="h-1.5 w-1.5 rounded-full bg-success" />
         Online
       </div>
 
@@ -91,7 +91,7 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
           aria-expanded={menuOpen}
           className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-navy to-ice text-xs font-bold text-white transition-transform hover:scale-105"
         >
-          RP
+          {me?.avatar ?? "··"}
         </button>
         <AnimatePresence>
           {menuOpen && (
@@ -105,27 +105,27 @@ export default function TopBar({ onMenu }: { onMenu?: () => void }) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -6, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-white/10 bg-obsidian-100/95 p-1.5 shadow-pop backdrop-blur-xl"
+                className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-line bg-surface p-1.5 shadow-pop backdrop-blur-xl"
               >
-                <div className="border-b border-white/10 px-3 py-2.5">
-                  <p className="text-sm font-medium text-white">
-                    {me?.username ?? "…"}
+                <div className="border-b border-line px-3 py-2.5">
+                  <p className="text-sm font-medium text-ink">
+                    {me?.displayName ?? me?.username ?? "…"}
                   </p>
-                  <p className="text-xs capitalize text-white/40">
-                    {me?.role ? `${me.role} account` : ""}
+                  <p className="text-xs text-faint">
+                    {me?.title ?? (me?.role ? `${me.role} account` : "")}
                   </p>
                 </div>
                 {me?.role === "admin" && (
                   <a
                     href="/admin"
-                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+                    className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-muted transition-colors hover:bg-surface-2 hover:text-ink"
                   >
                     API Keys / Providers
                   </a>
                 )}
                 <button
                   onClick={logout}
-                  className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-500/5"
+                  className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-danger transition-colors hover:bg-danger/5"
                 >
                   Sign out
                 </button>
@@ -176,7 +176,7 @@ function ModelPicker() {
     return (
       <a
         href="/admin"
-        className="hidden items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/55 transition-colors hover:text-white sm:flex"
+        className="hidden items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs text-muted transition-colors hover:text-ink sm:flex"
       >
         + Add provider
       </a>
@@ -196,7 +196,7 @@ function ModelPicker() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/[0.07]"
+        className="flex items-center gap-2 rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm text-ink transition-colors hover:bg-surface"
       >
         {autoRoute ? (
           <span className="font-mono text-xs font-semibold text-brand">✦ Auto</span>
@@ -212,7 +212,7 @@ function ModelPicker() {
               : "routes by task"
             : (activeModel?.label ?? "Select model")}
         </span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/40" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-faint" aria-hidden="true">
           <path d="m6 9 6 6 6-6" />
         </svg>
       </button>
@@ -227,7 +227,7 @@ function ModelPicker() {
               exit={{ opacity: 0, y: -6, scale: 0.97 }}
               transition={{ duration: 0.15 }}
               role="listbox"
-              className="absolute left-0 z-50 mt-2 max-h-[66vh] w-80 overflow-y-auto rounded-xl border border-white/10 bg-obsidian-100/95 p-1.5 shadow-pop backdrop-blur-xl"
+              className="absolute left-0 z-50 mt-2 max-h-[66vh] w-80 overflow-y-auto rounded-xl border border-line bg-surface p-1.5 shadow-pop backdrop-blur-xl"
             >
               {/* Auto */}
               <button
@@ -239,28 +239,28 @@ function ModelPicker() {
                   setOpen(false);
                 }}
                 className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors ${
-                  autoRoute ? "bg-brand/[0.12]" : "hover:bg-white/[0.06]"
+                  autoRoute ? "bg-brand/10" : "hover:bg-surface-2"
                 }`}
               >
                 <span className="grid h-7 w-7 flex-none place-items-center rounded-lg bg-brand/15 text-sm text-brand">
                   ✦
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-white">
+                  <span className="block text-sm font-semibold text-ink">
                     Auto
                   </span>
-                  <span className="block truncate text-[11px] text-white/45">
+                  <span className="block truncate text-[11px] text-muted">
                     Routes each prompt to the best model
                   </span>
                 </span>
                 {autoRoute && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="flex-none text-navy" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="flex-none text-brand" aria-hidden="true">
                     <path d="M20 6 9 17l-5-5" />
                   </svg>
                 )}
               </button>
 
-              <p className="px-2.5 pb-1 pt-2 font-mono text-[10px] uppercase tracking-wider text-white/35">
+              <p className="px-2.5 pb-1 pt-2 font-mono text-[10px] uppercase tracking-wider text-faint">
                 Or pick a model
               </p>
 
@@ -275,23 +275,23 @@ function ModelPicker() {
                     aria-selected={isActive ? true : false}
                     onClick={() => pickModel(modelKey(m))}
                     className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors ${
-                      isActive ? "bg-white/[0.08]" : "hover:bg-white/[0.06]"
+                      isActive ? "bg-surface-3" : "hover:bg-surface-2"
                     }`}
                   >
-                    <span className="grid h-7 w-7 flex-none place-items-center rounded-lg border border-white/10 bg-white/[0.06] text-sm" aria-hidden="true">
+                    <span className="grid h-7 w-7 flex-none place-items-center rounded-lg border border-line bg-surface-2 text-sm" aria-hidden="true">
                       {intentEmoji(m.intent)}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm text-white">
+                      <span className="block truncate text-sm text-ink">
                         {m.label}
                       </span>
-                      <span className="block truncate font-mono text-[10px] text-white/40">
+                      <span className="block truncate font-mono text-[10px] text-faint">
                         {m.providerName}
                       </span>
                     </span>
                     <CapChip intent={m.intent} />
                     {isActive && (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="flex-none text-navy" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="flex-none text-brand" aria-hidden="true">
                         <path d="M20 6 9 17l-5-5" />
                       </svg>
                     )}

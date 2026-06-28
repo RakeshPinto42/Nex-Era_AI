@@ -259,11 +259,10 @@ export async function resolveActive(): Promise<{
   if (!id) return null;
   const cfg = d.providers.find((p) => p.providerId === id);
   if (!cfg || !cfg.enabled || !cfg.apiKey) return null;
-  return {
-    providerId: id,
-    apiKey: cfg.apiKey,
-    model: d.defaultModel ?? cfg.models[0] ?? "",
-  };
+  const model = d.defaultModel ?? cfg.models[0] ?? "";
+  // Never activate a paid model — fall back to the candidate walker (free-filtered).
+  if (!isAllowedModel(id, model)) return null;
+  return { providerId: id, apiKey: cfg.apiKey, model };
 }
 
 export type Candidate = { providerId: string; apiKey: string; model: string };
@@ -271,6 +270,13 @@ export type Candidate = { providerId: string; apiKey: string; model: string };
 /** Free-tier model ids: OpenRouter uses a `:free` suffix (`…:free`), ZenMux a
  *  `-free` suffix (`…-free`). Either marks a $0 model. */
 export const isFreeModel = (model: string): boolean => /(?::|-)free\b/i.test(model);
+
+/** Spend guard: OpenRouter bills for any model WITHOUT the `:free` suffix, so we
+ *  only ever allow its free pool. Groq/Cerebras/Google/ZenMux are free-tier
+ *  platforms (no per-token charge), so all their models are allowed. This keeps
+ *  the account at $0 — no paid model can be listed, defaulted, or inferred. */
+export const isAllowedModel = (providerId: string, model: string): boolean =>
+  providerId !== "openrouter" || isFreeModel(model);
 
 /**
  * Server-only: ordered inference candidates for fallback. The configured
@@ -298,6 +304,7 @@ export async function resolveCandidates(): Promise<Candidate[]> {
         ? [d.defaultModel, ...cfg.models.filter((m) => m !== d.defaultModel)]
         : cfg.models;
     for (const model of models) {
+      if (!isAllowedModel(cfg.providerId, model)) continue; // skip paid models
       const k = `${cfg.providerId}::${model}`;
       if (seen.has(k)) continue;
       seen.add(k);
@@ -339,6 +346,7 @@ export async function listAvailableModels(): Promise<{
     const preset = PRESET_BY_ID[cfg.providerId];
     if (!preset) continue;
     for (const modelId of cfg.models) {
+      if (!isAllowedModel(cfg.providerId, modelId)) continue; // hide paid models
       const meta = preset.models.find((m) => m.id === modelId);
       models.push({
         providerId: cfg.providerId,

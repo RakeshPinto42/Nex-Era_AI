@@ -99,7 +99,7 @@ export default function CommissionTool() {
       <div className="space-y-4">
         <PrivacyNote />
         <Dropzone onTable={onTable} hint="Upload sales / bookings (CSV)" />
-        <p className="text-center text-xs text-white/45">
+        <p className="text-center text-xs text-faint">
           Need a rep/owner column and a revenue/bookings amount.{" "}
           <button onClick={() => onTable(parseCsv(SAMPLE))} className="font-medium text-navy hover:underline">
             Load sample data
@@ -114,7 +114,7 @@ export default function CommissionTool() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.1fr]">
         {/* mapping */}
         <Panel>
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-faint">
             Columns
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -123,23 +123,23 @@ export default function CommissionTool() {
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1 block text-xs font-medium text-white/55">Quota (optional)</span>
+              <span className="mb-1 block text-xs font-medium text-muted">Quota (optional)</span>
               <input
                 type="number"
                 value={quota ?? ""}
                 placeholder="none"
                 onChange={(e) => setQuota(e.target.value ? Number(e.target.value) : null)}
-                className="w-full rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-sm outline-none focus:border-navy/40"
+                className="w-full rounded-lg border border-line bg-surface-2/60 px-2.5 py-2 text-sm outline-none focus:border-navy/40"
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-xs font-medium text-white/55">Accelerator % over quota</span>
+              <span className="mb-1 block text-xs font-medium text-muted">Accelerator % over quota</span>
               <input
                 type="number"
                 value={accel ?? ""}
                 placeholder="none"
                 onChange={(e) => setAccel(e.target.value ? Number(e.target.value) : null)}
-                className="w-full rounded-lg border border-white/[0.08] bg-white/[0.02] px-2.5 py-2 text-sm outline-none focus:border-navy/40"
+                className="w-full rounded-lg border border-line bg-surface-2/60 px-2.5 py-2 text-sm outline-none focus:border-navy/40"
               />
             </label>
           </div>
@@ -147,7 +147,7 @@ export default function CommissionTool() {
 
         {/* tiers */}
         <Panel>
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-faint">
             Commission tiers (marginal)
           </p>
           <div className="space-y-2">
@@ -155,17 +155,17 @@ export default function CommissionTool() {
               const last = i === tiers.length - 1;
               return (
                 <div key={i} className="flex items-center gap-2 text-sm">
-                  <span className="w-16 flex-none text-xs text-white/45">
+                  <span className="w-16 flex-none text-xs text-faint">
                     {last ? "and above" : "up to"}
                   </span>
                   {last ? (
-                    <span className="flex-1 text-white/30">—</span>
+                    <span className="flex-1 text-faint">—</span>
                   ) : (
                     <input
                       type="number"
                       value={t.upTo ?? 0}
                       onChange={(e) => setTier(i, { upTo: Number(e.target.value) })}
-                      className="min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.02] px-2 py-1.5 outline-none focus:border-navy/40"
+                      className="min-w-0 flex-1 rounded-lg border border-line bg-surface-2/60 px-2 py-1.5 outline-none focus:border-navy/40"
                     />
                   )}
                   <div className="flex items-center gap-1">
@@ -174,14 +174,14 @@ export default function CommissionTool() {
                       step="0.5"
                       value={t.rate}
                       onChange={(e) => setTier(i, { rate: Number(e.target.value) })}
-                      className="w-16 rounded-lg border border-white/[0.08] bg-white/[0.02] px-2 py-1.5 text-right outline-none focus:border-navy/40"
+                      className="w-16 rounded-lg border border-line bg-surface-2/60 px-2 py-1.5 text-right outline-none focus:border-navy/40"
                     />
-                    <span className="text-xs text-white/45">%</span>
+                    <span className="text-xs text-faint">%</span>
                   </div>
                   <button
                     onClick={() => removeTier(i)}
                     disabled={tiers.length <= 1}
-                    className="grid h-7 w-7 flex-none place-items-center rounded-lg text-white/30 hover:bg-white/[0.06] hover:text-rose-600 disabled:opacity-30"
+                    className="grid h-7 w-7 flex-none place-items-center rounded-lg text-faint hover:bg-surface-2 hover:text-danger disabled:opacity-30"
                     aria-label="Remove tier"
                   >
                     ×
@@ -206,30 +206,30 @@ export default function CommissionTool() {
           </div>
 
           <Panel>
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-white/40">
+            <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-faint">
               Commission by rep
             </p>
             <BarList items={top} />
           </Panel>
 
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08]">
-            <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-4 py-2.5">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-white/45">
+          <div className="overflow-hidden rounded-2xl border border-line">
+            <div className="flex items-center justify-between border-b border-line bg-surface-2/60 px-4 py-2.5">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-faint">
                 Payout detail
               </span>
               <div className="flex gap-2">
-                <button onClick={exportCsv} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">
+                <button onClick={exportCsv} className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-ink">
                   Export CSV
                 </button>
-                <button onClick={() => setTable(null)} className="rounded-lg border border-white/[0.08] px-2.5 py-1 text-xs text-white/60 hover:bg-white/[0.06] hover:text-white">
+                <button onClick={() => setTable(null)} className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted hover:bg-surface-2 hover:text-ink">
                   New file
                 </button>
               </div>
             </div>
             <div className="max-h-[420px] overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-white/[0.04]">
-                  <tr className="border-b border-white/[0.08] text-left font-mono text-[10px] uppercase tracking-wider text-white/40">
+                <thead className="sticky top-0 bg-surface-2">
+                  <tr className="border-b border-line text-left font-mono text-[10px] uppercase tracking-wider text-faint">
                     <th className="px-4 py-2 font-medium">Rep</th>
                     <th className="px-4 py-2 text-right font-medium">Revenue</th>
                     <th className="px-4 py-2 text-right font-medium">Commission</th>
@@ -239,13 +239,13 @@ export default function CommissionTool() {
                 </thead>
                 <tbody>
                   {result.rows.map((r, i) => (
-                    <tr key={i} className="border-b border-white/[0.06] last:border-0">
-                      <td className="px-4 py-2 text-white">{r.rep}</td>
-                      <td className="px-4 py-2 text-right font-mono text-white/70">{fmtMoney(r.revenue)}</td>
+                    <tr key={i} className="border-b border-line last:border-0">
+                      <td className="px-4 py-2 text-ink">{r.rep}</td>
+                      <td className="px-4 py-2 text-right font-mono text-muted">{fmtMoney(r.revenue)}</td>
                       <td className="px-4 py-2 text-right font-mono font-semibold text-navy">{fmtMoney(r.commission)}</td>
-                      <td className="px-4 py-2 text-right font-mono text-white/50">{r.effRate.toFixed(1)}%</td>
+                      <td className="px-4 py-2 text-right font-mono text-faint">{r.effRate.toFixed(1)}%</td>
                       {quota != null && (
-                        <td className={`px-4 py-2 text-right font-mono ${(r.attainment ?? 0) >= 100 ? "text-emerald-600" : "text-white/50"}`}>
+                        <td className={`px-4 py-2 text-right font-mono ${(r.attainment ?? 0) >= 100 ? "text-emerald-600" : "text-faint"}`}>
                           {r.attainment != null ? `${r.attainment.toFixed(0)}%` : "—"}
                         </td>
                       )}

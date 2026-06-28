@@ -1,0 +1,347 @@
+/* ============================================================================
+   NEX-ERA DESIGN SYSTEM — DESIGN TOKENS  (Warm-White "Command Center")
+   ----------------------------------------------------------------------------
+   The single source of truth for the Nex-Era visual language: a premium, warm,
+   friendly AI Operating System — cream/warm-white surfaces, off-white cards,
+   orange/coral accent, soft floating shadows. Tokens are layered:
+
+     1. PRIMITIVES  — raw values (color ramps, blur, spacing). Never used in UI.
+     2. SEMANTIC    — meaning-bearing aliases (surface, accent, text). Use these.
+     3. COMPONENT   — per-component knobs that read semantics.
+
+   Scoped to `.nex`. Mirrors the global warm palette in app/globals.css so any
+   `.nex` surface (DS components, investments, landing, design-system) matches the
+   rest of the app. Wrap a surface in <div className="nex nex-canvas"> … </div>.
+   ========================================================================== */
+
+.nex {
+  /* ---------------------------------------------------------------------- *
+   * 1. PRIMITIVES — raw scales. Do not consume directly in components.
+   * ---------------------------------------------------------------------- */
+
+  /* Warm neutral scale — cream → off-white → warm hairlines. */
+  --nex-space-1000: #f1e9dd; /* deepest sunken */
+  --nex-space-950:  #fbf8f4; /* base canvas */
+  --nex-space-900:  #fffdfb; /* raised */
+  --nex-space-850:  #f6f1ea; /* sunken panel */
+  --nex-space-800:  #ffffff; /* card body */
+  --nex-space-700:  #f6f1ea; /* sunken raised */
+  --nex-space-600:  #efe7dd; /* hairline-strong */
+  --nex-space-500:  #e2d6c8; /* border / scrollbar */
+
+  /* Data-viz hues (kept multi-hue for charts & model intents). */
+  --nex-purple-300: #c4b5fd;
+  --nex-purple-400: #a78bfa;
+  --nex-purple-500: #8b5cf6;
+  --nex-purple-600: #7c3aed;
+  --nex-purple-700: #6d28d9;
+
+  --nex-blue-300: #93c5fd;
+  --nex-blue-400: #60a5fa;
+  --nex-blue-500: #3b82f6;
+  --nex-blue-600: #2563eb;
+  --nex-blue-700: #1d4ed8;
+
+  --nex-cyan-300: #67e8f9;
+  --nex-cyan-400: #22d3ee;
+  --nex-cyan-500: #06b6d4;
+  --nex-cyan-600: #0891b2;
+
+  /* Warm accent ramp — orange → coral. */
+  --nex-orange-300: #ffb866;
+  --nex-orange-400: #fb8c6a;
+  --nex-orange-500: #f2761c;
+  --nex-orange-600: #e0670f;
+
+  /* Functional hues. */
+  --nex-green-400: #16a34a;
+  --nex-amber-400: #f59e0b;
+  --nex-rose-400:  #ef4444;
+
+  /* Warm inks / greys for text. */
+  --nex-white:    #2b2118;
+  --nex-grey-100: #3a2e22;
+  --nex-grey-300: #8a7e72;
+  --nex-grey-500: #b4a99b;
+  --nex-grey-700: #cdbca8;
+
+  /* ---------------------------------------------------------------------- *
+   * 2. SEMANTIC — what components actually consume.
+   * ---------------------------------------------------------------------- */
+
+  /* Backgrounds. */
+  --nex-bg:            var(--nex-space-950);
+  --nex-bg-raised:     var(--nex-space-900);
+  --nex-bg-sunken:     var(--nex-space-850);
+
+  /* Surfaces — near-white, soft. */
+  --nex-glass:         rgba(255, 255, 255, 0.72);
+  --nex-glass-strong:  rgba(255, 255, 255, 0.92);
+  --nex-glass-faint:   rgba(246, 241, 234, 0.6);
+  --nex-glass-hover:   rgba(246, 241, 234, 0.92);
+
+  /* Borders / hairlines — soft warm edges. */
+  --nex-border:        rgba(70, 50, 30, 0.08);
+  --nex-border-strong: rgba(70, 50, 30, 0.16);
+  --nex-border-glow:   rgba(242, 118, 28, 0.5);
+
+  /* Text. */
+  --nex-text:          var(--nex-white);
+  --nex-text-muted:    var(--nex-grey-300);
+  --nex-text-faint:    var(--nex-grey-500);
+  --nex-text-disabled: var(--nex-grey-700);
+
+  /* Accents — orange primary, blue/cyan kept for data. */
+  --nex-accent:           var(--nex-orange-500);
+  --nex-accent-2:         var(--nex-blue-500);
+  --nex-accent-3:         var(--nex-cyan-400);
+  --nex-accent-contrast:  #ffffff;
+
+  /* Signature gradient — orange → coral. */
+  --nex-gradient:        linear-gradient(120deg, #f2761c 0%, #fb8c6a 100%);
+  --nex-gradient-soft:   linear-gradient(120deg, rgba(242,118,28,0.12) 0%, rgba(251,140,106,0.10) 100%);
+  --nex-gradient-text:   linear-gradient(120deg, #f2761c 0%, #fb8c6a 100%);
+
+  /* Status. */
+  --nex-success: var(--nex-green-400);
+  --nex-warning: var(--nex-amber-400);
+  --nex-danger:  var(--nex-rose-400);
+  --nex-info:    var(--nex-blue-500);
+
+  /* ---- Radii — generous, rounded, premium. ---- */
+  --nex-radius-xs:  8px;
+  --nex-radius-sm:  10px;
+  --nex-radius-md:  14px;
+  --nex-radius-lg:  18px;
+  --nex-radius-xl:  22px;
+  --nex-radius-2xl: 28px;
+  --nex-radius-pill: 999px;
+
+  /* ---- Spacing scale (4px base). ---- */
+  --nex-space-0: 0;
+  --nex-space-1: 4px;
+  --nex-space-2: 8px;
+  --nex-space-3: 12px;
+  --nex-space-4: 16px;
+  --nex-space-5: 20px;
+  --nex-space-6: 24px;
+  --nex-space-8: 32px;
+  --nex-space-10: 40px;
+  --nex-space-12: 48px;
+  --nex-space-16: 64px;
+  --nex-space-20: 80px;
+  --nex-space-24: 96px;
+
+  /* ---- Blur. ---- */
+  --nex-blur-sm: 8px;
+  --nex-blur-md: 18px;
+  --nex-blur-lg: 32px;
+  --nex-blur-xl: 56px;
+
+  /* ---- Elevation — warm soft floating shadows, never raw black. ---- */
+  --nex-shadow-sm:  0 1px 2px rgba(60,40,20,0.04), 0 8px 20px -12px rgba(60,40,20,0.10);
+  --nex-shadow-md:  0 1px 2px rgba(60,40,20,0.05), 0 12px 32px -16px rgba(60,40,20,0.14);
+  --nex-shadow-lg:  0 2px 6px rgba(60,40,20,0.06), 0 26px 56px -20px rgba(60,40,20,0.20);
+  --nex-shadow-float: 0 30px 70px -30px rgba(60,40,20,0.24), 0 0 0 1px rgba(70,50,30,0.04) inset;
+
+  /* Soft warm glows for focus/hover/active. */
+  --nex-glow-purple: 0 0 32px -10px rgba(139,92,246,0.35);
+  --nex-glow-blue:   0 0 32px -10px rgba(59,130,246,0.35);
+  --nex-glow-cyan:   0 0 32px -10px rgba(34,211,238,0.35);
+  --nex-glow-focus:  0 0 0 1px rgba(242,118,28,0.5), 0 0 0 4px rgba(242,118,28,0.15);
+
+  /* ---- Motion. ---- */
+  --nex-ease:        cubic-bezier(0.22, 1, 0.36, 1);
+  --nex-ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --nex-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --nex-dur-fast:   140ms;
+  --nex-dur-base:   240ms;
+  --nex-dur-slow:   420ms;
+  --nex-dur-cine:   720ms;
+
+  /* ---- Typography (display = Poppins, body = Geist). ---- */
+  --nex-font-display: var(--font-display, var(--font-geist-sans));
+  --nex-font-sans:    var(--font-geist-sans);
+  --nex-font-mono:    var(--font-geist-mono);
+
+  --nex-text-xs:   0.75rem;
+  --nex-text-sm:   0.875rem;
+  --nex-text-base: 1rem;
+  --nex-text-lg:   1.125rem;
+  --nex-text-xl:   1.375rem;
+  --nex-text-2xl:  1.75rem;
+  --nex-text-3xl:  2.25rem;
+  --nex-text-4xl:  3rem;
+  --nex-text-5xl:  3.75rem;
+  --nex-text-6xl:  4.75rem;
+
+  /* z-index ladder */
+  --nex-z-base: 0;
+  --nex-z-sticky: 100;
+  --nex-z-sidebar: 200;
+  --nex-z-dropdown: 300;
+  --nex-z-overlay: 400;
+  --nex-z-modal: 500;
+  --nex-z-toast: 600;
+
+  /* Defaults applied to the scope. */
+  color: var(--nex-text);
+  font-family: var(--nex-font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  color-scheme: light;
+}
+
+/* ============================================================================
+   WARM CANVAS — the soft sunrise backdrop. Apply `.nex-canvas` alongside `.nex`
+   on a full-height container to get the layered cream + peach wash + faint grid.
+   ========================================================================== */
+.nex-canvas {
+  position: relative;
+  min-height: 100%;
+  background-color: var(--nex-bg);
+  background-image:
+    radial-gradient(1000px 520px at 88% -12%, rgba(255, 196, 140, 0.30), transparent 62%),
+    radial-gradient(900px 600px at 8% 4%, rgba(255, 224, 198, 0.28), transparent 60%),
+    radial-gradient(circle at 50% 50%, var(--nex-bg-raised), var(--nex-bg) 120%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+/* Faint warm engineering grid overlay. */
+.nex-canvas::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(70, 50, 30, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(70, 50, 30, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 30%, #000 0%, transparent 80%);
+  z-index: 0;
+}
+.nex-canvas > * { position: relative; z-index: 1; }
+
+/* ============================================================================
+   PRIMITIVE UTILITIES (CSS, dependency-free) — consumed by components.
+   ========================================================================== */
+/* Glass surface — translucent body + blur + soft hairline. */
+  .nex-glass {
+    background: var(--nex-glass);
+    backdrop-filter: blur(var(--nex-blur-md)) saturate(120%);
+    -webkit-backdrop-filter: blur(var(--nex-blur-md)) saturate(120%);
+    border: 1px solid var(--nex-border);
+  }
+  .nex-glass-strong {
+    background: var(--nex-glass-strong);
+    backdrop-filter: blur(var(--nex-blur-lg)) saturate(130%);
+    -webkit-backdrop-filter: blur(var(--nex-blur-lg)) saturate(130%);
+    border: 1px solid var(--nex-border-strong);
+  }
+
+  /* Gradient text — orange → coral clipped to glyphs. */
+  .nex-text-gradient {
+    background: var(--nex-gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Hairline gradient ring — luminous animated border for showpiece cards. */
+  .nex-ring {
+    position: relative;
+  }
+  .nex-ring::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--nex-gradient);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity var(--nex-dur-base) var(--nex-ease);
+  }
+  .nex-ring:hover::after { opacity: 0.8; }
+
+  /* Display heading defaults. */
+  .nex-display {
+    font-family: var(--nex-font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+    font-weight: 600;
+  }
+
+/* ============================================================================
+   KEYFRAMES — cinematic motion primitives.
+   ========================================================================== */
+@keyframes nex-aurora {
+  0%   { transform: translate3d(-6%, -3%, 0) scale(1.1) rotate(0deg); }
+  50%  { transform: translate3d(6%, 5%, 0) scale(1.28) rotate(6deg); }
+  100% { transform: translate3d(-6%, -3%, 0) scale(1.1) rotate(0deg); }
+}
+@keyframes nex-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes nex-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes nex-spin { to { transform: rotate(360deg); } }
+@keyframes nex-pulse-ring {
+  0%   { transform: scale(0.7); opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes nex-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.06); }
+}
+@keyframes nex-scan {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  50%  { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+@keyframes nex-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes nex-orbit { from { transform: rotate(0) translateX(var(--r, 60px)) rotate(0); }
+                       to   { transform: rotate(360deg) translateX(var(--r, 60px)) rotate(-360deg); } }
+
+.nex-anim-aurora  { animation: nex-aurora 22s ease-in-out infinite; will-change: transform; }
+.nex-anim-float   { animation: nex-float 6s ease-in-out infinite; }
+.nex-anim-breathe { animation: nex-breathe 3s ease-in-out infinite; }
+
+/* Reduced motion — freeze decorative animation everywhere in scope. */
+@media (prefers-reduced-motion: reduce) {
+  .nex *,
+  .nex *::before,
+  .nex *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Scrollbar — slim, warm. */
+.nex ::-webkit-scrollbar { width: 10px; height: 10px; }
+.nex ::-webkit-scrollbar-track { background: transparent; }
+.nex ::-webkit-scrollbar-thumb {
+  background: var(--nex-space-500);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.nex ::-webkit-scrollbar-thumb:hover { background: var(--nex-space-600); }
+
+/* Selection. */
+.nex ::selection { background: rgba(242, 118, 28, 0.22); color: var(--nex-text); }
+
+/* Focus ring — orange, keyboard only. */
+.nex :focus-visible {
+  outline: none;
+  box-shadow: var(--nex-glow-focus);
+  border-radius: var(--nex-radius-sm);
+}

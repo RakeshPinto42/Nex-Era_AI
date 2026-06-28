@@ -18,7 +18,7 @@ type Workspace = {
 const WORKSPACES: Workspace[] = [
   { name: "Chat Workspace", desc: "Reason across every frontier model in one thread.", href: "/dashboard", cta: "Open Chat", icon: MessagesSquare, accent: "#06b6d4" },
   { name: "Code Workspace", desc: "Plan, write, test and ship features with an autonomous coder.", href: "/workspace/code", cta: "Open Code", icon: Code2, accent: "#3b82f6" },
-  { name: "Ledger", desc: "Commercial finance tools for pricing, forecasting, commissions and reporting.", href: "/ledger", cta: "Open Ledger", icon: LineChart, accent: "#8b5cf6" },
+  { name: "Finance OS", desc: "Commercial finance tools for pricing, forecasting, commissions and reporting.", href: "/ledger", cta: "Open Finance OS", icon: LineChart, accent: "#8b5cf6" },
   { name: "Agents", desc: "Autonomous workers orchestrated by the NEXERA Router.", href: "/dashboard/agents", cta: "Open Agents", icon: Bot, accent: "#8b5cf6" },
 ];
 

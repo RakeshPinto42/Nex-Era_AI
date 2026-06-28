@@ -71,9 +71,17 @@ export default function ChatInterface() {
   const [folderErr, setFolderErr] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/workspace/root")
+    // Workspace folder tools are admin-only (server filesystem). Probe only for
+    // admins so guests don't trigger a 403 on /api/workspace/root.
+    fetch("/api/auth/me")
       .then((r) => r.json())
-      .then((d) => d.root && setFolderRoot(d.root))
+      .then((d) => {
+        if (d.user?.role !== "admin") return;
+        fetch("/api/workspace/root")
+          .then((r) => r.json())
+          .then((w) => w.root && setFolderRoot(w.root))
+          .catch(() => {});
+      })
       .catch(() => {});
   }, []);
 
@@ -395,14 +403,14 @@ export default function ChatInterface() {
                     className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs ${
                       a.status === "error"
                         ? "border-[#ff8a8a]/40 bg-[#ff8a8a]/10 text-[#ff8a8a]"
-                        : "border-white/10 bg-white/[0.05] text-white/70"
+                        : "border-line bg-surface-2 text-muted"
                     }`}
                   >
-                    <span className="text-white/45">
+                    <span className="text-faint">
                       {a.status === "parsing" ? "◌" : a.status === "error" ? "✕" : "▣"}
                     </span>
                     {a.name}
-                    <span className="text-white/35">
+                    <span className="text-faint">
                       {a.status === "parsing"
                         ? "parsing…"
                         : a.status === "error"
@@ -415,7 +423,7 @@ export default function ChatInterface() {
                       onClick={() =>
                         setAttachments((arr) => arr.filter((x) => x.id !== a.id))
                       }
-                      className="text-white/40 hover:text-white"
+                      className="text-faint hover:text-ink"
                     >
                       ×
                     </button>
@@ -427,12 +435,12 @@ export default function ChatInterface() {
 
           {/* mode switch: NEXERA Chat · NEXERA Code · NEXERA Workspace */}
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <div className="flex rounded-lg border border-white/10 bg-white/[0.04] p-0.5">
+            <div className="flex rounded-lg border border-line bg-surface-2 p-0.5">
               <button
                 type="button"
                 onClick={() => setMode("chat")}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  mode === "chat" ? "bg-white/10 text-white" : "text-white/55 hover:text-white"
+                  mode === "chat" ? "bg-surface-3 text-ink" : "text-muted hover:text-ink"
                 }`}
               >
                 NEXERA Chat
@@ -441,7 +449,7 @@ export default function ChatInterface() {
                 type="button"
                 onClick={() => setMode("code")}
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  mode === "code" ? "bg-white/10 text-white" : "text-white/55 hover:text-white"
+                  mode === "code" ? "bg-surface-3 text-ink" : "text-muted hover:text-ink"
                 }`}
               >
                 NEXERA Code
@@ -449,7 +457,7 @@ export default function ChatInterface() {
             </div>
             <a
               href="/workspace/code"
-              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/50 hover:text-white"
+              className="rounded-lg border border-line px-3 py-1.5 text-xs text-faint hover:text-ink"
               title="Full code workspace with file tree"
             >
               NEXERA Workspace ↗
@@ -463,7 +471,7 @@ export default function ChatInterface() {
                 <button
                   type="button"
                   onClick={() => setFolderRoot(null)}
-                  className="text-white/40 hover:text-white"
+                  className="text-faint hover:text-ink"
                   title="Close folder"
                 >
                   ×
@@ -480,7 +488,7 @@ export default function ChatInterface() {
                 onChange={(e) => setFolderInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), openFolder())}
                 placeholder="Paste a folder path to edit  (e.g. D:\\Projects\\my-app)"
-                className="min-w-[240px] flex-1 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-xs text-white placeholder:text-white/35 outline-none focus:border-brand/40"
+                className="min-w-[240px] flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-xs text-ink placeholder:text-faint outline-none focus:border-brand/40"
               />
               <button
                 type="button"
@@ -496,7 +504,7 @@ export default function ChatInterface() {
 
           <form
             onSubmit={onSubmit}
-            className="rounded-2xl border border-white/[0.10] bg-white/[0.04] p-2 transition-all focus-within:border-brand/40 focus-within:bg-white/[0.06] focus-within:ring-4 focus-within:ring-brand/10"
+            className="rounded-2xl border border-line bg-surface-2 p-2 transition-all focus-within:border-brand/40 focus-within:bg-surface-2 focus-within:ring-4 focus-within:ring-brand/10"
           >
             <textarea
               value={input}
@@ -518,14 +526,14 @@ export default function ChatInterface() {
                     : "Open a folder above, then describe the change…"
                   : "Ask, build, analyze, automate…"
               }
-              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[16px] text-white placeholder:text-white/35 outline-none"
+              className="max-h-40 w-full resize-none bg-transparent px-3 py-2 text-[16px] text-ink placeholder:text-faint outline-none"
             />
             <div className="flex items-center justify-between px-1 pt-1">
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-faint transition-colors hover:bg-surface-2 hover:text-ink"
                   aria-label="Attach files"
                   title="Attach files"
                 >
@@ -541,7 +549,7 @@ export default function ChatInterface() {
                   accept=".pdf,.docx,.xlsx,.xls,.csv,.tsv,.txt,.md,.json,.xml,.yaml,.yml,.html,.js,.jsx,.ts,.tsx,.py,.java,.c,.cpp,.cs,.go,.rs,.rb,.php,.sql,.css"
                   onChange={(e) => onFiles(e.target.files)}
                 />
-                <span className="font-mono text-[11px] text-white/35">
+                <span className="font-mono text-[11px] text-faint">
                   {autoRoute ? "✦ Auto-route" : model}
                 </span>
               </div>
@@ -550,7 +558,7 @@ export default function ChatInterface() {
                   type="button"
                   onClick={stop}
                   aria-label="Stop generating"
-                  className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 text-white transition-all hover:scale-105 hover:bg-white/25"
+                  className="grid h-8 w-8 place-items-center rounded-lg bg-white/15 text-ink transition-all hover:scale-105 hover:bg-surface-2"
                 >
                   <span className="h-3 w-3 rounded-[3px] bg-white" aria-hidden="true" />
                 </button>
@@ -570,7 +578,7 @@ export default function ChatInterface() {
               )}
             </div>
           </form>
-          <p className="mt-2 text-center text-[11px] text-white/30">
+          <p className="mt-2 text-center text-[11px] text-faint">
             NEXERA can make mistakes. Verify critical financial outputs.
           </p>
         </div>
@@ -595,7 +603,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="mt-7 text-3xl font-bold tracking-tight text-white sm:text-4xl"
+        className="mt-7 text-3xl font-bold tracking-tight text-ink sm:text-4xl"
       >
         One Interface.{" "}
         <span className="text-gradient-emerald">Infinite Models.</span>
@@ -604,7 +612,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.18, duration: 0.5 }}
-        className="mt-3 max-w-md text-[16px] leading-relaxed text-white/55"
+        className="mt-3 max-w-md text-[16px] leading-relaxed text-muted"
       >
         Chat, code, research, generate media and automate workflows through
         decentralized intelligence.
@@ -614,7 +622,7 @@ function EmptyState({ onPick }: { onPick: (s: string) => void }) {
           <button
             key={s}
             onClick={() => onPick(s)}
-            className="group rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-left text-[16px] text-white/80 transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:bg-white/[0.05]"
+            className="group rounded-xl border border-line bg-surface-2 px-4 py-3 text-left text-[16px] text-ink transition-all hover:-translate-y-0.5 hover:border-brand/30 hover:bg-surface-2"
           >
             {s}
           </button>
@@ -629,7 +637,7 @@ function MessageRow({ message }: { message: Message }) {
   const attachments = message.attachments?.map((a, i) => (
     <span
       key={i}
-      className="mb-2 mr-2 inline-flex items-center gap-1.5 rounded-md bg-white/10 px-2 py-1 font-mono text-xs text-white/70"
+      className="mb-2 mr-2 inline-flex items-center gap-1.5 rounded-md bg-surface-3 px-2 py-1 font-mono text-xs text-muted"
     >
       ▣ {a.name}
     </span>
@@ -645,7 +653,7 @@ function MessageRow({ message }: { message: Message }) {
         transition={{ duration: 0.3 }}
         className="flex justify-end"
       >
-        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-white/[0.08] px-4 py-2.5 text-[16px] leading-relaxed text-white">
+        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-surface-3 px-4 py-2.5 text-[16px] leading-relaxed text-ink">
           {attachments}
           <Content text={message.content} streaming={message.streaming} />
         </div>
@@ -677,7 +685,7 @@ function MessageRow({ message }: { message: Message }) {
       <div className="min-w-0 max-w-[85%]">
         {message.model && (
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="text-sm font-medium text-white">{message.model}</span>
+            <span className="text-sm font-medium text-ink">{message.model}</span>
             {it && (
               <span
                 className="rounded-full px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider"
@@ -688,7 +696,7 @@ function MessageRow({ message }: { message: Message }) {
             )}
           </div>
         )}
-        <div className="rounded-2xl rounded-tl-md border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[16px] leading-relaxed text-white/90">
+        <div className="rounded-2xl rounded-tl-md border border-line bg-surface-2 px-4 py-3 text-[16px] leading-relaxed text-ink">
           {attachments}
           {message.streaming && !message.content ? (
             <ThinkingDots />
@@ -741,7 +749,7 @@ function CopyButton({ text }: { text: string }) {
     <button
       onClick={copy}
       aria-label="Copy response"
-      className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+      className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-faint transition-colors hover:bg-surface-2 hover:text-ink"
     >
       {copied ? (
         <>
@@ -884,9 +892,9 @@ function parseBlocks(text: string): Block[] {
 }
 
 const HEAD_CLS: Record<number, string> = {
-  1: "mt-3 mb-1.5 text-lg font-semibold text-white first:mt-0",
-  2: "mt-3 mb-1.5 text-base font-semibold text-white first:mt-0",
-  3: "mt-2.5 mb-1 text-[16px] font-semibold text-white first:mt-0",
+  1: "mt-3 mb-1.5 text-lg font-semibold text-ink first:mt-0",
+  2: "mt-3 mb-1.5 text-base font-semibold text-ink first:mt-0",
+  3: "mt-2.5 mb-1 text-[16px] font-semibold text-ink first:mt-0",
 };
 
 function MarkdownBlocks({ text }: { text: string }) {
@@ -905,7 +913,7 @@ function MarkdownBlocks({ text }: { text: string }) {
           return (
             <blockquote
               key={i}
-              className="my-2 border-l-2 border-brand/40 pl-3 text-white/70 [&_p]:my-0"
+              className="my-2 border-l-2 border-brand/40 pl-3 text-muted [&_p]:my-0"
             >
               <MarkdownBlocks text={b.text} />
             </blockquote>
@@ -937,7 +945,7 @@ function MarkdownBlocks({ text }: { text: string }) {
                     {b.head.map((c, j) => (
                       <th
                         key={j}
-                        className="border border-white/10 bg-white/[0.04] px-3 py-1.5 text-left font-semibold text-white"
+                        className="border border-line bg-surface-2 px-3 py-1.5 text-left font-semibold text-ink"
                       >
                         {renderInline(c)}
                       </th>
@@ -950,7 +958,7 @@ function MarkdownBlocks({ text }: { text: string }) {
                       {row.map((c, j) => (
                         <td
                           key={j}
-                          className="border border-white/10 px-3 py-1.5 align-top text-white/85"
+                          className="border border-line px-3 py-1.5 align-top text-ink"
                         >
                           {renderInline(c)}
                         </td>
@@ -979,7 +987,7 @@ function renderInline(text: string) {
     .map((seg, i) => {
       if (seg.startsWith("**") && seg.endsWith("**")) {
         return (
-          <strong key={i} className="font-semibold text-white">
+          <strong key={i} className="font-semibold text-ink">
             {seg.slice(2, -2)}
           </strong>
         );
@@ -988,7 +996,7 @@ function renderInline(text: string) {
         return (
           <code
             key={i}
-            className="rounded bg-white/[0.08] px-1 py-0.5 font-mono text-[0.85em] text-white"
+            className="rounded bg-surface-3 px-1 py-0.5 font-mono text-[0.85em] text-ink"
           >
             {seg.slice(1, -1)}
           </code>
