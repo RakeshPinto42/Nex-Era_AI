@@ -79,14 +79,25 @@ const yahoo: Provider = {
     if (!q) return null;
     const f = funds.get(ticker);
     const c = q.closes;
+
+    // Dividend: prefer per-share rate / price; else use Yahoo yield (normalize fraction→pct).
+    const perShare = f?.divRate ?? 0;
+    let yieldPct = 0;
+    if (perShare > 0 && q.price > 0) yieldPct = +((perShare / q.price) * 100).toFixed(2);
+    else if (f?.divYield != null) yieldPct = +(f.divYield < 1 ? f.divYield * 100 : f.divYield).toFixed(2);
+
     return {
       ticker,
       company: ticker,
       exchange: q.currency === "INR" ? "NSE" : "—",
+      country: q.currency === "INR" ? "India" : "United States",
       currency: q.currency,
       price: q.price,
       changePct: q.d24 ?? 0,
       marketCap: f?.mcap ?? 0,
+      sharesOutstanding: f?.shares,
+      beta: f?.beta,
+      avgVolume: f?.avgVol,
       valuation: { peRatio: f?.pe ?? 0 },
       financials: {},
       growth: {},
@@ -98,6 +109,10 @@ const yahoo: Provider = {
         low52w: +Math.min(...c).toFixed(2),
       },
       earnings: { lastEps: f?.eps ?? 0 },
+      dividend: yieldPct > 0 || perShare > 0 ? { perShare, yieldPct, frequency: perShare > 0 ? "Quarterly" : "None", exDate: null } : undefined,
+      priceHistory: c.length
+        ? { "1D": c.slice(-2), "1W": c.slice(-5), "1M": c.slice(-21), "3M": c.slice(-63), "6M": c.slice(-126), "1Y": c }
+        : undefined,
       dataPoints: c.length,
     };
   },
@@ -145,10 +160,12 @@ const coingecko: Provider = {
       exchange: "Crypto",
       sector: "Crypto",
       industry: "Digital Asset",
+      country: "Global",
       currency: "USD",
       price: r.current_price,
       changePct: r.price_change_percentage_24h ?? 0,
       marketCap: r.market_cap ?? 0,
+      priceHistory: c.length ? { "1W": c } : undefined,
       technicals: c.length
         ? { sma50: sma(c, 50), sma200: sma(c, c.length), rsi14: rsi(c, 14), high52w: +Math.max(...c).toFixed(2), low52w: +Math.min(...c).toFixed(2) }
         : undefined,

@@ -89,6 +89,17 @@ function finalize(p: ProviderPartial, ticker: string, kind: AssetKind, used: str
     dataPoints: p.dataPoints ?? 0,
     isMock: false,
     provider: used.join("+") || "none",
+    // canonical schema extensions (optional, pass-through when a provider set them)
+    country: p.country ?? (kind === "crypto" ? "Global" : undefined),
+    enterpriseValue: p.enterpriseValue,
+    sharesOutstanding: p.sharesOutstanding,
+    floatShares: p.floatShares,
+    beta: p.beta,
+    avgVolume: p.avgVolume,
+    dividend: p.dividend,
+    splitHistory: p.splitHistory,
+    priceHistory: p.priceHistory,
+    events: p.events,
   };
 }
 

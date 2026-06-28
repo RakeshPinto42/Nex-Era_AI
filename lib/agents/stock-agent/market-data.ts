@@ -48,6 +48,39 @@ export type NormalizedMarketData = {
   isMock: boolean;
   /** Provider(s) that supplied the data (set by the Market Intelligence Tool). */
   provider?: string;
+
+  // ---- Canonical schema extensions (all OPTIONAL — backward compatible) ----
+
+  /** Classification — country added; sector/industry/exchange/currency already above. */
+  country?: string;
+
+  /** Extended fundamentals (marketCap already above). */
+  enterpriseValue?: number;
+  sharesOutstanding?: number;
+  floatShares?: number;
+  beta?: number;
+  avgVolume?: number;
+
+  /** Corporate actions. */
+  dividend?: {
+    perShare: number;
+    yieldPct: number;
+    frequency: string;
+    exDate: string | null;
+  };
+  splitHistory?: { date: string; ratio: string }[];
+
+  /** Price history (closes) per range — only ranges available are populated. */
+  priceHistory?: Partial<
+    Record<"intraday" | "1D" | "1W" | "1M" | "3M" | "6M" | "1Y" | "5Y", number[]>
+  >;
+
+  /** Events (future-ready). earnings.nextDate above mirrors earningsDate. */
+  events?: {
+    earningsDate: string | null;
+    exDividendDate: string | null;
+    economic: { date: string; title: string }[];
+  };
 };
 
 /** The tool interface the Stock Agent depends on (mock today, real later). */
@@ -152,6 +185,19 @@ export const mockMarketIntelligenceTool: MarketIntelligenceTool = {
       dataPoints: 24,
       isMock: true,
       provider: "mock",
+      country: meta.exchange === "NSE" || meta.exchange === "BSE" ? "India" : "United States",
+      enterpriseValue: Math.round(between(r, 5, 3200) * 1e9),
+      sharesOutstanding: Math.round(between(r, 0.1, 16) * 1e9),
+      floatShares: Math.round(between(r, 0.1, 15) * 1e9),
+      beta: between(r, 0.4, 2.2),
+      avgVolume: Math.round(between(r, 1, 80) * 1e6),
+      dividend: { perShare: between(r, 0, 4), yieldPct: between(r, 0, 4), frequency: "Quarterly", exDate: null },
+      splitHistory: [],
+      priceHistory: (() => {
+        const series = Array.from({ length: 252 }, () => +(price * between(r, 0.7, 1.3, 4)).toFixed(2));
+        return { "1D": series.slice(-2), "1W": series.slice(-5), "1M": series.slice(-21), "3M": series.slice(-63), "6M": series.slice(-126), "1Y": series };
+      })(),
+      events: { earningsDate: null, exDividendDate: null, economic: [] },
     };
   },
 };

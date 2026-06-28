@@ -65,7 +65,10 @@ type SparkResp = Record<string, { close?: (number | null)[]; chartPreviousClose?
 
 // ---- fundamentals (P/E, dividend yield, market cap…) via crumb-authed v7 quote ----
 
-export type Fundamental = { pe?: number; pb?: number; mcap?: number; divYield?: number; eps?: number; fwdPe?: number; epsFwd?: number };
+export type Fundamental = {
+  pe?: number; pb?: number; mcap?: number; divYield?: number; eps?: number; fwdPe?: number; epsFwd?: number;
+  beta?: number; shares?: number; avgVol?: number; divRate?: number;
+};
 
 const num = (v: unknown): number | undefined =>
   typeof v === "number" && Number.isFinite(v) ? v : undefined;
@@ -107,8 +110,13 @@ type QuoteResult = {
   priceToBook?: number;
   marketCap?: number;
   dividendYield?: number;
+  trailingAnnualDividendYield?: number;
+  trailingAnnualDividendRate?: number;
   epsTrailingTwelveMonths?: number;
   epsForward?: number;
+  beta?: number;
+  sharesOutstanding?: number;
+  averageDailyVolume3Month?: number;
 };
 
 export async function fetchFundamentals(symbols: string[], chunkSize = 50): Promise<Map<string, Fundamental>> {
@@ -132,10 +140,14 @@ export async function fetchFundamentals(symbols: string[], chunkSize = 50): Prom
             pe: num(q.trailingPE),
             pb: num(q.priceToBook),
             mcap: num(q.marketCap),
-            divYield: num(q.dividendYield),
+            divYield: num(q.dividendYield) ?? num(q.trailingAnnualDividendYield),
             eps: num(q.epsTrailingTwelveMonths),
             fwdPe: num(q.forwardPE),
             epsFwd: num(q.epsForward),
+            beta: num(q.beta),
+            shares: num(q.sharesOutstanding),
+            avgVol: num(q.averageDailyVolume3Month),
+            divRate: num(q.trailingAnnualDividendRate),
           });
         }
       } catch {

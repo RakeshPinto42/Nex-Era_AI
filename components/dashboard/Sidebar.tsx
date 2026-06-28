@@ -36,8 +36,15 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
   {
     label: "Markets",
     items: [
-      { label: "Investments", href: "/dashboard/investments", icon: IconInvest },
+      { label: "Investment Hub", href: "/dashboard/investments/overview", icon: IconInvest },
+      { label: "Markets", href: "/dashboard/investments", icon: IconInvest },
+      { label: "Live Terminal", href: "/dashboard/investments/terminal", icon: IconInvest },
+      { label: "Market Scanner", href: "/dashboard/investments/scanner", icon: IconInvest },
+      { label: "Opportunity Engine", href: "/dashboard/investments/opportunities", icon: IconInvest },
+      { label: "Consensus", href: "/dashboard/investments/consensus", icon: IconInvest },
+      { label: "Portfolio Intelligence", href: "/dashboard/investments/portfolio", icon: IconInvest },
       { label: "Strategy Center", href: "/dashboard/investments/strategy", icon: IconInvest },
+      { label: "Broker Center", href: "/dashboard/investments/broker", icon: IconInvest },
     ],
   },
   {

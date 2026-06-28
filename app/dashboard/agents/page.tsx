@@ -48,6 +48,7 @@ const AGENT_CONSOLES: Record<string, string> = {
   finance: "/dashboard/agents/finance",
   commentary: "/dashboard/agents/commentary",
   market: "/dashboard/agents/stock",
+  scanner: "/dashboard/investments/scanner",
 };
 
 export default function MissionControlPage() {
