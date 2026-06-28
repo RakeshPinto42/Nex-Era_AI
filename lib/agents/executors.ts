@@ -9,10 +9,12 @@
 import type { AgentExecutor } from "./executor";
 import { fileAgentExecutor } from "./file-agent/executor";
 import { financeAgentExecutor } from "./finance-agent/executor";
+import { commentaryAgentExecutor } from "./commentary-agent/executor";
 
 const EXECUTORS: Record<string, AgentExecutor> = {
   file: fileAgentExecutor,
   finance: financeAgentExecutor,
+  commentary: commentaryAgentExecutor,
 };
 
 export function getExecutor(agentId: string | null | undefined): AgentExecutor | undefined {

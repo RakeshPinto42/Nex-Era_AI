@@ -46,6 +46,7 @@ type Filter = "all" | AgentCategory;
 const AGENT_CONSOLES: Record<string, string> = {
   file: "/dashboard/agents/file",
   finance: "/dashboard/agents/finance",
+  commentary: "/dashboard/agents/commentary",
 };
 
 export default function MissionControlPage() {
