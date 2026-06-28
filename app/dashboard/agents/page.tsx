@@ -10,6 +10,7 @@
    ========================================================================== */
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import PageShell, { GridReveal, Reveal } from "@/components/dashboard/PageShell";
 import {
   AGENT_REGISTRY,
@@ -361,6 +362,16 @@ function AgentCard({
           </span>
         ))}
       </div>
+
+      {/* implemented agents expose a console link */}
+      {agent.id === "file" && (
+        <Link
+          href="/dashboard/agents/file"
+          className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
+        >
+          Open File Agent →
+        </Link>
+      )}
 
       {/* footer: last activity + enable toggle */}
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">

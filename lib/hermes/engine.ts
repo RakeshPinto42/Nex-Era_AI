@@ -37,6 +37,7 @@ type Domain =
   | "learning"
   | "workspace"
   | "documents"
+  | "files"
   | "general";
 
 type StepSpec = {
@@ -62,8 +63,9 @@ const DOMAIN_KEYWORDS: Record<Exclude<Domain, "general">, string[]> = {
   research: ["research", "sources", "cite", "investigate", "summarize", "paper", "find out", "literature"],
   coding: ["code", "refactor", "bug", "implement", "function", "feature", "component", "api", "build app", "debug"],
   learning: ["learn", "tutor", "translate", "german", "japanese", "language", "lesson", "vocabulary", "grammar"],
-  workspace: ["file", "folder", "workspace", "codebase", "repo", "project structure", "directory"],
-  documents: ["document", "pdf", "extract", "parse", "report", "contract", "spreadsheet", "excel"],
+  workspace: ["folder", "workspace", "codebase", "repo", "project structure", "directory"],
+  documents: ["document", "pdf", "report", "contract", "spreadsheet", "excel"],
+  files: ["uploaded file", "understand file", "analyze file", "classify file", "these files", "read the file", "document understanding", "parse the file"],
 };
 
 function classify(goal: string): Domain {
@@ -88,6 +90,7 @@ const DOMAIN_LABEL: Record<Domain, string> = {
   learning: "Language learning",
   workspace: "Workspace operation",
   documents: "Document processing",
+  files: "File understanding",
   general: "General task",
 };
 
@@ -142,6 +145,13 @@ const ANALYZE_BY_DOMAIN: Partial<Record<Domain, StepSpec>> = {
     aiCaps: ["long_context", "structured_output"],
     agentCategory: "Knowledge", agentHints: ["retrieval", "indexing"],
     toolCaps: ["parse_document"], outputs: ["extract"], dependsOn: ["gather"],
+  },
+  files: {
+    key: "analyze", title: "Understand files",
+    description: "Classify uploaded files and prepare structured context.",
+    aiCaps: ["structured_output"],
+    agentCategory: "Workspace", agentHints: ["file-read", "classification"],
+    toolCaps: ["read_file", "parse_document"], outputs: ["file-context"], dependsOn: ["gather"],
   },
 };
 
