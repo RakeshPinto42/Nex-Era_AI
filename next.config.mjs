@@ -10,6 +10,9 @@ const nextConfig = {
     outputFileTracingIncludes: {
       "/api/extract": ["./node_modules/@napi-rs/canvas*/**"],
     },
+    // Runs instrumentation.ts at server startup — used to fail closed when
+    // production credentials/secret are missing or weak.
+    instrumentationHook: true,
   },
 };
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { authenticate } from "@/lib/auth/users";
+import { authenticate, credentialConfigError } from "@/lib/auth/users";
 import {
   createToken,
   SESSION_COOKIE,
@@ -18,6 +18,19 @@ function clientIp(req: Request): string {
 }
 
 export async function POST(req: Request) {
+  // Fail closed BEFORE authenticating: in production, refuse to issue sessions
+  // if credentials violate policy (missing / default / weak / too short), so a
+  // misconfigured deploy can never authenticate with a built-in default.
+  const cfgError = credentialConfigError();
+  if (cfgError) {
+    // Generic to the client; specific (but secret-free) reason to server logs.
+    console.error(`[auth] login disabled: credential policy not satisfied (${cfgError})`);
+    return NextResponse.json(
+      { error: "Server authentication is not configured correctly. Contact the administrator." },
+      { status: 500 },
+    );
+  }
+
   let body: { username?: string; password?: string };
   try {
     body = await req.json();
