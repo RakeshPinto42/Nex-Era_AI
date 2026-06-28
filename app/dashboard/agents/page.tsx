@@ -47,6 +47,7 @@ const AGENT_CONSOLES: Record<string, string> = {
   file: "/dashboard/agents/file",
   finance: "/dashboard/agents/finance",
   commentary: "/dashboard/agents/commentary",
+  market: "/dashboard/agents/stock",
 };
 
 export default function MissionControlPage() {

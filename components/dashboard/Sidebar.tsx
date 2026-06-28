@@ -33,7 +33,13 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
   },
   { label: "Knowledge", items: [{ label: "Research", href: "/dashboard/research", icon: IconResearch }] },
   { label: "Automation", items: [{ label: "Agents", href: "/dashboard/agents", icon: IconAgents }] },
-  { label: "Markets", items: [{ label: "Investments", href: "/dashboard/investments", icon: IconInvest }] },
+  {
+    label: "Markets",
+    items: [
+      { label: "Investments", href: "/dashboard/investments", icon: IconInvest },
+      { label: "Strategy Center", href: "/dashboard/investments/strategy", icon: IconInvest },
+    ],
+  },
   {
     label: "Data",
     items: [
