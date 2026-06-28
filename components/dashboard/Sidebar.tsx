@@ -25,6 +25,7 @@ const SECTIONS: { label: string; items: NavItem[] }[] = [
     items: [
       { label: "AI Studio", href: "/dashboard/studio", icon: IconStudio },
       { label: "Router", href: "/dashboard/router", icon: IconRouter },
+      { label: "Workspace Intel", href: "/dashboard/workspace", icon: IconWorkspace },
       { label: "Workspace", href: "/workspace", icon: IconWorkspace },
       { label: "Code Folder", href: "/workspace/code", icon: IconCode },
       { label: "Finance OS", href: "/ledger", icon: IconFinance },
