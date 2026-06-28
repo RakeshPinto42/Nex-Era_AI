@@ -1,6 +1,7 @@
 import { runScan } from "@/lib/investments/scanner/scan";
 import { MARKET_LABELS, type MarketKey } from "@/lib/investments/scanner/types";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ async function handlePOST(req: Request) {
 
   try {
     const result = await runScan({ markets, holdings: body.holdings });
+    emit({ type: "ScannerFinished", source: "scanner", payload: { candidates: result.status.candidatesFound, scanned: result.status.companiesScanned, markets } });
     return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

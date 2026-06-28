@@ -9,6 +9,7 @@ import {
 } from "@/lib/agents/commentary-agent/types";
 import type { FinanceInsights } from "@/lib/agents/finance-agent/types";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,6 +48,7 @@ async function handlePOST(req: Request) {
 
   try {
     const commentary = await generateCommentary(body.insights, { audience, tone, format });
+    emit({ type: "CommentaryGenerated", source: "commentary", payload: { audience, format, sections: commentary.sections.length } });
     return Response.json({ commentary });
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

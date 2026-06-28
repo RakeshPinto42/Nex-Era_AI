@@ -1,5 +1,6 @@
 import { runConsensus } from "@/lib/investments/consensus/consensus";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +22,7 @@ async function handlePOST(req: Request) {
 
   try {
     const result = await runConsensus(body.ticker.trim(), threshold, body.holdings ?? []);
+    if (!result.gated) emit({ type: "ConsensusUpdated", source: "consensus", payload: { ticker: result.ticker, conviction: result.overallConviction } });
     return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

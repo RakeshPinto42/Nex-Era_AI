@@ -5,6 +5,7 @@
 // workflows). No duplicated storage/indexing/metadata.
 
 import "server-only";
+import { emit } from "@/lib/events/bus";
 import type {
   KnowledgeObject, KnowledgeInput, KnowledgeWriter, Relationship,
   RelationType, KnowledgeType, AIInsight, KnowledgeSearchResult,
@@ -71,6 +72,7 @@ export function upsertKnowledge(writer: string, input: KnowledgeInput): Knowledg
     aiInsights: [...(existing?.aiInsights ?? []), ...(input.aiInsights ?? [])].slice(-50),
   };
   store.set(obj.id, obj);
+  emit({ type: "KnowledgeUpdated", source: writer, payload: { id: obj.id, type: obj.type, title: obj.title } });
   return obj;
 }
 

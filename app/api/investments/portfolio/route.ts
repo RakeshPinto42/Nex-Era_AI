@@ -1,6 +1,7 @@
 import { analyzePortfolio } from "@/lib/investments/portfolio/analyze";
 import type { Holding } from "@/lib/investments/portfolio/types";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,7 +23,9 @@ async function handlePOST(req: Request) {
   if (holdings.length === 0) return Response.json({ error: "No holdings provided" }, { status: 400 });
 
   try {
-    return Response.json(await analyzePortfolio(holdings, body.watchlist ?? []));
+    const result = await analyzePortfolio(holdings, body.watchlist ?? []);
+    emit({ type: "PortfolioImported", source: "portfolio", payload: { holdings: result.holdings.length, value: result.portfolioValue, risk: result.riskScore } });
+    return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });
   }

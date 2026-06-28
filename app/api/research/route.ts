@@ -1,6 +1,7 @@
 import { sessionFromRequest } from "@/lib/auth/session";
 import { tavilySearch } from "@/lib/finance-os/ci/agent/tavily";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -100,6 +101,7 @@ async function handlePOST(req: Request) {
       content: (r.raw_content || r.content || "").slice(0, 6000),
       kind: "web",
     }));
+    emit({ type: "ResearchCompleted", source: "research", payload: { query, sources: sources.length, mode: "web" } });
     return Response.json({ sources });
   } catch (err) {
     return Response.json({ error: (err as Error).message || "Research failed." }, { status: 502 });

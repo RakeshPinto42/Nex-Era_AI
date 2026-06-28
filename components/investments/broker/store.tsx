@@ -43,6 +43,12 @@ export function BrokerStoreProvider({ children }: { children: React.ReactNode })
     if (!adapter || !isConnectable(id)) return "This broker is not connectable yet.";
     const res = await adapter.connect();
     if (!res.ok) return res.error;
+    // Emit to the Event Bus (client-originated). Best-effort.
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "BrokerConnected", source: "broker", payload: { brokerId: id, accountId: res.connection.accountId, type: res.connection.type } }),
+    }).catch(() => {});
     setConnections((prev) => {
       const next = [res.connection, ...prev.filter((c) => c.brokerId !== id)];
       try {

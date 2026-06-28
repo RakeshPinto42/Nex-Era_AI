@@ -1,6 +1,7 @@
 import { analyzeFinance } from "@/lib/agents/finance-agent/analyze";
 import { validateUploadFiles } from "@/lib/upload/validate";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ async function handlePOST(req: Request) {
 
   try {
     const insights = await analyzeFinance(files);
+    emit({ type: "FinancialReportAnalyzed", source: "finance", payload: { sources: insights.sources, mode: insights.mode } });
     return Response.json({ insights });
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });

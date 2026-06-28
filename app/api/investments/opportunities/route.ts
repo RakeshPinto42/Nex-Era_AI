@@ -1,6 +1,7 @@
 import { rankOpportunities } from "@/lib/investments/opportunity/rank";
 import { MARKET_LABELS, type MarketKey } from "@/lib/investments/scanner/types";
 import { withGuard } from "@/lib/security/throttle";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,7 +24,9 @@ async function handlePOST(req: Request) {
   if (markets.length === 0) return Response.json({ error: "Select at least one market" }, { status: 400 });
 
   try {
-    return Response.json(await rankOpportunities(markets));
+    const result = await rankOpportunities(markets);
+    emit({ type: "OpportunityDiscovered", source: "opportunities", payload: { scanned: result.scanned, categories: result.categories.length } });
+    return Response.json(result);
   } catch (e) {
     return Response.json({ error: (e as Error).message }, { status: 500 });
   }

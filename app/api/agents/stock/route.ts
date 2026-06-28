@@ -2,6 +2,7 @@ import { marketIntelligenceTool } from "@/lib/investments/market-intelligence";
 import { analyzeStock } from "@/lib/agents/stock-agent/analyze";
 import { withGuard } from "@/lib/security/throttle";
 import { upsertKnowledge } from "@/lib/knowledge/store";
+import { emit } from "@/lib/events/bus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ async function run(ticker: string) {
     /* knowledge write is best-effort */
   }
 
+  emit({ type: "AgentCompleted", source: "market", payload: { agent: "Investment Intelligence", ticker: data.ticker, confidence: insights.confidence } });
   return { data, insights };
 }
 
