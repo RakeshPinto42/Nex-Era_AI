@@ -1,13 +1,14 @@
 {
   "//": "Self-improvement targets. Each improver agent defines WHAT it improves each cycle. The runner (scripts/self-improve.mjs) iterates these, asks an open-source model for a concrete patch, and opens a PR. Add targets here (or let the Agent Factory append them) to grow the ecosystem.",
+  "//models": "Free OpenRouter open-source pool, ordered BIGGEST → smallest. The runner tries each in turn and only falls to a smaller model when the bigger one is unavailable (429) — best quality first, graceful degradation after.",
   "model": "qwen/qwen3-coder:free",
   "modelFallbacks": [
-    "openai/gpt-oss-120b:free",
-    "openai/gpt-oss-20b:free",
-    "meta-llama/llama-3.3-70b-instruct:free",
-    "nvidia/nemotron-3-super-120b-a12b:free",
     "nousresearch/hermes-3-llama-3.1-405b:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "openai/gpt-oss-120b:free",
     "qwen/qwen3-next-80b-a3b-instruct:free",
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "openai/gpt-oss-20b:free",
     "meta-llama/llama-3.2-3b-instruct:free"
   ],
   "maxFilesPerTarget": 18,
