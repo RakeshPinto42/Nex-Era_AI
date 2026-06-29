@@ -21,6 +21,12 @@ import {
   type ChatMessage as Message,
   type ChatAttachment as Attachment,
 } from "./store";
+import {
+  fsAccessSupported, openFolder as pickDirectory, validatePermissions, scanTree,
+  readFileAt, writeFileAt, deleteFileAt, extractDocAt, DOC_EXT,
+  type FsDirHandle,
+} from "@/lib/code/fsaccess";
+import type { TreeNode } from "@/lib/code/types";
 
 const SUGGESTIONS = [
   "Build a sales commission dashboard",
@@ -28,6 +34,10 @@ const SUGGESTIONS = [
   "Forecast Q4 revenue from my CSV",
   "Summarize this research paper",
 ];
+
+// Text/code files the in-chat coding agent reads as context (binary docs are
+// extracted separately via DOC_EXT). Mirrors the NEX Code workspace list.
+const CODE_TEXT_EXT = new Set(["ts","tsx","js","jsx","mjs","cjs","json","md","txt","csv","py","go","rs","java","cs","html","css","scss","yml","yaml","toml","xml","svg","sql","sh","env","vue","php","rb","c","cpp","h"]);
 
 // Composer attachments carry a transient local id so async extraction results
 // can be matched back to the right chip; the id is dropped before persisting.
@@ -73,6 +83,32 @@ export default function ChatInterface() {
   const [folderInput, setFolderInput] = useState("");
   const [folderErr, setFolderErr] = useState<string | null>(null);
 
+  // Browser-native folder (File System Access API) — the no-paste "Open Folder"
+  // path that works for every user, not just admins. The handle lives in a ref
+  // (not serializable); browserName drives the UI + readiness.
+  const browserRootRef = useRef<FsDirHandle | null>(null);
+  const browserFlatRef = useRef<TreeNode[]>([]);
+  const [browserName, setBrowserName] = useState<string | null>(null);
+  const [fsSupported] = useState(fsAccessSupported);
+
+  const openBrowserFolder = useCallback(async () => {
+    setFolderErr(null);
+    const handle = await pickDirectory();
+    if (!handle) { setFolderErr("No folder selected (or the browser blocked access)."); return; }
+    const st = await validatePermissions(handle);
+    if (st.read === "fail" || st.create === "fail") { setFolderErr(st.error || "Permission denied for this folder."); return; }
+    const scan = await scanTree(handle);
+    browserRootRef.current = handle;
+    browserFlatRef.current = scan.flat;
+    setBrowserName(handle.name);
+  }, []);
+
+  const closeBrowserFolder = useCallback(() => {
+    browserRootRef.current = null;
+    browserFlatRef.current = [];
+    setBrowserName(null);
+  }, []);
+
   useEffect(() => {
     // Workspace folder tools are admin-only (server filesystem). Probe only for
     // admins so guests don't trigger a 403 on /api/workspace/root.
@@ -103,7 +139,7 @@ export default function ChatInterface() {
     setFolderRoot(data.root);
   }, [folderInput]);
 
-  const codeReady = mode === "code" && Boolean(folderRoot);
+  const codeReady = mode === "code" && Boolean(folderRoot || browserName);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -200,7 +236,62 @@ export default function ChatInterface() {
         );
 
       try {
-        if (mode === "code" && folderRoot) {
+        if (mode === "code" && browserRootRef.current) {
+          // NEXERA Code (browser folder) → read project files + any PDF/Word/
+          // Excel docs, plan edits via the AI Router, then write them back to the
+          // user's local folder through the File System Access handle.
+          const root = browserRootRef.current;
+          const flat = browserFlatRef.current;
+          setAgentStatus("running");
+          advanceWorkflow();
+
+          const textFiles = flat
+            .filter((f) => f.ext && CODE_TEXT_EXT.has(f.ext) && (f.size ?? 0) < 30_000)
+            .slice(0, 60);
+          const docFiles = flat
+            .filter((f) => f.ext && DOC_EXT.has(f.ext) && (f.size ?? 0) < 10_000_000)
+            .slice(0, 10);
+
+          const fileCtx: { path: string; content: string }[] = [];
+          for (const f of textFiles) {
+            try { fileCtx.push({ path: f.path, content: await readFileAt(root, f.path) }); } catch { /* skip */ }
+          }
+          for (const f of docFiles) {
+            try {
+              const t = await extractDocAt(root, f.path);
+              if (t.trim()) fileCtx.push({ path: f.path, content: `[Extracted text from ${f.ext?.toUpperCase()} document]\n${t}` });
+            } catch { /* skip unreadable doc */ }
+          }
+
+          const data = await fetch("/api/code/agent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ instruction: trimmed, files: fileCtx }),
+            signal: controller.signal,
+          }).then((r) => r.json());
+
+          if (data.error) {
+            setAi(() => `⚠ ${data.error}`);
+          } else {
+            const planFiles: { path: string; action: string; content: string }[] = data.files ?? [];
+            const deleted: string[] = data.deleted ?? [];
+            for (const pf of planFiles) await writeFileAt(root, pf.path, pf.content);
+            for (const d of deleted) { try { await deleteFileAt(root, d); } catch { /* */ } }
+            // re-scan so a follow-up turn sees the new tree
+            try { browserFlatRef.current = (await scanTree(root)).flat; } catch { /* */ }
+            const lines =
+              [
+                ...planFiles.map((f) => `- \`${f.action}\` ${f.path}`),
+                ...deleted.map((d) => `- \`delete\` ${d}`),
+              ].join("\n") || "_(no file changes)_";
+            setAi(
+              () =>
+                `**${data.summary || "Done."}**\n\nChanged ${planFiles.length + deleted.length} file(s) in \`${root.name}\`:\n${lines}${
+                  data.notes ? `\n\n${data.notes}` : ""
+                }`,
+            );
+          }
+        } else if (mode === "code" && folderRoot) {
           // NEXERA Code → coding agent edits real files, returns a JSON plan.
           const res = await fetch("/api/workspace/agent", {
             method: "POST",
@@ -465,6 +556,22 @@ export default function ChatInterface() {
             >
               NEXERA Workspace ↗
             </a>
+            {mode === "code" && browserName && (
+              <span className="flex items-center gap-2 rounded-lg border border-brand/30 bg-brand/[0.10] px-2.5 py-1.5 text-xs">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                <span className="max-w-[260px] truncate font-mono text-brand">
+                  📂 {browserName}
+                </span>
+                <button
+                  type="button"
+                  onClick={closeBrowserFolder}
+                  className="text-faint hover:text-ink"
+                  title="Close folder"
+                >
+                  ×
+                </button>
+              </span>
+            )}
             {mode === "code" && folderRoot && (
               <span className="flex items-center gap-2 rounded-lg border border-brand/30 bg-brand/[0.10] px-2.5 py-1.5 text-xs">
                 <span className="h-1.5 w-1.5 rounded-full bg-brand" />
@@ -484,23 +591,46 @@ export default function ChatInterface() {
           </div>
 
           {/* folder picker when NEXERA Code has no folder yet */}
-          {mode === "code" && !folderRoot && (
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <input
-                value={folderInput}
-                onChange={(e) => setFolderInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), openFolder())}
-                placeholder="Paste a folder path to edit  (e.g. D:\\Projects\\my-app)"
-                className="min-w-[240px] flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-xs text-ink placeholder:text-faint outline-none focus:border-brand/40"
-              />
-              <button
-                type="button"
-                onClick={openFolder}
-                disabled={!folderInput.trim()}
-                className="rounded-lg bg-navy px-3 py-2 text-xs font-semibold text-white disabled:opacity-30"
-              >
-                Open folder
-              </button>
+          {mode === "code" && !folderRoot && !browserName && (
+            <div className="mb-2 space-y-2">
+              {fsSupported ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={openBrowserFolder}
+                    className="rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white transition-transform hover:scale-[1.03]"
+                  >
+                    📂 Open Folder
+                  </button>
+                  <span className="text-[11px] text-faint">
+                    Native picker · reads code + PDF / Word / Excel, edits locally. Nothing leaves your machine except snippets sent to the model.
+                  </span>
+                </div>
+              ) : (
+                <p className="text-[11px] text-amber-500">
+                  This browser lacks the File System Access API — use Chrome or Edge to open a local folder.
+                </p>
+              )}
+              <details className="text-xs">
+                <summary className="cursor-pointer text-faint hover:text-ink">…or paste a server folder path (admin)</summary>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <input
+                    value={folderInput}
+                    onChange={(e) => setFolderInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), openFolder())}
+                    placeholder="e.g. D:\\Projects\\my-app"
+                    className="min-w-[240px] flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2 font-mono text-xs text-ink placeholder:text-faint outline-none focus:border-brand/40"
+                  />
+                  <button
+                    type="button"
+                    onClick={openFolder}
+                    disabled={!folderInput.trim()}
+                    className="rounded-lg bg-navy px-3 py-2 text-xs font-semibold text-white disabled:opacity-30"
+                  >
+                    Open path
+                  </button>
+                </div>
+              </details>
               {folderErr && <span className="text-xs text-[#ff8a8a]">✕ {folderErr}</span>}
             </div>
           )}

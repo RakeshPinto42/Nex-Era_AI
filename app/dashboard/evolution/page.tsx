@@ -12,19 +12,24 @@
 import { useCallback, useEffect, useState } from "react";
 import PageShell from "@/components/dashboard/PageShell";
 import type { EvolutionReport, DeploymentRecord, ModelRecord, Proposal, RiskLevel } from "@/lib/evolution/types";
+import type { RunEntry } from "@/lib/evolution/runlog";
 
 export default function EvolutionPage() {
   const [report, setReport] = useState<EvolutionReport | null>(null);
   const [deployments, setDeployments] = useState<DeploymentRecord[]>([]);
   const [models, setModels] = useState<ModelRecord[]>([]);
+  const [runs, setRuns] = useState<RunEntry[]>([]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const r = await fetch("/api/evolution").then((x) => x.json());
     setReport(r.report); setDeployments(r.deployments ?? []); setModels(r.models ?? []);
+    try { const l = await fetch("/api/evolution/log").then((x) => x.json()); setRuns(l.runs ?? []); } catch { /* */ }
   }, []);
   useEffect(() => { load(); }, [load]);
+  // Auto-refresh so you watch the agents work without reloading.
+  useEffect(() => { const t = setInterval(load, 15000); return () => clearInterval(t); }, [load]);
 
   const act = async (body: object) => {
     setBusy(true); setMsg(null);
@@ -56,6 +61,33 @@ export default function EvolutionPage() {
           </div>
 
           <div className={card}><p className="text-[13px] text-ink">{report.summary}</p><p className="mt-1 text-[11px] text-faint">Generated {new Date(report.generatedAt).toLocaleString()}</p></div>
+
+          {/* self-improve activity — what the agents actually built, with the free model that did it */}
+          <section className={card}>
+            <div className="mb-3 flex items-center justify-between">
+              <p className={head}>Self-Improve Activity · built by free open-source models</p>
+              <span className="flex items-center gap-1.5 text-[10px] text-faint"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" /> live · auto-refresh 15s</span>
+            </div>
+            {runs.length === 0 ? (
+              <Empty>No runs yet. The daily GitHub Action (or a manual dispatch) generates code with free models and opens PRs — entries appear here. Locally: <span className="font-mono">node scripts/self-improve.mjs</span>.</Empty>
+            ) : (
+              <ul className="space-y-1.5">
+                {runs.map((r) => (
+                  <li key={r.id} className="rounded-xl border border-line bg-surface p-2.5 text-[12px]">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium text-ink">{r.agent}</span>
+                      <RiskPill risk={r.risk} />
+                      <span className="rounded bg-surface-3 px-1.5 py-0.5 font-mono text-[10px] text-muted">{r.model}</span>
+                      {r.dryRun ? <span className="text-[10px] text-faint">dry-run</span> : r.pr ? <a href={r.pr} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-brand hover:underline">view PR →</a> : <span className="text-[10px] text-emerald-600">applied</span>}
+                      <span className="ml-auto font-mono text-[10px] text-faint">{new Date(r.at).toLocaleString()}</span>
+                    </div>
+                    <p className="mt-1 text-[12px] text-muted">{r.summary}</p>
+                    {r.files.length > 0 && <p className="mt-0.5 font-mono text-[10px] text-faint">{r.files.join(" · ")}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
             {/* improvement queue */}

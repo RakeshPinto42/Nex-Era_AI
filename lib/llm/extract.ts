@@ -6,6 +6,23 @@ import "server-only";
 import * as XLSX from "xlsx";
 import { UPLOAD_LIMITS, withTimeout, isZip, limitSheets } from "@/lib/upload/validate";
 
+// pdfjs (bundled inside pdf-parse@2) calls `Promise.withResolvers`, which only
+// exists on Node ≥ 22. Vercel serverless can still run an older Node, where the
+// missing method makes PDF text extraction throw and silently return empty.
+// Polyfill once, at module load, before pdf-parse is ever imported. No-op where
+// the native method already exists.
+if (typeof (Promise as unknown as { withResolvers?: unknown }).withResolvers !== "function") {
+  (Promise as unknown as { withResolvers: () => unknown }).withResolvers = function withResolvers<T>() {
+    let resolve!: (value: T | PromiseLike<T>) => void;
+    let reject!: (reason?: unknown) => void;
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
 const MAX_CHARS = 24_000;
 
 export type ExtractResult = { kind: string; text: string; truncated: boolean };

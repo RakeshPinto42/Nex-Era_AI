@@ -242,6 +242,34 @@ export async function deleteFileAt(root: FsDirHandle, path: string): Promise<voi
   await d.removeEntry(file);
 }
 
+// ---- binary documents (PDF / Word / Excel) — read for AI understanding ----
+
+/** Extensions that hold readable text but need server-side extraction. */
+export const DOC_EXT = new Set(["pdf", "docx", "xlsx", "xls"]);
+
+/** Get the raw File object at a path (binary docs that can't be decoded as UTF-8). */
+export async function getFileObjAt(root: FsDirHandle, path: string): Promise<File> {
+  const parts = path.split("/");
+  const file = parts.pop()!;
+  const d = await dirFor(root, parts, false);
+  return (await d.getFileHandle(file)).getFile();
+}
+
+/**
+ * Extract plain text from a PDF / Word / Excel file in the folder, reusing the
+ * shared server extraction pipeline (/api/extract). Lets the coding agent read
+ * specs, requirements and data files the same way Claude Code does.
+ */
+export async function extractDocAt(root: FsDirHandle, path: string): Promise<string> {
+  const f = await getFileObjAt(root, path);
+  const form = new FormData();
+  form.append("file", f, f.name);
+  const res = await fetch("/api/extract", { method: "POST", body: form });
+  if (!res.ok) throw new Error(`extract failed (${res.status})`);
+  const data = (await res.json()) as { files?: { text?: string }[] };
+  return data.files?.[0]?.text ?? "";
+}
+
 /** Name + lightweight content search over scanned text files (best-effort, capped). */
 export async function searchProject(root: FsDirHandle, flat: TreeNode[], query: string, maxContent = 400): Promise<SearchHit[]> {
   const q = query.trim().toLowerCase();

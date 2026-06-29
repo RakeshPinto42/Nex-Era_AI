@@ -8,7 +8,11 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["pdf-parse", "pdfjs-dist", "@napi-rs/canvas"],
     outputFileTracingIncludes: {
+      // Every route that runs the shared extractFile() pipeline needs the native
+      // canvas backend traced in, or pdf-parse comes back empty on serverless.
       "/api/extract": ["./node_modules/@napi-rs/canvas*/**"],
+      "/api/agents/file": ["./node_modules/@napi-rs/canvas*/**"],
+      "/api/agents/finance": ["./node_modules/@napi-rs/canvas*/**"],
     },
     // Runs instrumentation.ts at server startup — used to fail closed when
     // production credentials/secret are missing or weak.

@@ -11,7 +11,7 @@
    warm-white design system (convergence) + reused FosTheme/Toast providers.
    ========================================================================== */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -22,6 +22,9 @@ import { NexeraMark } from "@/components/Logo";
 import { FINANCE_APPS, appForPath } from "@/lib/finance-os/apps";
 import { FosThemeProvider } from "@/components/finance-os/system/theme";
 import { ToastProvider } from "@/components/finance-os/system/toast";
+import { FinanceUploadProvider, useFinanceUpload } from "@/components/finance-os/system/uploadStore";
+import { ingestFile } from "@/lib/finance-os/ingest";
+import { FILE_ROLES, type Dataset, type FileRole } from "@/lib/finance-os/types";
 import { cx } from "@/components/uikit";
 import { UploadModeBar } from "./UploadModeBar";
 
@@ -29,7 +32,9 @@ export function FinanceShell({ children }: { children: React.ReactNode }) {
   return (
     <FosThemeProvider>
       <ToastProvider>
-        <ShellInner>{children}</ShellInner>
+        <FinanceUploadProvider>
+          <ShellInner>{children}</ShellInner>
+        </FinanceUploadProvider>
       </ToastProvider>
     </FosThemeProvider>
   );
@@ -313,7 +318,35 @@ function CommandPalette({ onClose, onUpload, router }: { onClose: () => void; on
 }
 
 /* --------------------------------------------------------- upload modal */
+// Real, working upload. Parses CSV/XLSX in the browser via the shared ingest
+// pipeline and pushes the datasets into the shell-wide upload store, so the
+// studio you currently have open picks them up immediately.
 function UploadModal({ onClose }: { onClose: () => void }) {
+  const { datasets, addDatasets } = useFinanceUpload();
+  const [over, setOver] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [role, setRole] = useState<FileRole>("sales");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const ingest = useCallback(
+    async (files: FileList | File[]) => {
+      setErr(null);
+      setBusy(true);
+      const added: Dataset[] = [];
+      for (const f of Array.from(files)) {
+        try {
+          added.push(await ingestFile(f, role));
+        } catch (e) {
+          setErr(`${f.name}: ${(e as Error).message}`);
+        }
+      }
+      if (added.length) addDatasets(added);
+      setBusy(false);
+    },
+    [addDatasets, role],
+  );
+
   return (
     <div className="fixed inset-0 z-[200] grid place-items-center bg-ink/30 p-4 backdrop-blur-sm" onClick={onClose}>
       <div className="w-full max-w-md overflow-hidden rounded-2xl border border-line bg-surface shadow-pop" onClick={(e) => e.stopPropagation()}>
@@ -322,13 +355,63 @@ function UploadModal({ onClose }: { onClose: () => void }) {
           <button onClick={onClose} aria-label="Close" className="grid h-8 w-8 place-items-center rounded-lg text-faint hover:bg-surface-2 hover:text-ink"><X size={16} /></button>
         </div>
         <div className="p-5">
-          <div className="grid place-items-center rounded-xl border border-dashed border-line-strong bg-surface-2/60 px-6 py-9 text-center">
-            <Upload size={22} className="mb-2 text-faint" />
-            <p className="text-sm font-medium text-ink">Drop a file or click to browse</p>
-            <p className="mt-0.5 text-[12px] text-faint">Excel · CSV · PDF — parsed in your browser</p>
+          <div className="mb-3 flex items-center gap-2">
+            <label className="font-mono text-[11px] uppercase tracking-wider text-faint">Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as FileRole)}
+              className="cursor-pointer rounded-lg border border-line bg-surface-2 px-2 py-1 text-xs text-ink outline-none focus:border-brand/40"
+            >
+              {FILE_ROLES.map((r) => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
           </div>
+
+          <label
+            onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+            onDragLeave={() => setOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setOver(false);
+              if (e.dataTransfer.files?.length) ingest(e.dataTransfer.files);
+            }}
+            className={cx(
+              "grid cursor-pointer place-items-center rounded-xl border border-dashed px-6 py-9 text-center transition-colors",
+              over ? "border-brand/50 bg-brand/[0.06]" : "border-line-strong bg-surface-2/60 hover:bg-surface-2",
+            )}
+          >
+            <Upload size={22} className="mb-2 text-faint" />
+            <p className="text-sm font-medium text-ink">{busy ? "Parsing…" : "Drop a file or click to browse"}</p>
+            <p className="mt-0.5 text-[12px] text-faint">Excel · CSV — parsed in your browser, never uploaded</p>
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".csv,.xlsx,.xls,text/csv"
+              multiple
+              hidden
+              onChange={(e) => e.target.files && ingest(e.target.files)}
+            />
+          </label>
+
+          {err && <p className="mt-2 text-xs text-rose-600">✕ {err}</p>}
+
+          {datasets.length > 0 && (
+            <ul className="mt-3 space-y-1.5">
+              {datasets.map((d) => (
+                <li key={d.id} className="flex items-center gap-2 rounded-lg border border-line bg-surface-2 px-3 py-2 text-[12px]">
+                  <span className="min-w-0 flex-1 truncate text-ink" title={d.name}>{d.name}</span>
+                  <span className="font-mono text-[11px] text-faint">{d.table.rows.length} rows</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <div className="mt-4"><UploadModeBar /></div>
-          <p className="mt-3 text-[11px] text-muted">Processing is wired per studio in Phase 2. The default keeps your data temporary.</p>
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-[11px] text-muted">Files appear in the studio you have open. Data stays temporary until you Save.</p>
+            <button onClick={onClose} className="rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90">Done</button>
+          </div>
         </div>
       </div>
     </div>

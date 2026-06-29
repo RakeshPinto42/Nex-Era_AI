@@ -14,7 +14,7 @@ import { useCallback, useRef, useState } from "react";
 import PageShell from "@/components/dashboard/PageShell";
 import {
   fsAccessSupported, openFolder, validatePermissions, scanTree, detectProject,
-  readFileAt, writeFileAt, deleteFileAt, searchProject, type FsDirHandle,
+  readFileAt, writeFileAt, deleteFileAt, searchProject, extractDocAt, DOC_EXT, type FsDirHandle,
 } from "@/lib/code/fsaccess";
 import type { FsStatus, TreeNode, ProjectInfo, IndexStep, SearchHit, EditPlanView, PlanFile, TimelineStep, CapStatus } from "@/lib/code/types";
 import { analyzeCapabilities, type ProjectCapabilities, type TechGroup } from "@/lib/code/capabilities";
@@ -125,6 +125,7 @@ export default function NexCode() {
             <Assistant
               getFiles={() => flatRef.current}
               readFile={(p) => readFileAt(rootRef.current!, p)}
+              extractDoc={(p) => extractDocAt(rootRef.current!, p)}
               applyPlan={async (plan) => {
                 for (const f of plan.files) await writeFileAt(rootRef.current!, f.path, f.content);
                 for (const d of plan.deleted) { try { await deleteFileAt(rootRef.current!, d); } catch { /* */ } }
@@ -319,9 +320,10 @@ function TreeRow({ node, depth }: { node: TreeNode; depth: number }) {
 }
 
 /* ---------- assistant: search + AI edits ---------- */
-function Assistant({ getFiles, readFile, applyPlan, search }: {
+function Assistant({ getFiles, readFile, extractDoc, applyPlan, search }: {
   getFiles: () => TreeNode[];
   readFile: (p: string) => Promise<string>;
+  extractDoc: (p: string) => Promise<string>;
   applyPlan: (plan: EditPlanView) => Promise<void>;
   search: (q: string) => Promise<SearchHit[]>;
 }) {
@@ -351,6 +353,16 @@ function Assistant({ getFiles, readFile, applyPlan, search }: {
       const files = getFiles().filter((f) => f.ext && TEXT_EXT.has(f.ext) && (f.size ?? 0) < 30_000).slice(0, 60);
       const payload: { path: string; content: string }[] = [];
       for (const f of files) { try { payload.push({ path: f.path, content: await readFile(f.path) }); } catch { /* */ } }
+
+      // also read PDF / Word / Excel docs so the agent understands specs + data
+      const docs = getFiles().filter((f) => f.ext && DOC_EXT.has(f.ext) && (f.size ?? 0) < 10_000_000).slice(0, 10);
+      if (docs.length) step("Reading documents (PDF / Word / Excel)");
+      for (const f of docs) {
+        try {
+          const t = await extractDoc(f.path);
+          if (t.trim()) payload.push({ path: f.path, content: `[Extracted text from ${f.ext?.toUpperCase()} document]\n${t}` });
+        } catch { /* skip unreadable doc */ }
+      }
 
       step("Planning edits (AI Router)");
       const res = await fetch("/api/code/agent", {

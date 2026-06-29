@@ -17,6 +17,11 @@ export async function middleware(req: NextRequest) {
   // Auth endpoints are public (login/logout/me set or read the session).
   if (pathname.startsWith("/api/auth")) return NextResponse.next();
 
+  // Vercel Cron tick — no user session. The route itself enforces the guard
+  // (Vercel auto-sends `Authorization: Bearer $CRON_SECRET` + `x-vercel-cron`),
+  // so we only skip the session check here, not the authorization.
+  if (pathname === "/api/evolution/cron") return NextResponse.next();
+
   // Workspace filesystem tools touch the server's disk — never in production.
   if (
     process.env.NODE_ENV === "production" &&

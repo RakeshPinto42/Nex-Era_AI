@@ -8,6 +8,7 @@ import type { Table } from "@/lib/finance/csv";
 import { FileDrop } from "./FileDrop";
 import { ColumnMapper } from "./ColumnMapper";
 import { PrivacyNote } from "@/components/finance/shared";
+import { useFinanceUpload } from "@/components/finance-os/system/uploadStore";
 import type { ColumnMapping, Dataset, FieldSpec, FileRole } from "@/lib/finance-os/types";
 
 export function UploadMapper({
@@ -23,7 +24,9 @@ export function UploadMapper({
   defaultRole?: FileRole;
   mapTitle?: string;
 }) {
-  const [datasets, setDatasets] = useState<Dataset[]>([]);
+  // Datasets live in the shell-wide store so the global Upload button and this
+  // studio's drop zone share one list (uploading anywhere fills the open studio).
+  const { datasets, setDatasets } = useFinanceUpload();
   const [mapping, setMapping] = useState<ColumnMapping | null>(null);
   const table = datasets[0]?.table ?? null;
 

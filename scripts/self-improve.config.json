@@ -1,0 +1,28 @@
+{
+  "//": "Self-improvement targets. Each improver agent defines WHAT it improves each cycle. The runner (scripts/self-improve.mjs) iterates these, asks an open-source model for a concrete patch, and opens a PR. Add targets here (or let the Agent Factory append them) to grow the ecosystem.",
+  "model": "qwen/qwen3-coder:free",
+  "modelFallbacks": [
+    "openai/gpt-oss-120b:free",
+    "openai/gpt-oss-20b:free",
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "nousresearch/hermes-3-llama-3.1-405b:free",
+    "qwen/qwen3-next-80b-a3b-instruct:free",
+    "meta-llama/llama-3.2-3b-instruct:free"
+  ],
+  "maxFilesPerTarget": 18,
+  "targets": [
+    {
+      "agent": "investments-improver",
+      "title": "Investment Hub daily improvement",
+      "globs": ["components/investments/**/*.tsx", "app/dashboard/investments/**/*.tsx", "lib/investments/**/*.ts"],
+      "instruction": "Make ONE focused, safe improvement to the Investment Hub. Pick the single highest-value upgrade you can fully implement in a few files: clearer data viz, a useful new metric/column, better empty/loading/error states, accessibility, or a small UX refinement. Keep it consistent with the existing warm-white design system and current code style. Do NOT touch auth, trading execution, broker, or env. Edits must compile."
+    },
+    {
+      "agent": "german-tutor",
+      "title": "German classes — grow the learning module",
+      "globs": ["app/dashboard/german/**/*", "components/german/**/*", "lib/german/**/*"],
+      "instruction": "Build or extend a German learning module at /dashboard/german (route + components under components/german + data under lib/german). If it does not exist yet, scaffold a minimal working lesson page (A1 vocab + a simple review flow) reusing the existing design tokens and PageShell. If it exists, add ONE lesson or feature (more vocab, a grammar card, a spaced-repetition tweak). Self-contained, client-side, no new deps, must compile."
+    }
+  ]
+}

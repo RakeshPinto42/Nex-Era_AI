@@ -16,3 +16,6 @@ next-env.d.ts
 Nex-AP.txt
 nex-ap.txt
 *Nex-AP*.txt
+
+# self-improve ephemeral run artifact
+scripts/.last-run.json
